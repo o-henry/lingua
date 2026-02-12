@@ -1,126 +1,135 @@
-import { Clip, SrsCard, SessionLog, UserSettings } from "./types";
+import { MemoryItem, SrsCard, SessionLog, UserSettings, Clip } from "@/lib/types";
+import * as clipRepo from "@/storage/clipRepo";
+import * as memoryRepo from "@/storage/memoryRepo";
+import * as srsRepo from "@/storage/srsRepo";
+import * as sessionRepo from "@/storage/sessionRepo";
+import { clearAllAppData, getStorageStatus } from "@/storage/metaRepo";
 
-const KEYS = {
-  CLIPS: "lingoplay_clips",
-  SRS_CARDS: "lingoplay_srs",
-  SESSIONS: "lingoplay_sessions",
-  SETTINGS: "lingoplay_settings",
-} as const;
+const SETTINGS_KEY = "dlb:settings";
+const LEGACY_SETTINGS_KEY = "lingoplay_settings";
 
-function get<T>(key: string, fallback: T): T {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function set<T>(key: string, value: T): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (e) {
-    console.error("Storage write failed:", e);
-  }
-}
-
-// Clips
-export function getClips(): Clip[] {
-  return get<Clip[]>(KEYS.CLIPS, []);
-}
-
-export function saveClip(clip: Clip): void {
-  const clips = getClips();
-  const idx = clips.findIndex((c) => c.id === clip.id);
-  if (idx >= 0) clips[idx] = clip;
-  else clips.push(clip);
-  set(KEYS.CLIPS, clips);
-}
-
-export function deleteClip(id: string): void {
-  set(KEYS.CLIPS, getClips().filter((c) => c.id !== id));
-}
-
-export function getClipById(id: string): Clip | undefined {
-  return getClips().find((c) => c.id === id);
-}
-
-// SRS
-export function getSrsCards(): SrsCard[] {
-  return get<SrsCard[]>(KEYS.SRS_CARDS, []);
-}
-
-export function saveSrsCard(card: SrsCard): void {
-  const cards = getSrsCards();
-  const idx = cards.findIndex((c) => c.id === card.id);
-  if (idx >= 0) cards[idx] = card;
-  else cards.push(card);
-  set(KEYS.SRS_CARDS, cards);
-}
-
-export function deleteSrsCard(id: string): void {
-  set(KEYS.SRS_CARDS, getSrsCards().filter((c) => c.id !== id));
-}
-
-export function getDueCards(): SrsCard[] {
-  const today = new Date().toISOString().split("T")[0];
-  return getSrsCards().filter((c) => c.dueDate <= today);
-}
-
-// Sessions
-export function getSessionLogs(): SessionLog[] {
-  return get<SessionLog[]>(KEYS.SESSIONS, []);
-}
-
-export function saveSessionLog(log: SessionLog): void {
-  const logs = getSessionLogs();
-  const idx = logs.findIndex((l) => l.date === log.date);
-  if (idx >= 0) logs[idx] = log;
-  else logs.push(log);
-  set(KEYS.SESSIONS, logs);
-}
-
-// Settings
 const DEFAULT_SETTINGS: UserSettings = {
   language: "ko",
   targetLanguage: "en",
+  learnerLevel: "초급",
+  userAge: 20,
+  userGender: "비공개",
   goal: "conversation",
   dailyMinutes: 20,
   mode: "beginner",
   darkMode: false,
-  onboardingComplete: false,
   setupComplete: false,
 };
 
+function getSettingsRaw(): UserSettings {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY) ?? localStorage.getItem(LEGACY_SETTINGS_KEY);
+    if (!raw) return DEFAULT_SETTINGS;
+    return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
+}
+
+function setSettingsRaw(value: UserSettings): void {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(value));
+}
+
+// Clips
+export async function getClips(): Promise<Clip[]> {
+  return clipRepo.getAll();
+}
+
+export async function saveClip(clip: Clip): Promise<void> {
+  await clipRepo.upsert(clip);
+}
+
+export async function deleteClip(id: string): Promise<void> {
+  await clipRepo.remove(id);
+}
+
+export async function getClipById(id: string): Promise<Clip | undefined> {
+  return clipRepo.getById(id);
+}
+
+// Memory
+export async function getMemoryItems(): Promise<MemoryItem[]> {
+  return memoryRepo.getAll();
+}
+
+export async function getMemoryItemById(id: string): Promise<MemoryItem | undefined> {
+  return memoryRepo.getById(id);
+}
+
+export async function getMemoryByClipId(clipId: string): Promise<MemoryItem[]> {
+  return memoryRepo.getByClipId(clipId);
+}
+
+export async function saveMemoryItem(item: MemoryItem): Promise<void> {
+  const existing = await memoryRepo.getById(item.id);
+  if (existing) {
+    await memoryRepo.update(item);
+  } else {
+    await memoryRepo.create(item);
+  }
+}
+
+export async function deleteMemoryItem(id: string): Promise<void> {
+  await memoryRepo.remove(id);
+}
+
+// SRS
+export async function getSrsCards(): Promise<SrsCard[]> {
+  return srsRepo.getAll();
+}
+
+export async function saveSrsCard(card: SrsCard): Promise<void> {
+  await srsRepo.upsert(card);
+}
+
+export async function deleteSrsCard(id: string): Promise<void> {
+  await srsRepo.remove(id);
+}
+
+export async function getDueCards(date?: string): Promise<SrsCard[]> {
+  return srsRepo.getDue(date);
+}
+
+export async function getSrsCardByMemoryId(memoryId: string): Promise<SrsCard | undefined> {
+  return srsRepo.getByMemoryId(memoryId);
+}
+
+// Sessions
+export async function getSessionLogs(): Promise<SessionLog[]> {
+  return sessionRepo.getAll();
+}
+
+export async function saveSessionLog(log: SessionLog): Promise<void> {
+  await sessionRepo.append(log);
+}
+
+// Settings (sync access for app bootstrap)
 export function getSettings(): UserSettings {
-  return get<UserSettings>(KEYS.SETTINGS, DEFAULT_SETTINGS);
+  return getSettingsRaw();
 }
 
 export function updateSettings(partial: Partial<UserSettings>): UserSettings {
-  const settings = { ...getSettings(), ...partial };
-  set(KEYS.SETTINGS, settings);
+  const settings = { ...getSettingsRaw(), ...partial };
+  setSettingsRaw(settings);
   return settings;
 }
 
-export function clearAllData(): void {
-  Object.values(KEYS).forEach((k) => localStorage.removeItem(k));
+export async function clearAllData(): Promise<void> {
+  await clearAllAppData();
 }
 
-export function getTotalStudyMinutes(): number {
-  return getSessionLogs().reduce((sum, l) => sum + l.minutes, 0);
+export async function getTotalStudyMinutes(): Promise<number> {
+  const logs = await sessionRepo.getAll();
+  return logs.reduce((sum, log) => sum + log.minutes, 0);
 }
 
-export function getStreak(): number {
-  const logs = getSessionLogs().sort((a, b) => b.date.localeCompare(a.date));
-  if (logs.length === 0) return 0;
-  let streak = 0;
-  const today = new Date();
-  for (let i = 0; i < logs.length; i++) {
-    const expected = new Date(today);
-    expected.setDate(expected.getDate() - i);
-    const expectedStr = expected.toISOString().split("T")[0];
-    if (logs[i]?.date === expectedStr) streak++;
-    else break;
-  }
-  return streak;
+export async function getStreak(): Promise<number> {
+  return sessionRepo.getStreak();
 }
+
+export { getStorageStatus };

@@ -1,18 +1,43 @@
 import React, { useState, useEffect } from "react";
-import { getSettings, updateSettings, clearAllData } from "@/lib/storage";
+import { clearAllData, getSettings, updateSettings, getStorageStatus } from "@/lib/storage";
+import { useNavigate } from "react-router-dom";
+import { UserSettings } from "@/lib/types";
 import BottomNav from "@/components/BottomNav";
 import PageShell from "@/components/PageShell";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Moon, Bell, Wifi, Trash2 } from "lucide-react";
+import { Moon, Wifi, Trash2, AlertTriangle, Languages, Gauge, StickyNote, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const LANGUAGE_OPTIONS = [
+  { code: "en", label: "영어 (English)" },
+  { code: "ja", label: "일본어 (Japanese)" },
+] as const;
+
+const LEVEL_OPTIONS = ["입문", "초급", "중급", "고급"] as const;
+
+const languageLabel = (code: string) => LANGUAGE_OPTIONS.find((option) => option.code === code)?.label || code.toUpperCase();
+
+const modeForLevel = (level: UserSettings["learnerLevel"]): UserSettings["mode"] =>
+  level === "고급" ? "advanced" : level === "중급" ? "intermediate" : "beginner";
 
 const SettingsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
+  const [targetLanguage, setTargetLanguage] = useState<UserSettings["targetLanguage"]>("en");
+  const [learnerLevel, setLearnerLevel] = useState<UserSettings["learnerLevel"]>("초급");
+  const [migrationRequired, setMigrationRequired] = useState(false);
 
   useEffect(() => {
     const settings = getSettings();
     setDarkMode(settings.darkMode);
+    setTargetLanguage(settings.targetLanguage);
+    setLearnerLevel(settings.learnerLevel);
+
+    getStorageStatus().then((status) => {
+      setMigrationRequired(status.migrationRequired);
+    });
   }, []);
 
   const toggleDark = (val: boolean) => {
@@ -21,19 +46,44 @@ const SettingsPage: React.FC = () => {
     document.documentElement.classList.toggle("dark", val);
   };
 
-  const handleClearData = () => {
-    if (window.confirm("모든 학습 데이터가 삭제됩니다. 계속하시겠습니까?")) {
-      clearAllData();
-      toast.success("데이터가 초기화되었습니다");
-      window.location.href = "/onboarding";
+  const handleTargetLanguageChange = (nextLanguage: UserSettings["targetLanguage"]) => {
+    setTargetLanguage(nextLanguage);
+    updateSettings({ targetLanguage: nextLanguage });
+    toast.success(`학습 언어 변경: ${languageLabel(nextLanguage)}`);
+  };
+
+  const handleLearnerLevelChange = (nextLevel: UserSettings["learnerLevel"]) => {
+    setLearnerLevel(nextLevel);
+    updateSettings({ learnerLevel: nextLevel, mode: modeForLevel(nextLevel) });
+    toast.success(`학습 난이도 변경: ${nextLevel}`);
+  };
+
+  const handleClearData = async () => {
+    if (!window.confirm("저장한 메모, 복습 카드, 자막, 설정이 이 기기에서 모두 삭제됩니다. 계속하시겠습니까?")) {
+      return;
     }
+
+    await clearAllData();
+    toast.success("데이터가 초기화되었습니다");
+    window.location.href = "/library";
   };
 
   return (
     <>
       <PageShell title="설정">
         <div className="space-y-2">
-          {/* Dark Mode */}
+          {migrationRequired && (
+            <div className="bg-warning/10 border border-warning/30 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-warning mt-0.5" />
+                <div>
+                  <div className="font-medium text-sm">구버전 데이터 감지됨</div>
+                  <div className="text-xs text-muted-foreground mt-1">Learn/SRS/Library를 사용하려면 아래에서 로컬 데이터를 초기화하세요.</div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="bg-card rounded-xl border p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Moon className="w-5 h-5 text-muted-foreground" />
@@ -45,49 +95,106 @@ const SettingsPage: React.FC = () => {
             <Switch checked={darkMode} onCheckedChange={toggleDark} />
           </div>
 
-          {/* Notifications */}
-          <div className="bg-card rounded-xl border p-4 flex items-center justify-between opacity-60">
+          <div className="bg-card rounded-xl border p-4 space-y-4">
             <div className="flex items-center gap-3">
-              <Bell className="w-5 h-5 text-muted-foreground" />
+              <Languages className="w-5 h-5 text-muted-foreground" />
               <div>
-                <div className="font-medium text-sm">알림 설정</div>
-                <div className="text-xs text-muted-foreground">추후 지원 예정</div>
+                <div className="font-medium text-sm">학습 언어</div>
+                <div className="text-xs text-muted-foreground">현재: {languageLabel(targetLanguage)}</div>
               </div>
             </div>
-            <Switch disabled />
+            <div className="grid grid-cols-1 gap-2">
+              {LANGUAGE_OPTIONS.map((option) => (
+                <button
+                  key={option.code}
+                  type="button"
+                  onClick={() => handleTargetLanguageChange(option.code)}
+                  className={cn(
+                    "w-full rounded-lg border px-3 py-2 text-left text-sm transition-colors",
+                    targetLanguage === option.code ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* PWA Info */}
+          <div className="bg-card rounded-xl border p-4 space-y-4">
+            <div className="flex items-center gap-3">
+              <Gauge className="w-5 h-5 text-muted-foreground" />
+              <div>
+                <div className="font-medium text-sm">학습 난이도(레벨)</div>
+                <div className="text-xs text-muted-foreground">현재: {learnerLevel}</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {LEVEL_OPTIONS.map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => handleLearnerLevelChange(level)}
+                  className={cn(
+                    "rounded-lg border px-3 py-2 text-sm transition-colors",
+                    learnerLevel === level ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">변경한 언어/레벨은 AI 질문 프롬프트 생성에 즉시 적용됩니다.</p>
+          </div>
+
+          <div className="bg-card rounded-xl border p-4 space-y-3">
+            <div className="flex items-center gap-3">
+              <StickyNote className="w-5 h-5 text-muted-foreground" />
+              <div>
+                <div className="font-medium text-sm">메모</div>
+                <div className="text-xs text-muted-foreground">설정에서 메모 관련 화면으로 이동합니다.</div>
+              </div>
+            </div>
+            <Button variant="outline" className="w-full justify-between" onClick={() => navigate("/settings/memo")}>
+              메모로 이동
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+
           <div className="bg-card rounded-xl border p-4">
             <div className="flex items-center gap-3 mb-3">
               <Wifi className="w-5 h-5 text-muted-foreground" />
-              <div className="font-medium text-sm">오프라인 / PWA</div>
+              <div className="font-medium text-sm">PWA 안내</div>
             </div>
             <div className="text-xs text-muted-foreground space-y-1">
-              <p>• 학습 기록과 SRS 카드 복습은 오프라인에서도 가능합니다</p>
               <p>• 유튜브 영상 재생은 인터넷 연결이 필요합니다</p>
               <p>• 홈 화면에 추가하면 앱처럼 사용할 수 있습니다</p>
             </div>
           </div>
 
-          {/* Clear Data */}
           <div className="bg-card rounded-xl border p-4">
             <div className="flex items-center gap-3 mb-3">
               <Trash2 className="w-5 h-5 text-destructive" />
               <div>
                 <div className="font-medium text-sm">데이터 초기화</div>
-                <div className="text-xs text-muted-foreground">모든 학습 데이터를 삭제합니다</div>
+                <div className="text-xs text-muted-foreground">이 기기에 저장된 학습 데이터(메모/복습/설정)를 모두 삭제합니다</div>
               </div>
             </div>
             <Button variant="destructive" size="sm" onClick={handleClearData}>
               데이터 삭제
             </Button>
           </div>
+
+          <div className="bg-card rounded-xl border p-4">
+            <div className="font-medium text-sm mb-2">데이터가 사라지는 경우</div>
+            <div className="text-xs text-muted-foreground space-y-1">
+              <p>• 설정에서 &quot;데이터 삭제&quot; 버튼을 누른 경우</p>
+              <p>• 브라우저/앱에서 이 사이트의 저장 데이터(쿠키/사이트 데이터)를 직접 지운 경우</p>
+              <p>• 일부 브라우저의 시크릿 모드처럼 임시 저장소를 쓰는 경우</p>
+            </div>
+          </div>
         </div>
 
-        <div className="text-center mt-8 text-xs text-muted-foreground">
-          LingoPlay v1.0 · Made with ❤️
-        </div>
+        <div className="text-center mt-8 text-xs text-muted-foreground">LingoPlay v1.0</div>
       </PageShell>
       <BottomNav />
     </>

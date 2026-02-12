@@ -1,62 +1,54 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { updateSettings } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
 const LANGUAGES = [
-  { code: "en", label: "🇺🇸 English" },
-  { code: "jp", label: "🇯🇵 日本語" },
-  { code: "zh", label: "🇨🇳 中文" },
-  { code: "es", label: "🇪🇸 Español" },
-  { code: "fr", label: "🇫🇷 Français" },
-];
+  { code: "en", label: "영어 (English)" },
+  { code: "ja", label: "일본어 (Japanese)" },
+] as const;
 
-const GOALS = [
-  { id: "comprehension", label: "원어민 대화 이해", icon: "👂" },
-  { id: "conversation", label: "실전 대화 능력", icon: "💬" },
-  { id: "accent", label: "발음 교정", icon: "🗣️" },
-];
-
-const TIMES = [10, 20, 30];
-
-const MODES = [
-  { id: "beginner" as const, label: "초급", desc: "대본 중심 학습", icon: "📝" },
-  { id: "intermediate" as const, label: "중급", desc: "섀도잉 중심", icon: "🎙️" },
-  { id: "advanced" as const, label: "고급", desc: "인출 중심", icon: "🧠" },
-];
+const LEVELS = ["입문", "초급", "중급", "고급"] as const;
+const GENDERS = ["남", "여", "기타", "비공개"] as const;
 
 const Setup: React.FC = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [lang, setLang] = useState("en");
-  const [goal, setGoal] = useState("conversation");
-  const [minutes, setMinutes] = useState(20);
-  const [mode, setMode] = useState<"beginner" | "intermediate" | "advanced">("beginner");
+  const [targetLanguage, setTargetLanguage] = useState<(typeof LANGUAGES)[number]["code"]>("en");
+  const [learnerLevel, setLearnerLevel] = useState<(typeof LEVELS)[number]>("초급");
+  const [userAge, setUserAge] = useState("20");
+  const [userGender, setUserGender] = useState<(typeof GENDERS)[number]>("비공개");
+
+  const normalizedAge = Math.max(1, Math.min(120, Number(userAge) || 20));
+
+  const modeForLevel = learnerLevel === "고급" ? "advanced" : learnerLevel === "중급" ? "intermediate" : "beginner";
 
   const handleComplete = () => {
     updateSettings({
-      targetLanguage: lang,
-      goal,
-      dailyMinutes: minutes,
-      mode,
+      targetLanguage,
+      learnerLevel,
+      userAge: normalizedAge,
+      userGender,
+      mode: modeForLevel,
       setupComplete: true,
     });
     navigate("/home");
   };
 
   const steps = [
-    // Step 0: Language
     <div key="lang" className="space-y-4">
-      <h2 className="text-2xl font-bold">어떤 언어를 배울까요?</h2>
+      <h2 className="text-2xl font-bold">배우고 싶은 언어</h2>
       <div className="grid grid-cols-1 gap-2">
         {LANGUAGES.map((l) => (
           <button
             key={l.code}
-            onClick={() => setLang(l.code)}
+            type="button"
+            onClick={() => setTargetLanguage(l.code)}
             className={cn(
               "px-4 py-3 rounded-xl text-left font-medium transition-all border-2",
-              lang === l.code ? "border-primary bg-primary/10" : "border-transparent bg-muted"
+              targetLanguage === l.code ? "border-primary bg-primary/10" : "border-transparent bg-muted"
             )}
           >
             {l.label}
@@ -64,70 +56,63 @@ const Setup: React.FC = () => {
         ))}
       </div>
     </div>,
-    // Step 1: Goal
-    <div key="goal" className="space-y-4">
-      <h2 className="text-2xl font-bold">학습 목표는?</h2>
-      <div className="grid grid-cols-1 gap-2">
-        {GOALS.map((g) => (
+    <div key="level" className="space-y-4">
+      <h2 className="text-2xl font-bold">현재 수준</h2>
+      <div className="grid grid-cols-2 gap-2">
+        {LEVELS.map((level) => (
           <button
-            key={g.id}
-            onClick={() => setGoal(g.id)}
+            key={level}
+            type="button"
+            onClick={() => setLearnerLevel(level)}
             className={cn(
-              "px-4 py-3 rounded-xl text-left font-medium transition-all border-2 flex items-center gap-3",
-              goal === g.id ? "border-primary bg-primary/10" : "border-transparent bg-muted"
+              "px-4 py-3 rounded-xl text-center font-medium transition-all border-2",
+              learnerLevel === level ? "border-primary bg-primary/10" : "border-transparent bg-muted"
             )}
           >
-            <span className="text-2xl">{g.icon}</span>
-            {g.label}
+            {level}
           </button>
         ))}
       </div>
     </div>,
-    // Step 2: Time
-    <div key="time" className="space-y-4">
-      <h2 className="text-2xl font-bold">하루 학습 시간</h2>
-      <div className="grid grid-cols-3 gap-3">
-        {TIMES.map((t) => (
+    <div key="age" className="space-y-4">
+      <h2 className="text-2xl font-bold">나이</h2>
+      <Input
+        type="number"
+        min={1}
+        max={120}
+        value={userAge}
+        onChange={(e) => setUserAge(e.target.value)}
+        placeholder="나이를 입력하세요"
+      />
+      <p className="text-xs text-muted-foreground">답변 길이와 설명 수준을 조절할 때만 사용됩니다.</p>
+    </div>,
+    <div key="gender" className="space-y-4">
+      <h2 className="text-2xl font-bold">성별</h2>
+      <div className="grid grid-cols-2 gap-2">
+        {GENDERS.map((gender) => (
           <button
-            key={t}
-            onClick={() => setMinutes(t)}
+            key={gender}
+            type="button"
+            onClick={() => setUserGender(gender)}
             className={cn(
-              "py-4 rounded-xl font-bold text-lg transition-all border-2",
-              minutes === t ? "border-primary bg-primary/10 text-primary" : "border-transparent bg-muted text-muted-foreground"
+              "px-4 py-3 rounded-xl text-center font-medium transition-all border-2",
+              userGender === gender ? "border-primary bg-primary/10" : "border-transparent bg-muted"
             )}
           >
-            {t}분
+            {gender}
           </button>
         ))}
       </div>
-    </div>,
-    // Step 3: Mode
-    <div key="mode" className="space-y-4">
-      <h2 className="text-2xl font-bold">학습 모드</h2>
-      <div className="grid grid-cols-1 gap-2">
-        {MODES.map((m) => (
-          <button
-            key={m.id}
-            onClick={() => setMode(m.id)}
-            className={cn(
-              "px-4 py-3 rounded-xl text-left transition-all border-2 flex items-center gap-3",
-              mode === m.id ? "border-primary bg-primary/10" : "border-transparent bg-muted"
-            )}
-          >
-            <span className="text-2xl">{m.icon}</span>
-            <div>
-              <div className="font-semibold">{m.label}</div>
-              <div className="text-xs text-muted-foreground">{m.desc}</div>
-            </div>
-          </button>
-        ))}
+      <div className="rounded-lg border bg-card p-3 text-xs text-muted-foreground">
+        로컬 데이터는 앱 안의 <span className="font-medium">설정 → 데이터 삭제</span>를 눌렀을 때만 지워집니다.
+        <br />
+        브라우저에서 사이트 데이터(쿠키/저장공간)를 직접 삭제해도 사라질 수 있습니다.
       </div>
     </div>,
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col px-6 py-12 max-w-sm mx-auto">
-      {/* Progress */}
+    <div className="min-h-screen bg-background flex flex-col px-6 py-10 max-w-xs mx-auto">
       <div className="flex gap-1 mb-8">
         {steps.map((_, i) => (
           <div key={i} className={cn("h-1 flex-1 rounded-full", i <= step ? "bg-primary" : "bg-border")} />

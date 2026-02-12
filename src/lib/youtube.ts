@@ -28,3 +28,19 @@ export function getEmbedUrl(videoId: string, start?: number, end?: number): stri
 export function getYoutubeWatchUrl(videoId: string): string {
   return `https://www.youtube.com/watch?v=${videoId}`;
 }
+
+export async function fetchYouTubeOEmbed(youtubeUrl: string): Promise<{ title?: string; channel?: string } | null> {
+  try {
+    const endpoint = `https://www.youtube.com/oembed?url=${encodeURIComponent(youtubeUrl)}&format=json`;
+    const response = await fetch(endpoint);
+    if (!response.ok) return null;
+
+    const payload = (await response.json()) as { title?: string; author_name?: string };
+    return {
+      title: payload.title,
+      channel: payload.author_name,
+    };
+  } catch {
+    return null;
+  }
+}

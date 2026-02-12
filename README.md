@@ -1,73 +1,61 @@
-# Welcome to your Lovable project
+# Daily Lingual Boost
 
-## Project info
+Reference-based listening app (React + Vite).
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Repo scan
 
-## How can I edit this code?
+- Framework: React 18 + TypeScript + Vite
+- Router: React Router (`src/App.tsx`)
+- UI: Tailwind + shadcn/ui
+- Storage: IndexedDB-first + LocalStorage fallback (`src/storage/db.ts`, `src/lib/storage.ts`)
+- YouTube playback: IFrame Player API (`src/components/YouTubePlayer.tsx`)
 
-There are several ways of editing your application.
+## Core policy
 
-**Use Lovable**
+- No YouTube subtitle/autosubtitle text extraction from network or DOM.
+- Only user-provided text is used (paste/upload/manual typing).
+- Transcript text persistence is opt-in (default OFF, local-only).
+- Saved learning data: SegmentRef + userText + notes.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Current flow
 
-Changes made via Lovable will be committed automatically to this repo.
+`청취 -> (자막 기반 구간 선택 | 시간 기반 구간 선택) -> 들은 문장 적기 -> AI에게 묻기 -> SRS`
 
-**Use your preferred IDE**
+## Key UX changes
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Onboarding/shadowing/recall flows removed from routes.
+- Stats/streak UI removed from navigation and active flows.
+- Learn segment input supports `mm:ss` / `h:mm:ss` and normalizes on blur.
+- Loop defaults OFF; `endSec` can be unset until loop is enabled.
+- Library clip add uses captions status input (`있음/없음/미확인`) and supports later edit.
+- Library tries YouTube `oEmbed` to fill title/channel.
+- Learn supports transcript line click and `Shift+Click` range selection to set segment.
+- Learn/SRS include external AI ask bar:
+  - copy prompt
+  - open ChatGPT / Gemini
+  - open/copy YouTube time link
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Main changed files
 
-Follow these steps:
+- `src/App.tsx`
+- `src/components/BottomNav.tsx`
+- `src/pages/Home.tsx`
+- `src/pages/Library.tsx`
+- `src/pages/Learn.tsx`
+- `src/pages/Srs.tsx`
+- `src/pages/Settings.tsx`
+- `src/components/learn/TranscriptPanel.tsx`
+- `src/components/ai/ExternalAiAskBar.tsx`
+- `src/domain/time.ts`
+- `src/domain/transcript.ts`
+- `src/domain/aiAsk.ts`
+- `src/lib/types.ts`
+- `src/lib/youtube.ts`
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Scripts
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
 npm run dev
+npm run test
+npm run build
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)

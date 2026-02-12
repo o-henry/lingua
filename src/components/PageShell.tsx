@@ -20,10 +20,10 @@ const PageShell: React.FC<PageShellProps> = ({
   noBottomNav,
 }) => {
   return (
-    <div className={`min-h-screen bg-background ${noBottomNav ? "" : "pb-20"}`}>
+    <div className={`min-h-screen bg-background ${noBottomNav ? "" : "pb-28"}`}>
       {(title || showBack || rightAction) && (
         <header className="sticky top-0 z-40 glass border-b">
-          <div className="flex items-center justify-between h-14 px-4 max-w-2xl mx-auto">
+          <div className="flex items-center justify-between h-14 px-4 max-w-md mx-auto">
             <div className="flex items-center gap-2">
               {showBack && (
                 <button onClick={onBack} className="p-1 -ml-1 text-muted-foreground hover:text-foreground">
@@ -38,7 +38,7 @@ const PageShell: React.FC<PageShellProps> = ({
           </div>
         </header>
       )}
-      <main className={noPadding ? "" : "px-4 py-4 max-w-2xl mx-auto"}>{children}</main>
+      <main className={noPadding ? "" : "px-4 py-4 max-w-md mx-auto"}>{children}</main>
     </div>
   );
 };

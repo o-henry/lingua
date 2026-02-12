@@ -2,10 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@font-face {
+  font-family: "LINE Seed KR";
+  src: url("./assets/fonts/line-seed/LINESeedKR-Th.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed KR";
+  src: url("./assets/fonts/line-seed/LINESeedKR-Rg.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed KR";
+  src: url("./assets/fonts/line-seed/LINESeedKR-Bd.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed Sans";
+  src: url("./assets/fonts/line-seed/LINESeedSans_W_Rg.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed Sans";
+  src: url("./assets/fonts/line-seed/LINESeedSans_W_He.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed Sans";
+  src: url("./assets/fonts/line-seed/LINESeedSans_W_Bd.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed JP";
+  src: url("./assets/fonts/line-seed/LINESeedJP_OTF_Th.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed JP";
+  src: url("./assets/fonts/line-seed/LINESeedJP_OTF_Rg.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "LINE Seed JP";
+  src: url("./assets/fonts/line-seed/LINESeedJP_OTF_Bd.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 @layer base {
   :root {
+    --font-ko: "LINE Seed KR", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    --font-en: "LINE Seed Sans", "Segoe UI", "Arial", sans-serif;
+    --font-jp: "LINE Seed JP", "Hiragino Sans", "Yu Gothic", sans-serif;
     --background: 40 33% 98%;
     --foreground: 220 20% 14%;
 
@@ -104,11 +177,20 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-ko);
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-display font-bold tracking-tight;
+  }
+
+  :lang(en) {
+    font-family: var(--font-en);
+  }
+
+  :lang(ja) {
+    font-family: var(--font-jp);
   }
 }
 
@@ -124,5 +206,14 @@
   }
   .gradient-streak {
     background: linear-gradient(135deg, hsl(var(--streak)), hsl(15 90% 50%));
+  }
+  .font-ko {
+    font-family: var(--font-ko);
+  }
+  .font-en {
+    font-family: var(--font-en);
+  }
+  .font-jp {
+    font-family: var(--font-jp);
   }
 }

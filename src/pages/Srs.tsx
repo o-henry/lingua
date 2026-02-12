@@ -1,71 +1,198 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDueCards, saveSrsCard, deleteSrsCard, getSrsCards } from "@/lib/storage";
-import { reviewCard, SrsRating } from "@/lib/srs";
-import { SrsCard } from "@/lib/types";
+import {
+  getClips,
+  getDueCards,
+  getMemoryItems,
+  getSrsCards,
+  getStorageStatus,
+  saveMemoryItem,
+  saveSrsCard,
+} from "@/lib/storage";
+import { scheduleNextReview, SrsRating } from "@/domain/srsScheduler";
+import { Clip, MemoryItem, SrsCard } from "@/lib/types";
 import BottomNav from "@/components/BottomNav";
 import PageShell from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { RotateCcw, Trash2, Edit2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { AlertTriangle, Edit2, Play } from "lucide-react";
+import YouTubePlayer from "@/components/YouTubePlayer";
+import ExternalAiAskBar from "@/components/ai/ExternalAiAskBar";
+import { formatTime } from "@/domain/time";
+
+interface ReviewItem {
+  card: SrsCard;
+  memory: MemoryItem;
+  clip?: Clip;
+}
+
+const todayDateKey = () => {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+
+const formatKoreanDuration = (seconds: number): string => {
+  const safe = Math.max(0, Math.floor(seconds));
+  const h = Math.floor(safe / 3600);
+  const m = Math.floor((safe % 3600) / 60);
+  const s = safe % 60;
+
+  if (h > 0) {
+    return `${h}시간 ${m}분 ${s}초`;
+  }
+
+  if (m > 0) {
+    return `${m}분 ${s}초`;
+  }
+
+  return `${s}초`;
+};
 
 const SrsPage: React.FC = () => {
   const navigate = useNavigate();
-  const [cards, setCards] = useState<SrsCard[]>([]);
+  const [items, setItems] = useState<ReviewItem[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [editText, setEditText] = useState("");
-  const [editTranslation, setEditTranslation] = useState("");
+  const [editUserText, setEditUserText] = useState("");
+  const [editNotes, setEditNotes] = useState("");
+  const [editConfidence, setEditConfidence] = useState<1 | 2 | 3 | 4 | 5 | undefined>(undefined);
+  const [playbackNonce, setPlaybackNonce] = useState(0);
+  const [showPlayer, setShowPlayer] = useState(false);
+  const [migrationRequired, setMigrationRequired] = useState(false);
+  const [totalCards, setTotalCards] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const loadData = async () => {
+    setLoading(true);
+
+    const [status, dueCards, allCards, memories, clips] = await Promise.all([
+      getStorageStatus(),
+      getDueCards(),
+      getSrsCards(),
+      getMemoryItems(),
+      getClips(),
+    ]);
+
+    setMigrationRequired(status.migrationRequired);
+    setTotalCards(allCards.length);
+
+    const memoryMap = new Map(memories.map((memory) => [memory.id, memory]));
+    const clipMap = new Map(clips.map((clip) => [clip.id, clip]));
+
+    const queue: ReviewItem[] = dueCards
+      .map((card) => {
+        const memory = memoryMap.get(card.memoryId);
+        if (!memory) return null;
+        return {
+          card,
+          memory,
+          clip: clipMap.get(memory.ref.clipId),
+        };
+      })
+      .filter((item): item is ReviewItem => Boolean(item))
+      .sort((a, b) => a.card.dueDate.localeCompare(b.card.dueDate));
+
+    setItems(queue);
+    setCurrentIdx(0);
+    setFlipped(false);
+    setShowPlayer(false);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    setCards(getDueCards());
+    loadData();
   }, []);
 
-  const currentCard = cards[currentIdx];
+  const currentItem = items[currentIdx];
 
   const handleRate = useCallback(
-    (rating: SrsRating) => {
-      if (!currentCard) return;
-      const updated = reviewCard(currentCard, rating);
-      saveSrsCard(updated);
+    async (rating: SrsRating) => {
+      if (!currentItem) return;
+
+      const updated = {
+        ...currentItem.card,
+        ...scheduleNextReview(currentItem.card, rating, todayDateKey()),
+      };
+
+      await saveSrsCard(updated);
+
       setFlipped(false);
-      if (currentIdx < cards.length - 1) {
-        setCurrentIdx(currentIdx + 1);
+      setShowPlayer(false);
+      if (currentIdx < items.length - 1) {
+        setCurrentIdx((prev) => prev + 1);
       } else {
-        toast.success("오늘 복습 완료! 🎉");
-        setCards([]);
+        toast.success("오늘 복습 완료");
+        setItems([]);
       }
     },
-    [currentCard, currentIdx, cards.length]
+    [currentItem, currentIdx, items.length]
   );
 
-  const handleDelete = () => {
-    if (!currentCard) return;
-    deleteSrsCard(currentCard.id);
-    const next = cards.filter((c) => c.id !== currentCard.id);
-    setCards(next);
-    if (currentIdx >= next.length) setCurrentIdx(Math.max(0, next.length - 1));
-    setFlipped(false);
-    toast.success("카드 삭제됨");
-  };
+  const handleSaveEdit = async () => {
+    if (!currentItem) return;
 
-  const handleSaveEdit = () => {
-    if (!currentCard) return;
-    const updated = { ...currentCard, text: editText, translation: editTranslation };
-    saveSrsCard(updated);
-    const next = [...cards];
-    next[currentIdx] = updated;
-    setCards(next);
+    const normalizedUserText = editUserText.trim();
+    const normalizedNotes = editNotes.trim() || normalizedUserText || "(메모 없음)";
+
+    const updatedMemory: MemoryItem = {
+      ...currentItem.memory,
+      notes: normalizedNotes,
+      ...(normalizedUserText ? { userText: normalizedUserText } : { userText: undefined }),
+      ...(editConfidence ? { confidence: editConfidence } : { confidence: undefined }),
+      updatedAt: Date.now(),
+    };
+
+    await saveMemoryItem(updatedMemory);
+    const next = [...items];
+    next[currentIdx] = { ...currentItem, memory: updatedMemory };
+    setItems(next);
     setEditing(false);
-    toast.success("카드 수정됨");
+    toast.success("카드 메모 수정됨");
   };
 
-  const totalCards = getSrsCards().length;
+  const blockedContent = (
+    <div className="bg-card rounded-xl border p-6 text-center mt-4">
+      <AlertTriangle className="w-8 h-8 text-warning mx-auto mb-2" />
+      <p className="font-medium">데이터 초기화가 필요합니다</p>
+      <p className="text-sm text-muted-foreground mt-1">구버전 데이터가 감지되어 복습 기능이 잠겨 있습니다.</p>
+      <Button className="mt-4" onClick={() => navigate("/settings")}>
+        설정에서 초기화하기
+      </Button>
+    </div>
+  );
 
-  if (cards.length === 0) {
+  const askText = useMemo(() => {
+    if (!currentItem) return "";
+    return (currentItem.memory.userText || currentItem.memory.notes || "").trim();
+  }, [currentItem]);
+
+  if (loading) {
+    return (
+      <>
+        <PageShell title="SRS 복습">
+          <div className="text-center py-16 text-sm text-muted-foreground">로딩 중...</div>
+        </PageShell>
+        <BottomNav />
+      </>
+    );
+  }
+
+  if (migrationRequired) {
+    return (
+      <>
+        <PageShell title="SRS 복습">{blockedContent}</PageShell>
+        <BottomNav />
+      </>
+    );
+  }
+
+  if (items.length === 0) {
     return (
       <>
         <PageShell title="SRS 복습">
@@ -73,9 +200,7 @@ const SrsPage: React.FC = () => {
             <div className="text-5xl mb-4">✅</div>
             <p className="font-medium mb-1">오늘 복습할 카드가 없어요</p>
             <p className="text-sm text-muted-foreground mb-2">총 {totalCards}개 카드 관리 중</p>
-            <Button variant="outline" onClick={() => navigate("/home")}>
-              홈으로
-            </Button>
+            <Button variant="outline" onClick={() => navigate("/home")}>홈으로</Button>
           </div>
         </PageShell>
         <BottomNav />
@@ -85,50 +210,79 @@ const SrsPage: React.FC = () => {
 
   return (
     <>
-      <PageShell title={`복습 ${currentIdx + 1}/${cards.length}`}>
+      <PageShell title={`복습 ${currentIdx + 1}/${items.length}`}>
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentCard.id + (flipped ? "-back" : "-front")}
+            key={currentItem.card.id + (flipped ? "-back" : "-front")}
             initial={{ rotateY: 90, opacity: 0 }}
             animate={{ rotateY: 0, opacity: 1 }}
             exit={{ rotateY: -90, opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2 }}
           >
             {editing ? (
               <div className="bg-card rounded-2xl border p-6 space-y-4">
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground">문장</label>
-                  <Input value={editText} onChange={(e) => setEditText(e.target.value)} />
+                  <label className="text-xs font-medium text-muted-foreground">userText</label>
+                  <Textarea value={editUserText} onChange={(e) => setEditUserText(e.target.value)} rows={3} />
                 </div>
+
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground">번역</label>
-                  <Input value={editTranslation} onChange={(e) => setEditTranslation(e.target.value)} />
+                  <label className="text-xs font-medium text-muted-foreground">메모 / 번역</label>
+                  <Textarea value={editNotes} onChange={(e) => setEditNotes(e.target.value)} rows={3} />
                 </div>
+
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground">이해도</label>
+                  <div className="flex gap-2 mt-2">
+                    {[1, 2, 3, 4, 5].map((score) => (
+                      <Button
+                        key={score}
+                        type="button"
+                        size="sm"
+                        variant={editConfidence === score ? "default" : "outline"}
+                        onClick={() => setEditConfidence(score as 1 | 2 | 3 | 4 | 5)}
+                      >
+                        {score}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="flex gap-2">
                   <Button variant="outline" className="flex-1" onClick={() => setEditing(false)}>취소</Button>
-                  <Button className="flex-1 gradient-primary text-primary-foreground" onClick={handleSaveEdit}>저장</Button>
+                  <Button className="flex-1" onClick={handleSaveEdit}>저장</Button>
                 </div>
               </div>
             ) : (
               <button
-                className="w-full bg-card rounded-2xl border p-8 min-h-[200px] flex flex-col items-center justify-center text-center cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => setFlipped(!flipped)}
+                className="w-full bg-card rounded-2xl border p-8 min-h-[220px] flex flex-col items-center justify-center text-center cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setFlipped((prev) => !prev)}
               >
                 {!flipped ? (
                   <>
-                    <p className="text-xs text-muted-foreground mb-4">탭하여 뒤집기</p>
-                    <p className="text-lg font-medium">
-                      {currentCard.text.split(" ").map((w, i) =>
-                        i % 3 === 1 ? <span key={i} className="bg-primary/20 rounded px-1">____</span> : <span key={i}> {w} </span>
-                      )}
-                    </p>
+                    <p className="text-xs text-muted-foreground mb-3">탭하여 뒤집기</p>
+                    <p className="text-lg font-semibold whitespace-pre-wrap">{currentItem.memory.userText || "텍스트 없음"}</p>
+                    <p className="text-sm text-muted-foreground mt-2 whitespace-pre-wrap">{currentItem.memory.notes || ""}</p>
+                    {currentItem.memory.confidence && (
+                      <p className="text-xs text-muted-foreground mt-2">이해도: {currentItem.memory.confidence}/5</p>
+                    )}
+                    {!currentItem.memory.userText && (
+                      <p className="text-xs text-warning mt-2">텍스트 없음: Learn에서 들은 문장을 추가하면 더 좋아요.</p>
+                    )}
                   </>
                 ) : (
                   <>
-                    <p className="text-lg font-medium mb-3">{currentCard.text}</p>
-                    {currentCard.translation && (
-                      <p className="text-sm text-muted-foreground">{currentCard.translation}</p>
-                    )}
+                    <p className="text-sm text-muted-foreground mb-2">참조 구간</p>
+                    <p className="text-sm font-medium mb-1 whitespace-pre-wrap">
+                      {currentItem.memory.userText || currentItem.memory.notes || "(텍스트 없음)"}
+                    </p>
+                    <p className="font-semibold">
+                      {formatKoreanDuration(currentItem.memory.ref.startSec)} - {formatKoreanDuration(currentItem.memory.ref.endSec)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      ({formatTime(currentItem.memory.ref.startSec)} - {formatTime(currentItem.memory.ref.endSec)})
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">구간 재생으로 실제 음성을 확인하세요.</p>
                   </>
                 )}
               </button>
@@ -136,50 +290,69 @@ const SrsPage: React.FC = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Actions */}
-        <div className="flex justify-center gap-2 mt-4">
-          <button
-            onClick={() => {
-              setEditText(currentCard.text);
-              setEditTranslation(currentCard.translation || "");
-              setEditing(true);
-            }}
-            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
-          >
-            <Edit2 className="w-4 h-4" />
-          </button>
-          <button onClick={handleDelete} className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10">
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
+        {!editing && (
+          <div className="flex justify-center gap-2 mt-4">
+            <button
+              onClick={() => {
+                setEditUserText(currentItem.memory.userText || "");
+                setEditNotes(currentItem.memory.notes || "");
+                setEditConfidence(currentItem.memory.confidence);
+                setEditing(true);
+              }}
+              className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
-        {/* Rating Buttons */}
         {flipped && !editing && (
-          <div className="grid grid-cols-3 gap-3 mt-6">
+          <div className="mt-6 space-y-3">
             <Button
               variant="outline"
-              className="h-14 flex-col border-destructive/30 text-destructive hover:bg-destructive/10"
-              onClick={() => handleRate("hard")}
+              className="w-full"
+              onClick={() => {
+                setPlaybackNonce((prev) => prev + 1);
+                setShowPlayer(true);
+              }}
             >
-              <span className="text-lg">😓</span>
-              <span className="text-xs">어려움</span>
+              <Play className="w-4 h-4 mr-1" /> 구간 재생
             </Button>
-            <Button
-              variant="outline"
-              className="h-14 flex-col border-primary/30 text-primary hover:bg-primary/10"
-              onClick={() => handleRate("good")}
-            >
-              <span className="text-lg">🙂</span>
-              <span className="text-xs">보통</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="h-14 flex-col border-success/30 text-success hover:bg-success/10"
-              onClick={() => handleRate("easy")}
-            >
-              <span className="text-lg">😎</span>
-              <span className="text-xs">쉬움</span>
-            </Button>
+
+            {showPlayer && currentItem.clip && (
+              <div className="rounded-xl border p-2 bg-card">
+                <YouTubePlayer
+                  key={`${currentItem.card.id}-${playbackNonce}`}
+                  videoId={currentItem.memory.ref.videoId || currentItem.clip.videoId}
+                  startSec={currentItem.memory.ref.startSec}
+                  endSec={currentItem.memory.ref.endSec}
+                  loop
+                  autoplay
+                />
+              </div>
+            )}
+
+            <ExternalAiAskBar
+              refData={currentItem.memory.ref}
+              youtubeUrl={currentItem.clip?.youtubeUrl || `https://www.youtube.com/watch?v=${currentItem.memory.ref.videoId}`}
+              userText={askText}
+              notes={currentItem.memory.notes}
+            />
+
+            <div className="grid grid-cols-3 gap-3">
+              <Button variant="outline" className="h-14 flex-col" onClick={() => handleRate("hard")}>
+                <span className="text-lg">😓</span>
+                <span className="text-xs">어려움</span>
+              </Button>
+              <Button variant="outline" className="h-14 flex-col" onClick={() => handleRate("good")}>
+                <span className="text-lg">🙂</span>
+                <span className="text-xs">보통</span>
+              </Button>
+              <Button variant="outline" className="h-14 flex-col" onClick={() => handleRate("easy")}>
+                <span className="text-lg">😎</span>
+                <span className="text-xs">쉬움</span>
+              </Button>
+            </div>
           </div>
         )}
       </PageShell>
