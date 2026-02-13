@@ -142,7 +142,8 @@
 .learning-segment-nav {
   height: 36px;
   flex-shrink: 0;
-  border-radius: var(--learn-radius-pill);
+  border-radius: var(--learn-radius-soft);
+  border: 1px solid hsl(var(--border) / 0.86);
   background: hsl(var(--secondary));
   padding: 0 8px;
 }
@@ -151,9 +152,9 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 0;
+  border: 1px solid hsl(var(--border) / 0.86);
   background: hsl(var(--secondary));
-  border-radius: var(--learn-radius-pill);
+  border-radius: var(--learn-radius-soft);
   padding: 8px 12px;
   min-width: 0;
 }
