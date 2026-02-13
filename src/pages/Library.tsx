@@ -101,10 +101,11 @@ const Library: React.FC = () => {
           ) : undefined
         }
       >
-        {migrationRequired ? (
-          blockedContent
-        ) : (
-          <>
+        <section className="font-ko-bold">
+          {migrationRequired ? (
+            blockedContent
+          ) : (
+            <>
             {showInput && (
               <div className="ui-island rounded-[18px] p-4 mb-4 animate-slide-up space-y-2">
                 <label className="text-sm font-medium block">유튜브 URL 추가</label>
@@ -175,8 +176,8 @@ const Library: React.FC = () => {
 
                         <div className="mt-3 grid grid-cols-[1fr_auto] items-end gap-3">
                           <div className="min-w-0">
-                            <h3 className="line-clamp-2 font-jp text-[18px] leading-[1.2] font-medium text-foreground">{clip.title || `YouTube 클립 (${clip.videoId})`}</h3>
-                            <p className="mt-2 text-xs font-en text-muted-foreground line-clamp-1">{clip.channel || "채널 정보 없음"}</p>
+                            <h3 className="line-clamp-2 font-ko-bold text-[18px] leading-[1.2] font-medium text-foreground">{clip.title || `YouTube 클립 (${clip.videoId})`}</h3>
+                            <p className="mt-2 text-xs font-ko-bold text-muted-foreground line-clamp-1">{clip.channel || "채널 정보 없음"}</p>
                             <p className="mt-3 text-[11px] text-muted-foreground">Open app ↗</p>
                           </div>
                           <p className="text-[44px] leading-none tracking-tight text-foreground font-ko-bold">{String(cardIndex).padStart(2, "0")}</p>
@@ -188,7 +189,8 @@ const Library: React.FC = () => {
               </div>
             )}
           </>
-        )}
+          )}
+        </section>
       </PageShell>
       <BottomNav />
     </>
