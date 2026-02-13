@@ -45,9 +45,9 @@ const HomePage: React.FC = () => {
             </div>
           </button>
 
-          <h2 className="mb-3 text-lg font-medium">오늘의 학습</h2>
+          <h2 className="mb-3 text-lg font-medium font-ko-bold">오늘의 학습</h2>
           {todayClip ? (
-            <section className="ui-island-strong overflow-hidden">
+            <section className="ui-island-strong overflow-hidden font-ko-bold">
               <div className="relative h-44 overflow-hidden bg-gradient-to-br from-primary to-primary/75 p-5">
                 <div className="absolute -left-8 -top-10 h-28 w-28 rounded-full bg-white/35 blur-xl" />
                 <div className="absolute right-5 top-4 h-16 w-16 rounded-2xl bg-accent/70" />
