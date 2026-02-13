@@ -69,7 +69,7 @@ const HomePage: React.FC = () => {
                     구간 반복, 표현 익히기, AI 질문, SRS 복습 순서로 학습합니다.
                   </p>
                 </div>
-                <Button className="w-full h-11" onClick={() => navigate(`/learn/${todayClip.id}`)}>
+                <Button className="w-full h-11 font-ko-bold" onClick={() => navigate(`/learn/${todayClip.id}`)}>
                   학습 시작하기
                 </Button>
               </div>
