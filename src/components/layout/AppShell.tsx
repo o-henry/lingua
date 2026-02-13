@@ -1,6 +1,5 @@
 import React from "react";
 import BottomNav from "@/components/BottomNav";
-import LeftRail from "@/components/layout/LeftRail";
 import { cn } from "@/lib/utils";
 
 interface AppShellProps {
@@ -15,23 +14,6 @@ interface AppShellProps {
   className?: string;
 }
 
-const DESKTOP_QUERY = "(min-width: 1200px)";
-const MOBILE_QUERY = "(max-width: 767px)";
-
-const useMediaQuery = (query: string) => {
-  const [matches, setMatches] = React.useState(false);
-
-  React.useEffect(() => {
-    const media = window.matchMedia(query);
-    const update = () => setMatches(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, [query]);
-
-  return matches;
-};
-
 const AppShell: React.FC<AppShellProps> = ({
   children,
   title,
@@ -43,12 +25,11 @@ const AppShell: React.FC<AppShellProps> = ({
   showDesktopRail = true,
   className,
 }) => {
-  const isDesktop = useMediaQuery(DESKTOP_QUERY);
-  const isMobile = useMediaQuery(MOBILE_QUERY);
+  void showDesktopRail;
 
   const header = (title || showBack || rightAction) && (
     <header className="z-40 border-b border-border/70 bg-background">
-      <div className={cn("learning-header", isDesktop ? "px-6" : "px-4")}>
+      <div className="mx-auto flex h-14 w-full max-w-md items-center justify-between gap-3 px-4">
         <div className="flex items-center gap-2">
           {showBack && (
             <button
@@ -69,25 +50,11 @@ const AppShell: React.FC<AppShellProps> = ({
     </header>
   );
 
-  if (isDesktop) {
-    return (
-      <div className={cn("holo-view min-h-screen bg-background", className)}>
-        <div className={cn(showDesktopRail ? "learning-shell-desktop" : "min-h-screen")}>
-          {showDesktopRail && <LeftRail />}
-          <div className="min-w-0">
-            {header}
-            <main className="px-6 py-4">{children}</main>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={cn("holo-view min-h-screen bg-background", showBottomNav && isMobile ? "pb-28" : "", className)}>
+    <div className={cn("holo-view min-h-screen bg-background", showBottomNav ? "pb-28" : "", className)}>
       {header}
-      <main>{children}</main>
-      {showBottomNav && isMobile && <BottomNav />}
+      <main className="mx-auto w-full max-w-md">{children}</main>
+      {showBottomNav && <BottomNav />}
     </div>
   );
 };

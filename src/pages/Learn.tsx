@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CircleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AppShell from "@/components/layout/AppShell";
-import LearningStageDesktop from "@/components/learn/layout/LearningStageDesktop";
 import LearningStageMobile from "@/components/learn/layout/LearningStageMobile";
 import TranscriptPanel from "@/components/learn/panels/TranscriptPanel";
 import VideoStage from "@/components/learn/panels/VideoStage";
@@ -11,25 +10,8 @@ import PracticePanel from "@/components/learn/panels/PracticePanel";
 import { LearnStateProvider, useLearnState } from "@/pages/learn/LearnStateContext";
 import "@/styles/learning-layout.css";
 
-const DESKTOP_QUERY = "(min-width: 1200px)";
-
-const useDesktop = () => {
-  const [isDesktop, setIsDesktop] = React.useState(false);
-
-  React.useEffect(() => {
-    const media = window.matchMedia(DESKTOP_QUERY);
-    const update = () => setIsDesktop(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  return isDesktop;
-};
-
 const LearnPageContent: React.FC = () => {
   const navigate = useNavigate();
-  const isDesktop = useDesktop();
   const { loading, migrationRequired, clip, currentRef } = useLearnState();
 
   if (loading) {
@@ -70,11 +52,7 @@ const LearnPageContent: React.FC = () => {
 
   return (
     <AppShell title="학습" titleClassName="text-[18px] leading-[24px]" showBack onBack={() => navigate(-1)} showDesktopRail={false}>
-      {isDesktop ? (
-        <LearningStageDesktop leftPanel={leftPanel} centerStage={centerStage} rightPanel={rightPanel} />
-      ) : (
-        <LearningStageMobile leftPanel={leftPanel} centerStage={centerStage} rightPanel={rightPanel} />
-      )}
+      <LearningStageMobile leftPanel={leftPanel} centerStage={centerStage} rightPanel={rightPanel} />
     </AppShell>
   );
 };
