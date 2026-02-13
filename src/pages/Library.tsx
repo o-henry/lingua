@@ -7,7 +7,7 @@ import { extractVideoId, fetchYouTubeOEmbed } from "@/lib/youtube";
 import { Clip } from "@/lib/types";
 import BottomNav from "@/components/BottomNav";
 import PageShell from "@/components/PageShell";
-import { Plus, ExternalLink, Trash2, AlertTriangle, ArrowRight } from "lucide-react";
+import { Plus, ArrowUpRight, Trash, CircleAlert, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 
 const Library: React.FC = () => {
@@ -44,7 +44,7 @@ const Library: React.FC = () => {
 
     const meta = await fetchYouTubeOEmbed(url.trim());
 
-    const newClip: Clip = {
+    const baseClip: Clip = {
       id: `clip_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
       youtubeUrl: url.trim(),
       videoId,
@@ -57,8 +57,8 @@ const Library: React.FC = () => {
     };
 
     try {
-      await saveClip(newClip);
-      setClips((prev) => [...prev, newClip]);
+      await saveClip(baseClip);
+      setClips((prev) => [...prev, baseClip]);
       setUrl("");
       setShowInput(false);
       toast.success("클립이 추가되었습니다");
@@ -76,7 +76,7 @@ const Library: React.FC = () => {
 
   const blockedContent = (
     <div className="ui-island p-5 text-center mt-4">
-      <AlertTriangle className="w-8 h-8 text-warning mx-auto mb-2" />
+      <CircleAlert className="w-8 h-8 text-warning mx-auto mb-2" />
       <p className="font-medium">로컬 데이터 초기화가 필요합니다</p>
       <p className="text-sm text-muted-foreground mt-1">구버전 데이터가 감지되어 라이브러리를 잠시 사용할 수 없습니다.</p>
       <Button className="mt-4" onClick={() => navigate("/settings")}>설정에서 초기화하기</Button>
@@ -89,8 +89,14 @@ const Library: React.FC = () => {
         title="라이브러리"
         rightAction={
           !migrationRequired ? (
-            <Button size="sm" variant="ghost" onClick={() => setShowInput(!showInput)}>
-              <Plus className="w-5 h-5" />
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowInput(!showInput)}
+              className="h-10 w-10 rounded-[12px] border-border/85 bg-secondary p-0 shadow-[0_6px_14px_-10px_rgba(8,11,20,0.45)] hover:bg-muted"
+              aria-label="클립 추가"
+            >
+              <Plus className="h-5 w-5" />
             </Button>
           ) : undefined
         }
@@ -100,7 +106,7 @@ const Library: React.FC = () => {
         ) : (
           <>
             {showInput && (
-              <div className="ui-island p-4 mb-4 animate-slide-up space-y-2">
+              <div className="ui-island rounded-[18px] p-4 mb-4 animate-slide-up space-y-2">
                 <label className="text-sm font-medium block">유튜브 URL 추가</label>
                 <div className="flex gap-2">
                   <Input
@@ -127,52 +133,53 @@ const Library: React.FC = () => {
               </div>
             ) : (
               <div className="space-y-3">
-                {clips.map((clip) => {
+                {clips.map((clip, idx) => {
+                  const cardIndex = idx + 1;
                   const learnHref = `/learn/${clip.id}?mode=subtitle`;
 
                   return (
-                    <article key={clip.id} className="ui-island overflow-hidden">
-                      <div className="relative h-28 bg-gradient-to-br from-primary/90 via-primary/70 to-accent/65">
-                        <div className="absolute -left-6 -top-8 h-20 w-20 rounded-full bg-white/25 blur-lg" />
-                        <div className="absolute right-5 top-4 h-12 w-12 rounded-xl bg-white/20" />
-                        <div className="absolute bottom-3 left-3 rounded-full bg-white/20 px-3 py-1 text-[10px] font-semibold text-primary-foreground">
-                          CAPTIONS READY
-                        </div>
-                      </div>
-
-                      <div className="p-4">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0 space-y-1">
-                            <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug">{clip.title || `YouTube 클립 (${clip.videoId})`}</h3>
-                            <p className="text-xs text-muted-foreground line-clamp-1">{clip.channel || "채널 정보 없음"}</p>
-                          </div>
-                          <div className="flex items-center gap-1">
+                    <article key={clip.id} className="ui-island overflow-hidden rounded-[16px] border border-border/80 bg-card p-3 shadow-[0_10px_26px_-18px_rgba(8,11,20,0.36)]">
+                      <div className="p-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="inline-flex h-9 min-w-9 items-center justify-center rounded-[10px] border border-border/85 bg-secondary text-[11px] font-semibold">
+                            YT
+                          </span>
+                          <div className="flex items-center gap-1.5">
                             <button
                               type="button"
-                              className="inline-flex h-8 w-8 items-center justify-center rounded-[8px] bg-secondary text-muted-foreground hover:text-foreground"
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/85 bg-secondary text-foreground hover:bg-muted"
                               onClick={() => void navigate(learnHref)}
                               aria-label="학습 바로가기"
                             >
-                              <ArrowRight className="h-4 w-4" />
+                              <ChevronRight className="h-4 w-4" />
                             </button>
                             <a
                               href={`https://www.youtube.com/watch?v=${clip.videoId}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex h-8 w-8 items-center justify-center rounded-[8px] bg-secondary text-muted-foreground hover:text-foreground"
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/85 bg-secondary text-foreground hover:bg-muted"
                               aria-label="유튜브 바로가기"
                             >
-                              <ExternalLink className="h-4 w-4" />
+                              <ArrowUpRight className="h-4 w-4" />
                             </a>
                             <button
                               type="button"
-                              className="inline-flex h-8 w-8 items-center justify-center rounded-[8px] bg-secondary text-muted-foreground hover:text-destructive"
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/85 bg-secondary text-muted-foreground hover:text-destructive hover:bg-muted"
                               onClick={() => void handleDelete(clip.id)}
                               aria-label="삭제"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash className="h-4 w-4" />
                             </button>
                           </div>
+                        </div>
+
+                        <div className="mt-3 grid grid-cols-[1fr_auto] items-end gap-3">
+                          <div className="min-w-0">
+                            <h3 className="line-clamp-2 font-jp text-[18px] leading-[1.2] font-medium text-foreground">{clip.title || `YouTube 클립 (${clip.videoId})`}</h3>
+                            <p className="mt-2 text-xs font-en text-muted-foreground line-clamp-1">{clip.channel || "채널 정보 없음"}</p>
+                            <p className="mt-3 text-[11px] text-muted-foreground">Open app ↗</p>
+                          </div>
+                          <p className="text-[44px] leading-none tracking-tight text-foreground font-ko-bold">{String(cardIndex).padStart(2, "0")}</p>
                         </div>
                       </div>
                     </article>
