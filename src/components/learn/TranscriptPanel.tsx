@@ -194,8 +194,8 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
         <section className="rounded-[var(--radius-sm)] border border-white/60 bg-card/70 space-y-3 backdrop-blur-md">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
-              <p className="text-sm font-semibold">사용자 제공 자막 붙여넣기</p>
-              <p className="text-[11px] text-muted-foreground">YouTube 스크립트, SRT, VTT 텍스트를 넣으면 자동으로 정리해서 적용합니다.</p>
+              <p className="text-xs font-semibold">사용자 제공 자막 붙여넣기</p>
+              <p className="text-[10px] text-muted-foreground">YouTube 스크립트, SRT, VTT 텍스트를 넣으면 자동으로 정리해서 적용합니다.</p>
             </div>
             {lines.length > 0 && (
               <Button type="button" size="sm" variant="ghost" onClick={() => setPasteOpen(false)}>
@@ -207,22 +207,22 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-[var(--radius)] bg-secondary/70 p-2 text-center">
               <p className="text-[10px] text-muted-foreground">감지 라인</p>
-              <p className="text-sm font-semibold">{parsePreview.lines.length}</p>
+              <p className="text-xs font-semibold">{parsePreview.lines.length}</p>
             </div>
             <div className="rounded-[var(--radius)] bg-secondary/70 p-2 text-center">
               <p className="text-[10px] text-muted-foreground">타임코드</p>
-              <p className="text-sm font-semibold">{parsePreview.detectedTimecodeCount}</p>
+              <p className="text-xs font-semibold">{parsePreview.detectedTimecodeCount}</p>
             </div>
             <div className="rounded-[var(--radius)] bg-secondary/70 p-2 text-center">
               <p className="text-[10px] text-muted-foreground">저장</p>
-              <p className="text-sm font-semibold">{persistEnabled ? "ON" : "OFF"}</p>
+              <p className="text-xs font-semibold">{persistEnabled ? "ON" : "OFF"}</p>
             </div>
           </div>
 
           <Textarea
             rows={6}
             value={rawInput}
-            className="bg-white/75"
+            className="bg-white/75 text-xs placeholder:text-[10px]"
             onChange={(e) => setRawInput(e.target.value)}
             onPaste={(e) => {
               const pasted = e.clipboardData.getData("text");

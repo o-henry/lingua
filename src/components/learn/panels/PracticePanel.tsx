@@ -34,7 +34,12 @@ const PracticePanel: React.FC = () => {
             <p className="mt-1 text-sm break-words">{heardSentence || "자막에서 학습할 표현을 선택하세요."}</p>
           </div>
 
-          <Textarea rows={2} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="의미/해석 (선택)" />
+          <Textarea
+            rows={2}
+            value={notes}
+            onChange={(event) => setNotes(event.target.value)}
+            placeholder="생각나는 어떤 말이든 입력해보세요 (선택)"
+          />
 
           {saveError && <div className="text-xs text-destructive">{saveError}</div>}
 

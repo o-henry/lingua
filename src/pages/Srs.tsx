@@ -61,7 +61,6 @@ const SrsPage: React.FC = () => {
   const [editing, setEditing] = useState(false);
   const [editUserText, setEditUserText] = useState("");
   const [editNotes, setEditNotes] = useState("");
-  const [editConfidence, setEditConfidence] = useState<1 | 2 | 3 | 4 | 5 | undefined>(undefined);
   const [playbackNonce, setPlaybackNonce] = useState(0);
   const [showPlayer, setShowPlayer] = useState(false);
   const [migrationRequired, setMigrationRequired] = useState(false);
@@ -144,7 +143,6 @@ const SrsPage: React.FC = () => {
       ...currentItem.memory,
       notes: normalizedNotes,
       ...(normalizedUserText ? { userText: normalizedUserText } : { userText: undefined }),
-      ...(editConfidence ? { confidence: editConfidence } : { confidence: undefined }),
       updatedAt: Date.now(),
     };
 
@@ -199,7 +197,7 @@ const SrsPage: React.FC = () => {
           <div className="text-center py-16">
             <p className="mb-1 font-medium">오늘 복습할 카드가 없습니다</p>
             <p className="mb-2 text-sm text-muted-foreground">총 {totalCards}개 카드 관리 중</p>
-            <Button variant="outline" onClick={() => navigate("/settings/memo")}>표현 모음으로 이동</Button>
+            <Button variant="outline" className="bg-gray-400" onClick={() => navigate("/settings/memo")}>표현 모음으로 이동</Button>
           </div>
         </PageShell>
         <BottomNav />
@@ -231,23 +229,6 @@ const SrsPage: React.FC = () => {
                     <Textarea value={editNotes} onChange={(e) => setEditNotes(e.target.value)} rows={3} />
                   </div>
 
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground">이해도</label>
-                    <div className="flex gap-2 mt-2">
-                      {[1, 2, 3, 4, 5].map((score) => (
-                        <Button
-                          key={score}
-                          type="button"
-                          size="sm"
-                          variant={editConfidence === score ? "default" : "outline"}
-                          onClick={() => setEditConfidence(score as 1 | 2 | 3 | 4 | 5)}
-                        >
-                          {score}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
                   <div className="flex gap-2">
                     <Button variant="outline" className="flex-1" onClick={() => setEditing(false)}>취소</Button>
                     <Button className="flex-1" onClick={handleSaveEdit}>저장</Button>
@@ -272,7 +253,6 @@ const SrsPage: React.FC = () => {
                       event.stopPropagation();
                       setEditUserText(currentItem.memory.userText || "");
                       setEditNotes(currentItem.memory.notes || "");
-                      setEditConfidence(currentItem.memory.confidence);
                       setEditing(true);
                     }}
                     className="absolute right-3 top-3 inline-flex items-center rounded-[var(--radius)] bg-secondary px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground"
@@ -284,9 +264,6 @@ const SrsPage: React.FC = () => {
                       <p className="text-xs text-muted-foreground mb-3">탭하여 뒤집기</p>
                       <p className="text-lg font-semibold whitespace-pre-wrap">{currentItem.memory.userText || "텍스트 없음"}</p>
                       <p className="text-sm text-muted-foreground mt-2 whitespace-pre-wrap">{currentItem.memory.notes || ""}</p>
-                      {currentItem.memory.confidence && (
-                        <p className="text-xs text-muted-foreground mt-2">이해도: {currentItem.memory.confidence}/5</p>
-                      )}
                       {!currentItem.memory.userText && (
                         <p className="text-xs text-warning mt-2">텍스트 없음: 학습에서 들은 문장을 추가하면 더 좋아요.</p>
                       )}

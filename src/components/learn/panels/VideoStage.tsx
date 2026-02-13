@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Repeat2 } from "lucide-react";
 import { formatTime } from "@/domain/time";
 import YouTubePlayer from "@/components/YouTubePlayer";
@@ -8,7 +7,6 @@ import { Switch } from "@/components/ui/switch";
 import { useLearnState } from "@/pages/learn/LearnStateContext";
 
 const VideoStage: React.FC = () => {
-  const navigate = useNavigate();
   const {
     clip,
     startSec,
@@ -27,20 +25,9 @@ const VideoStage: React.FC = () => {
     handleLoopToggle,
     jumpToPrevSegment,
     jumpToNextSegment,
-    getShadowingTextSeed,
   } = useLearnState();
 
   if (!clip) return null;
-
-  const goToShadowing = () => {
-    const textSeed = getShadowingTextSeed();
-    const params = new URLSearchParams({
-      start: String(startSec),
-      end: String(effectiveEndSec),
-      ...(textSeed ? { text: textSeed } : {}),
-    });
-    navigate(`/shadowing/${clip.id}?${params.toString()}`);
-  };
 
   return (
     <div className="space-y-3">
@@ -102,39 +89,29 @@ const VideoStage: React.FC = () => {
 
       <section className="learning-card space-y-3">
         <div className="learning-controlbar learning-controlbar-single">
-          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav" onClick={jumpToPrevSegment}>
+          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav text-[11px]" onClick={jumpToPrevSegment}>
             <ChevronLeft className="h-3.5 w-3.5" /> 이전
           </Button>
 
           <div className="learning-controlbar-center">
-            <div className="learning-soft-pill h-10 text-xs whitespace-nowrap">
+            <div className="learning-soft-pill h-9 px-2 text-[10px] whitespace-nowrap">
               <span className="font-medium">AB</span>
               <span className="text-muted-foreground">
                 {formatTime(startSec)} - {formatTime(effectiveEndSec)}
               </span>
             </div>
 
-            <label className="learning-soft-pill h-10 text-xs whitespace-nowrap">
+            <label className="learning-soft-pill h-9 px-2 text-[10px] whitespace-nowrap">
               <Repeat2 className="h-3.5 w-3.5 text-muted-foreground" />
               반복
               <Switch checked={loopEnabled} onCheckedChange={handleLoopToggle} />
             </label>
           </div>
 
-          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav" onClick={jumpToNextSegment}>
+          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav text-[11px]" onClick={jumpToNextSegment}>
             다음 <ChevronRight className="h-3.5 w-3.5" />
           </Button>
         </div>
-      </section>
-
-      <section className="learning-card flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold">듣고 따라 말하기로 이동</p>
-          <p className="text-xs text-muted-foreground">현재 선택 구간으로 듣고 따라 말하기를 시작합니다.</p>
-        </div>
-        <Button type="button" onClick={goToShadowing}>
-          듣고 따라 말하기 시작
-        </Button>
       </section>
     </div>
   );

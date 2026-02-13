@@ -233,9 +233,9 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
   return (
     <div className={cn("ui-island p-3 space-y-3", className)}>
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm font-medium">{promptMode === "shadowing-pronunciation" ? "발음 교정 질문하기" : "AI 질문하기"}</p>
+        <p className="text-sm font-semibold">{promptMode === "shadowing-pronunciation" ? "발음 교정 질문하기" : "AI 질문하기"}</p>
         {forceGemini ? (
-          <span className="rounded-[var(--radius-sm)] bg-secondary px-2 py-1 text-xs font-medium">Gemini 전용</span>
+          <span className="rounded-[var(--radius-sm)] bg-secondary px-2 py-1 text-xs font-en font-medium">Gemini</span>
         ) : (
           <div className="flex items-center gap-2">
             <Button

@@ -149,7 +149,7 @@
 @layer base {
   :root {
     --font-ko: "DM Mono", "Free Mono", "Menlo", "Consolas", monospace;
-    --font-ko-bold: "DM Mono", "Free Mono", "Menlo", "Consolas", monospace;
+    --font-ko-bold: "1984 Dialogue", "DM Mono", "Free Mono", "Menlo", "Consolas", monospace;
     --font-en: "Free Mono", "LINE Seed JP", "Menlo", "Consolas", monospace;
     --font-dm: "DM Mono", "Free Mono", "Menlo", "Consolas", monospace;
     --font-jp: "LINE Seed JP", "Free Mono", "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -274,7 +274,7 @@
     font-family: var(--font-ko-bold);
   }
 
-  :lang(ko) :where(.font-bold, .font-semibold, .font-extrabold, .font-black, strong, b) {
+  :where(.font-bold, .font-semibold, .font-extrabold, .font-black, strong, b) {
     font-family: var(--font-ko-bold);
   }
 

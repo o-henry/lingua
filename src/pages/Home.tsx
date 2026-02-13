@@ -34,14 +34,14 @@ const HomePage: React.FC = () => {
         <div className="pt-2">
           <button
             onClick={() => navigate("/srs")}
-            className="ui-island-strong mb-6 w-full bg-accent text-start text-accent-foreground p-4"
+            className="ui-island-strong mb-6 w-full bg-accent text-start text-accent-foreground p-5 min-h-[84px]"
           >
             <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="text-sm font-medium">복습 카드 {dueCount}개</div>
+              <div className="font-dm">
+                <div className="text-base font-medium">Review 카드 {dueCount}개</div>
                 <div className="text-xs opacity-85">{dueCount > 0 ? "지금 복습 시작" : "오늘은 복습 카드가 없습니다"}</div>
               </div>
-              <span className="ui-chip px-3 py-1 text-[11px] font-medium text-accent-foreground/90 bg-white/20">복습</span>
+              <span className="ui-chip px-3 py-1 text-[11px] font-dm font-medium text-accent-foreground/90 bg-white/20">Review</span>
             </div>
           </button>
 

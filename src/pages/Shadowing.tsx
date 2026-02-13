@@ -240,7 +240,7 @@ const Shadowing: React.FC = () => {
 
         <div className="ui-island p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold">원음 vs 내 녹음 비교</h3>
+            <h3 className="text-sm font-semibold">녹음 비교</h3>
             <Button type="button" size="sm" variant="outline" onClick={() => setPlaybackNonce((prev) => prev + 1)}>
               <CirclePlay className="w-4 h-4 mr-1" /> 원음 다시재생
             </Button>

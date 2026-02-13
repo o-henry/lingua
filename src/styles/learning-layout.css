@@ -123,8 +123,10 @@
 }
 
 .learning-controlbar-single {
-  flex-wrap: nowrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
 }
 
 .learning-controlbar-center {
@@ -134,14 +136,15 @@
   align-items: center;
   justify-content: center;
   gap: var(--learn-space-8);
+  overflow: hidden;
 }
 
 .learning-segment-nav {
-  height: 40px;
+  height: 36px;
   flex-shrink: 0;
   border-radius: var(--learn-radius-pill);
   background: hsl(var(--secondary));
-  padding: 0 10px;
+  padding: 0 8px;
 }
 
 .learning-soft-pill {
@@ -152,6 +155,21 @@
   background: hsl(var(--secondary));
   border-radius: var(--learn-radius-pill);
   padding: 8px 12px;
+  min-width: 0;
+}
+
+@media (max-width: 430px) {
+  .learning-controlbar-center {
+    gap: 4px;
+  }
+
+  .learning-soft-pill {
+    padding: 6px 8px;
+  }
+
+  .learning-segment-nav {
+    padding: 0 6px;
+  }
 }
 
 .learning-tablet-focus-grid {
