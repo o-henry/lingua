@@ -7,13 +7,24 @@ interface AudioRecorderProps {
   onRecordingChange?: (file: File | null) => void;
 }
 
-function audioBufferToWav(audioBuffer: AudioBuffer): Blob {
-  const channels = Math.min(audioBuffer.numberOfChannels, 2);
-  const sampleRate = audioBuffer.sampleRate;
-  const frameCount = audioBuffer.length;
+function mergeFloat32Chunks(chunks: Float32Array[]): Float32Array {
+  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  const merged = new Float32Array(totalLength);
+  let offset = 0;
+
+  chunks.forEach((chunk) => {
+    merged.set(chunk, offset);
+    offset += chunk.length;
+  });
+
+  return merged;
+}
+
+function encodeMonoWav(samples: Float32Array, sampleRate: number): Blob {
   const bytesPerSample = 2;
+  const channels = 1;
   const blockAlign = channels * bytesPerSample;
-  const dataSize = frameCount * blockAlign;
+  const dataSize = samples.length * blockAlign;
   const buffer = new ArrayBuffer(44 + dataSize);
   const view = new DataView(buffer);
 
@@ -29,7 +40,7 @@ function audioBufferToWav(audioBuffer: AudioBuffer): Blob {
   writeString(12, "fmt ");
   view.setUint32(16, 16, true);
   view.setUint16(20, 1, true);
-  view.setUint16(22, channels, true);
+  view.setUint16(22, 1, true);
   view.setUint32(24, sampleRate, true);
   view.setUint32(28, sampleRate * blockAlign, true);
   view.setUint16(32, blockAlign, true);
@@ -37,37 +48,28 @@ function audioBufferToWav(audioBuffer: AudioBuffer): Blob {
   writeString(36, "data");
   view.setUint32(40, dataSize, true);
 
-  const channelData = Array.from({ length: channels }, (_, i) => audioBuffer.getChannelData(i));
   let offset = 44;
-  for (let i = 0; i < frameCount; i += 1) {
-    for (let c = 0; c < channels; c += 1) {
-      const sample = Math.max(-1, Math.min(1, channelData[c][i] ?? 0));
-      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
-      offset += bytesPerSample;
-    }
+  for (let i = 0; i < samples.length; i += 1) {
+    const sample = Math.max(-1, Math.min(1, samples[i] ?? 0));
+    view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+    offset += bytesPerSample;
   }
 
   return new Blob([buffer], { type: "audio/wav" });
-}
-
-async function convertBlobToWav(blob: Blob): Promise<Blob> {
-  const context = new AudioContext();
-  try {
-    const arrayBuffer = await blob.arrayBuffer();
-    const audioBuffer = await context.decodeAudioData(arrayBuffer.slice(0));
-    return audioBufferToWav(audioBuffer);
-  } finally {
-    await context.close();
-  }
 }
 
 const AudioRecorder: React.FC<AudioRecorderProps> = ({ value, onRecordingChange }) => {
   const [status, setStatus] = useState<"idle" | "recording" | "recorded" | "denied">("idle");
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [audioFileName, setAudioFileName] = useState<string>("");
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const processorNodeRef = useRef<ScriptProcessorNode | null>(null);
+  const sinkNodeRef = useRef<GainNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
+  const pcmChunksRef = useRef<Float32Array[]>([]);
+  const sampleRateRef = useRef(44100);
 
   useEffect(() => {
     if (!value) {
@@ -94,6 +96,12 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ value, onRecordingChange 
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl);
       }
+      processorNodeRef.current?.disconnect();
+      sourceNodeRef.current?.disconnect();
+      sinkNodeRef.current?.disconnect();
+      if (audioContextRef.current && audioContextRef.current.state !== "closed") {
+        void audioContextRef.current.close();
+      }
       streamRef.current?.getTracks().forEach((track) => track.stop());
     },
     [audioUrl]
@@ -102,56 +110,93 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ value, onRecordingChange 
   const startRecording = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const context = new AudioContext();
+      const source = context.createMediaStreamSource(stream);
+      const processor = context.createScriptProcessor(4096, 1, 1);
+      const sink = context.createGain();
+      sink.gain.value = 0;
+
+      pcmChunksRef.current = [];
+      sampleRateRef.current = context.sampleRate;
+
+      processor.onaudioprocess = (event) => {
+        const input = event.inputBuffer.getChannelData(0);
+        pcmChunksRef.current.push(new Float32Array(input));
+      };
+
+      source.connect(processor);
+      processor.connect(sink);
+      sink.connect(context.destination);
+
+      audioContextRef.current = context;
+      sourceNodeRef.current = source;
+      processorNodeRef.current = processor;
+      sinkNodeRef.current = sink;
       streamRef.current = stream;
-      const recorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = recorder;
-      chunksRef.current = [];
-
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunksRef.current.push(event.data);
-        }
-      };
-
-      recorder.onstop = async () => {
-        const rawBlob = new Blob(chunksRef.current, { type: "audio/webm" });
-        let finalBlob = rawBlob;
-
-        try {
-          finalBlob = await convertBlobToWav(rawBlob);
-        } catch {
-          finalBlob = rawBlob;
-        }
-
-        const extension = finalBlob.type === "audio/wav" ? "wav" : "webm";
-        const filename = `dlb-pronunciation-${Date.now()}.${extension}`;
-        const file = new File([finalBlob], filename, { type: finalBlob.type });
-        const nextAudioUrl = URL.createObjectURL(finalBlob);
-
-        setAudioUrl(nextAudioUrl);
-        setAudioFileName(filename);
-        setStatus("recorded");
-        onRecordingChange?.(file);
-
-        streamRef.current?.getTracks().forEach((track) => track.stop());
-        streamRef.current = null;
-      };
-
-      recorder.start();
       setStatus("recording");
     } catch (error) {
       console.error(error);
       setStatus("denied");
     }
-  }, [audioUrl, onRecordingChange]);
-
-  const stopRecording = useCallback(() => {
-    mediaRecorderRef.current?.stop();
   }, []);
 
+  const stopRecording = useCallback(() => {
+    const context = audioContextRef.current;
+    const processor = processorNodeRef.current;
+    const source = sourceNodeRef.current;
+    const sink = sinkNodeRef.current;
+
+    processor?.disconnect();
+    source?.disconnect();
+    sink?.disconnect();
+
+    processorNodeRef.current = null;
+    sourceNodeRef.current = null;
+    sinkNodeRef.current = null;
+
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+
+    if (context && context.state !== "closed") {
+      void context.close();
+    }
+    audioContextRef.current = null;
+
+    const samples = mergeFloat32Chunks(pcmChunksRef.current);
+    pcmChunksRef.current = [];
+    if (samples.length === 0) {
+      setStatus("idle");
+      return;
+    }
+
+    const wavBlob = encodeMonoWav(samples, sampleRateRef.current);
+    const filename = `dlb-pronunciation-${Date.now()}.wav`;
+    const file = new File([wavBlob], filename, { type: "audio/wav" });
+    const nextAudioUrl = URL.createObjectURL(wavBlob);
+
+    setAudioUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return nextAudioUrl;
+    });
+    setAudioFileName(filename);
+    setStatus("recorded");
+    onRecordingChange?.(file);
+  }, [onRecordingChange]);
+
   const resetRecording = useCallback(() => {
-    mediaRecorderRef.current = null;
-    chunksRef.current = [];
+    processorNodeRef.current?.disconnect();
+    sourceNodeRef.current?.disconnect();
+    sinkNodeRef.current?.disconnect();
+    processorNodeRef.current = null;
+    sourceNodeRef.current = null;
+    sinkNodeRef.current = null;
+
+    if (audioContextRef.current && audioContextRef.current.state !== "closed") {
+      void audioContextRef.current.close();
+    }
+    audioContextRef.current = null;
+
+    pcmChunksRef.current = [];
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
 
@@ -178,7 +223,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ value, onRecordingChange 
   }
 
   return (
-    <div className="rounded-lg border p-3 space-y-3">
+    <div className="rounded-[var(--radius-sm)] bg-secondary/65 p-3 space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium">발음 녹음</p>
         {audioFileName && <span className="text-[11px] text-muted-foreground">{audioFileName}</span>}

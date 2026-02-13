@@ -17,8 +17,8 @@ const BottomNav: React.FC = () => {
 
   return (
     <nav className="fixed bottom-4 left-0 right-0 z-50 px-3 safe-area-bottom">
-      <div className="mx-auto max-w-sm rounded-full border border-border/60 bg-card/92 backdrop-blur-xl shadow-[0_12px_28px_-10px_rgba(0,0,0,0.35)]">
-        <div className="grid grid-cols-5 gap-1 p-2">
+      <div className="mx-auto w-fit rounded-full bg-secondary/95 p-2 backdrop-blur-xl shadow-[0_12px_26px_-12px_rgba(15,23,42,0.55)]">
+        <div className="flex items-center gap-2">
           {NAV_ITEMS.map(({ path, icon: Icon, label }) => {
             const isActive = location.pathname.startsWith(path);
             return (
@@ -27,13 +27,14 @@ const BottomNav: React.FC = () => {
                 onClick={() => navigate(path)}
                 type="button"
                 className={cn(
-                  "group relative flex w-12 h-12 flex-col items-center justify-center rounded-full transition-all",
-                  isActive ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                  "group relative flex h-14 w-14 flex-col items-center justify-center rounded-full transition-all",
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-[0_8px_18px_-10px_rgba(15,23,42,0.8)]"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 )}
                 aria-label={label}
               >
                 <Icon className={cn("w-4 h-4", isActive && "stroke-[2.5]")} />
-                {/* <span className={cn("mt-0.5 text-[9px] font-medium leading-none", isActive ? "opacity-95" : "opacity-80")}>{label}</span> */}
               </button>
             );
           })}

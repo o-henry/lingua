@@ -40,8 +40,8 @@ const LeftRail: React.FC = () => {
               className={cn(
                 "learning-left-rail-button",
                 active
-                  ? "bg-primary text-primary-foreground shadow-[0_1px_2px_rgba(15,23,42,0.08)]"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  ? "bg-primary text-primary-foreground shadow-[0_10px_18px_-12px_rgba(15,23,42,0.8)]"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               <Icon className="h-4 w-4" />

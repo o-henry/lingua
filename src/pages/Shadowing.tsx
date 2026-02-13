@@ -205,7 +205,7 @@ const Shadowing: React.FC = () => {
   if (migrationRequired) {
     return (
       <PageShell title={SHADOWING_TITLE} showBack onBack={() => navigate(-1)} noBottomNav>
-        <div className="bg-card rounded-xl border p-6 text-center mt-4">
+        <div className="ui-island p-6 text-center mt-4">
           <AlertTriangle className="w-8 h-8 text-warning mx-auto mb-2" />
           <p className="font-medium">데이터 초기화가 필요합니다</p>
           <p className="text-sm text-muted-foreground mt-1">구버전 데이터가 감지되어 듣고 따라 말하기 기능을 잠시 사용할 수 없습니다.</p>
@@ -228,71 +228,75 @@ const Shadowing: React.FC = () => {
 
   return (
     <PageShell title={`${SHADOWING_TITLE} (C단계)`} showBack onBack={() => navigate(-1)} noBottomNav>
-      <div className="rounded-lg border bg-card p-3 mb-3">
-        <p className="text-xs text-muted-foreground">현재 연습 구간</p>
-        <p className="text-sm font-medium">{formatTime(startSec)} - {formatTime(endSec)}</p>
-      </div>
-
-      <YouTubePlayer
-        key={`${clip.id}-${playbackNonce}`}
-        videoId={clip.videoId}
-        startSec={startSec}
-        endSec={endSec}
-        loop={loopEnabled}
-        autoplay={playbackNonce > 0}
-      />
-
-      <div className="bg-card rounded-xl border p-4 mt-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold">원음 vs 내 녹음 비교</h3>
-          <Button type="button" size="sm" variant="outline" onClick={() => setPlaybackNonce((prev) => prev + 1)}>
-            <Play className="w-4 h-4 mr-1" /> 원음 다시재생
-          </Button>
+      <div className="space-y-4">
+        <div className="ui-island p-3">
+          <p className="text-xs text-muted-foreground">현재 연습 구간</p>
+          <p className="text-sm font-medium">{formatTime(startSec)} - {formatTime(endSec)}</p>
         </div>
 
-        <label className="flex items-center justify-between rounded-lg border p-2 text-sm">
-          구간 반복
-          <Checkbox checked={loopEnabled} onCheckedChange={(checkedState) => setLoopEnabled(Boolean(checkedState))} />
-        </label>
+        <div className="ui-island p-2">
+          <YouTubePlayer
+            key={`${clip.id}-${playbackNonce}`}
+            videoId={clip.videoId}
+            startSec={startSec}
+            endSec={endSec}
+            loop={loopEnabled}
+            autoplay={playbackNonce > 0}
+          />
+        </div>
 
-        <AudioRecorder value={recordedAudioFile} onRecordingChange={setRecordedAudioFile} />
-      </div>
+        <div className="ui-island p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold">원음 vs 내 녹음 비교</h3>
+            <Button type="button" size="sm" variant="outline" onClick={() => setPlaybackNonce((prev) => prev + 1)}>
+              <Play className="w-4 h-4 mr-1" /> 원음 다시재생
+            </Button>
+          </div>
 
-      <div className="bg-card rounded-xl border p-4 mt-4 space-y-3">
-        <h3 className="text-sm font-semibold">연습 문장</h3>
-        <Input
-          value={practiceText}
-          onChange={(e) => setPracticeText(e.target.value)}
-          placeholder="연습한 문장을 입력하세요"
-        />
-      </div>
-
-      <div className="bg-card rounded-xl border p-4 mt-4 space-y-2">
-        <h3 className="text-sm font-semibold">체크리스트</h3>
-        {CHECKLIST.map((item) => (
-          <label key={item.id} className="flex items-center gap-2 text-sm">
-            <Checkbox checked={checked.has(item.id)} onCheckedChange={() => toggleChecklist(item.id)} />
-            <span>{item.label}</span>
+          <label className="flex items-center justify-between rounded-[var(--radius-sm)] bg-secondary/65 p-2 text-sm">
+            구간 반복
+            <Checkbox checked={loopEnabled} onCheckedChange={(checkedState) => setLoopEnabled(Boolean(checkedState))} />
           </label>
-        ))}
-      </div>
 
-      <ExternalAiAskBar
-        refData={refData}
-        youtubeUrl={clip.youtubeUrl || `https://www.youtube.com/watch?v=${clip.videoId}`}
-        userText={practiceText}
-        recordedAudioFile={recordedAudioFile}
-        notes={`듣고 따라 말하기 체크리스트 완료: ${checked.size}/${CHECKLIST.length}`}
-        promptMode="shadowing-pronunciation"
-      />
+          <AudioRecorder value={recordedAudioFile} onRecordingChange={setRecordedAudioFile} />
+        </div>
 
-      <div className="grid grid-cols-2 gap-2 mt-4">
-        <Button type="button" variant="outline" onClick={() => navigate(`/learn/${clip.id}?start=${startSec}&end=${endSec}&mode=subtitle`)}>
-          이전(학습)
-        </Button>
-        <Button type="button" onClick={() => navigate("/srs")}>
-          다음(복습으로)
-        </Button>
+        <div className="ui-island p-4 space-y-3">
+          <h3 className="text-sm font-semibold">연습 문장</h3>
+          <Input
+            value={practiceText}
+            onChange={(e) => setPracticeText(e.target.value)}
+            placeholder="연습한 문장을 입력하세요"
+          />
+        </div>
+
+        <div className="ui-island p-4 space-y-2">
+          <h3 className="text-sm font-semibold">체크리스트</h3>
+          {CHECKLIST.map((item) => (
+            <label key={item.id} className="flex items-center gap-2 text-sm">
+              <Checkbox checked={checked.has(item.id)} onCheckedChange={() => toggleChecklist(item.id)} />
+              <span>{item.label}</span>
+            </label>
+          ))}
+        </div>
+
+        <ExternalAiAskBar
+          refData={refData}
+          youtubeUrl={clip.youtubeUrl || `https://www.youtube.com/watch?v=${clip.videoId}`}
+          userText={practiceText}
+          recordedAudioFile={recordedAudioFile}
+          notes={`듣고 따라 말하기 체크리스트 완료: ${checked.size}/${CHECKLIST.length}`}
+          promptMode="shadowing-pronunciation"
+        />
+
+        <div className="grid grid-cols-2 gap-2">
+          <Button type="button" variant="outline" onClick={() => navigate(`/learn/${clip.id}?start=${startSec}&end=${endSec}&mode=subtitle`)}>
+            이전(학습)
+          </Button>
+          <Button type="button" onClick={() => navigate("/srs")}>
+            다음(복습으로)
+          </Button>
+        </div>
       </div>
     </PageShell>
   );

@@ -155,6 +155,7 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
   const [autoPlaySelection, setAutoPlaySelection] = useState(false);
   const [guideDismissed, setGuideDismissed] = useState(false);
   const [guideExpanded, setGuideExpanded] = useState(true);
+  const [guideAutoCollapsed, setGuideAutoCollapsed] = useState(false);
   const [translationVisible, setTranslationVisible] = useState(false);
   const [subtitleDisplayMode, setSubtitleDisplayMode] = useState<SubtitleDisplayMode>("subtitle");
   const persistTranscript = true;
@@ -239,6 +240,7 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
       const dismissedGuide = await getMetaValue<boolean>(TRANSCRIPT_GUIDE_DISMISSED_KEY, false);
       setGuideDismissed(dismissedGuide);
       setGuideExpanded(!dismissedGuide);
+      setGuideAutoCollapsed(false);
 
       let linesFromStorage: TranscriptLine[] = [];
       if (foundClip) {
@@ -309,10 +311,12 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
   }, [transcriptLines, clip?.id, loading]);
 
   useEffect(() => {
+    if (guideDismissed || guideAutoCollapsed) return;
     if (transcriptLines.length > 0 && guideExpanded) {
       setGuideExpanded(false);
+      setGuideAutoCollapsed(true);
     }
-  }, [transcriptLines.length, guideExpanded]);
+  }, [transcriptLines.length, guideExpanded, guideDismissed, guideAutoCollapsed]);
 
   const effectiveEndSec = useMemo(() => resolveEnd(startSec, endSec), [startSec, endSec]);
 

@@ -232,13 +232,13 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
   };
 
   return (
-    <div className={cn("rounded-xl border bg-card p-3 space-y-3", className)}>
+    <div className={cn("ui-island p-3 space-y-3", className)}>
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-medium">{promptMode === "shadowing-pronunciation" ? "발음 교정 질문하기" : "AI 질문하기"}</p>
         {forceGemini ? (
-          <span className="rounded-md border bg-muted px-2 py-1 text-xs font-medium">Gemini 전용</span>
+          <span className="rounded-[var(--radius-sm)] bg-secondary px-2 py-1 text-xs font-medium">Gemini 전용</span>
         ) : (
-          <div className="inline-flex rounded-full border p-0.5">
+          <div className="inline-flex rounded-full bg-secondary p-0.5">
             <Button
               type="button"
               size="sm"
@@ -264,7 +264,7 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
       {!textForAsk && <p className="text-xs text-muted-foreground">먼저 들은 문장 또는 메모를 입력하면, 질문 프롬프트를 자동으로 만들어줘요.</p>}
 
       {showPromptPreview && prompt && (
-        <div className="rounded-lg border bg-muted/35 p-3">
+        <div className="rounded-[var(--radius-sm)] bg-secondary/70 p-3">
           <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
             <span>질문 프롬프트 미리보기</span>
             <span>{prompt.length} chars</span>

@@ -43,14 +43,14 @@ const AppShell: React.FC<AppShellProps> = ({
   const isMobile = useMediaQuery(MOBILE_QUERY);
 
   const header = (title || showBack || rightAction) && (
-    <header className="sticky top-0 z-40 border-b bg-card/92 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 bg-background/96 backdrop-blur-sm">
       <div className={cn("learning-header", isDesktop ? "px-6" : "px-4")}>
         <div className="flex items-center gap-2">
           {showBack && (
             <button
               onClick={onBack}
               type="button"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               aria-label="뒤로 가기"
             >
               <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -58,7 +58,7 @@ const AppShell: React.FC<AppShellProps> = ({
               </svg>
             </button>
           )}
-          {title && <h1 className="text-[22px] leading-[30px] font-bold">{title}</h1>}
+          {title && <h1 className="text-[22px] leading-[30px] font-bold text-foreground">{title}</h1>}
         </div>
         {rightAction}
       </div>

@@ -69,7 +69,7 @@ const PracticePanel: React.FC = () => {
 
         {saveError && <div className="text-xs text-destructive">{saveError}</div>}
 
-        <Button className="w-full" onClick={() => void handleSaveMemory()} disabled={!heardSentence.trim() && !notes.trim()}>
+        <Button className="w-full h-11" onClick={() => void handleSaveMemory()} disabled={!heardSentence.trim() && !notes.trim()}>
           <BookmarkPlus className="mr-1 h-4 w-4" />
           복습 리스트(SRS)에 저장
         </Button>
@@ -91,14 +91,14 @@ const PracticePanel: React.FC = () => {
         </div>
 
         {savedItems.length === 0 ? (
-          <div className="rounded-lg border bg-card p-4 text-xs text-muted-foreground">아직 저장된 메모가 없습니다.</div>
+          <div className="rounded-[var(--radius-sm)] bg-secondary/70 p-4 text-xs text-muted-foreground">아직 저장된 메모가 없습니다.</div>
         ) : (
           savedItems.slice(0, 8).map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => selectSavedMemory(item)}
-              className={cn("w-full rounded-lg border bg-card p-3 text-left transition-colors hover:border-primary/40")}
+              className={cn("w-full rounded-[var(--radius-sm)] bg-secondary/70 p-3 text-left transition-colors hover:bg-secondary")}
             >
               <p className="line-clamp-2 text-sm font-medium">{item.userText || item.notes || "(텍스트 없음)"}</p>
               <p className="mt-1 text-xs text-muted-foreground">
@@ -118,7 +118,7 @@ const PracticePanel: React.FC = () => {
               <li>강세/리듬 맞추기</li>
               <li>연결발음 확인</li>
             </ul>
-            <Button variant="outline" className="w-full" onClick={goToShadowing}>
+            <Button variant="outline" className="w-full h-11" onClick={goToShadowing}>
               C단계로 이동해 발음 교정 질문하기
             </Button>
           </AccordionContent>

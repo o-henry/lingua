@@ -162,7 +162,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border p-3">
+      <div className="rounded-[var(--radius-sm)] bg-secondary/65 p-3">
         <div className="flex items-center justify-between gap-2 mb-2">
           <p className="text-xs font-medium">자막 텍스트 (클릭: 한 줄 선택 / Shift+클릭: 범위 선택)</p>
           <div className="flex items-center gap-2">
@@ -189,8 +189,8 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
                   type="button"
                   onClick={(event) => handleLineClick(index, event)}
                   className={cn(
-                    "w-full text-left rounded-md border p-2 transition-colors",
-                    selected ? "border-primary bg-primary/5" : "hover:border-primary/40"
+                    "w-full text-left rounded-[12px] bg-card p-2 transition-colors",
+                    selected ? "bg-primary/10 shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.45)]" : "hover:bg-secondary"
                   )}
                 >
                   <div className="text-[10px] text-muted-foreground mb-1">
@@ -206,7 +206,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       </div>
 
       {pasteOpen && (
-        <div className="rounded-lg border p-3 space-y-2">
+        <div className="rounded-[var(--radius-sm)] bg-secondary/65 p-3 space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium">사용자 제공 자막(붙여넣기)</p>
             {lines.length > 0 && (
@@ -232,7 +232,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
           />
 
           {rawInput.trim() && (
-            <div className="rounded-md bg-muted p-2 text-[11px] text-muted-foreground">
+            <div className="rounded-[12px] bg-muted p-2 text-[11px] text-muted-foreground">
               {parsePreview.detectedTimecodeCount > 0
                 ? `타임코드 ${parsePreview.detectedTimecodeCount}개 감지됨`
                 : "타임코드가 없어서 텍스트만 저장됩니다"}
@@ -263,7 +263,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
             </Button>
           </div>
 
-          <details className="rounded-md border p-2">
+          <details className="rounded-[12px] bg-card p-2">
             <summary className="text-xs font-medium cursor-pointer">SRT/VTT 파일 업로드(고급)</summary>
             <div className="mt-2">
               <label className="inline-flex">
@@ -278,7 +278,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
                     e.currentTarget.value = "";
                   }}
                 />
-                <span className="inline-flex items-center rounded-md border border-input px-3 py-1.5 text-xs cursor-pointer hover:bg-muted">
+                <span className="inline-flex items-center rounded-[12px] bg-secondary px-3 py-1.5 text-xs cursor-pointer hover:bg-secondary/80">
                   파일 선택
                 </span>
               </label>
@@ -287,7 +287,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
         </div>
       )}
 
-      <details className="rounded-lg border p-3 space-y-2">
+      <details className="rounded-[var(--radius-sm)] bg-secondary/65 p-3 space-y-2">
         <summary className="text-xs font-medium cursor-pointer">수동 한 줄 추가 (고급)</summary>
         <div className="space-y-2 mt-2">
           <Textarea
