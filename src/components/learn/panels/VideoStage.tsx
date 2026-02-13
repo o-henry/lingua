@@ -89,7 +89,7 @@ const VideoStage: React.FC = () => {
 
       <section className="learning-card space-y-3">
         <div className="learning-controlbar learning-controlbar-single">
-          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav text-[11px]" onClick={jumpToPrevSegment}>
+          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav text-[11px] font-ko-bold" onClick={jumpToPrevSegment}>
             <ChevronLeft className="h-3.5 w-3.5" /> 이전
           </Button>
 
@@ -108,7 +108,7 @@ const VideoStage: React.FC = () => {
             </label>
           </div>
 
-          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav text-[11px]" onClick={jumpToNextSegment}>
+          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav text-[11px] font-ko-bold" onClick={jumpToNextSegment}>
             다음 <ChevronRight className="h-3.5 w-3.5" />
           </Button>
         </div>

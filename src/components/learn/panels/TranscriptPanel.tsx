@@ -55,8 +55,8 @@ const TranscriptPanel: React.FC = () => {
             </p>
           </div>
 
-          <Button type="button" variant="outline" className="w-full justify-between bg-secondary/70 hover:bg-secondary" onClick={goToShadowing}>
-            <span>듣고 따라 말하기</span>
+          <Button type="button" variant="outline" className="w-full justify-between bg-secondary/70 hover:bg-secondary font-ko-bold" onClick={goToShadowing}>
+            <span>듣고 따라 말하기 시작</span>
             <ArrowRight className="h-4 w-4" />
           </Button>
         </section>
