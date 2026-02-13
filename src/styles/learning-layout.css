@@ -77,10 +77,10 @@
 .learning-focus-layout {
   display: grid;
   gap: var(--learn-space-16);
-  grid-template-columns: minmax(320px, 1fr) minmax(0, 1.6fr) minmax(320px, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: start;
   width: 100%;
-  max-width: 1760px;
+  max-width: 1680px;
   margin: 0 auto;
 }
 
@@ -95,7 +95,7 @@
 }
 
 .learning-focus-tools {
-  grid-column: 3;
+  grid-column: 1 / -1;
   min-width: 0;
 }
 
@@ -135,7 +135,7 @@
 .learning-tablet-focus-grid {
   display: grid;
   gap: var(--learn-space-16);
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: start;
 }
 
@@ -158,24 +158,6 @@
 
 .learning-tablet-tools {
   grid-column: 1 / -1;
-}
-
-@media (max-width: 1599px) {
-  .learning-focus-layout {
-    grid-template-columns: minmax(300px, 1fr) minmax(0, 1.45fr);
-  }
-
-  .learning-focus-transcript {
-    grid-column: 1;
-  }
-
-  .learning-focus-main {
-    grid-column: 2;
-  }
-
-  .learning-focus-tools {
-    grid-column: 1 / -1;
-  }
 }
 
 @media (max-width: 1199px) {
