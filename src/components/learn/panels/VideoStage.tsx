@@ -128,11 +128,11 @@ const VideoStage: React.FC = () => {
 
       <section className="learning-card flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold">녹음 단계(C)로 이동</p>
+          <p className="text-sm font-semibold">듣고 따라 말하기로 이동</p>
           <p className="text-xs text-muted-foreground">현재 선택 구간으로 듣고 따라 말하기를 시작합니다.</p>
         </div>
         <Button type="button" onClick={goToShadowing}>
-          C단계 시작
+          듣고 따라 말하기 시작
         </Button>
       </section>
     </div>

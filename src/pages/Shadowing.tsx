@@ -7,10 +7,10 @@ import YouTubePlayer from "@/components/YouTubePlayer";
 import AudioRecorder from "@/components/AudioRecorder";
 import ExternalAiAskBar from "@/components/ai/ExternalAiAskBar";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { CircleAlert, CirclePlay } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { CircleAlert, CirclePlay, Check } from "lucide-react";
 import { formatTime } from "@/domain/time";
+import { cn } from "@/lib/utils";
 
 const shadowingStateKey = (clipId: string, startSec: number, endSec: number) => `dlb:shadowing:state:${clipId}:${startSec}:${endSec}`;
 const shadowingAudioKey = (clipId: string, startSec: number, endSec: number) => `dlb:shadowing:audio:${clipId}:${startSec}:${endSec}`;
@@ -23,7 +23,6 @@ const CHECKLIST = [
 ] as const;
 
 interface StoredShadowingState {
-  practiceText: string;
   checked: string[];
   loopEnabled: boolean;
 }
@@ -65,8 +64,7 @@ const Shadowing: React.FC = () => {
   const queryParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const startSec = Math.max(0, Math.floor(Number(queryParams.get("start")) || 0));
   const endSec = Math.max(startSec + 2, Math.floor(Number(queryParams.get("end")) || startSec + 10));
-  const defaultText = (queryParams.get("text") || "").trim();
-  const [practiceText, setPracticeText] = useState("");
+  const practiceText = (queryParams.get("text") || "").trim();
 
   useEffect(() => {
     const load = async () => {
@@ -87,20 +85,16 @@ const Shadowing: React.FC = () => {
     setAudioHydrated(false);
 
     const stateRaw = localStorage.getItem(shadowingStateKey(clipId, startSec, endSec));
-    const hasSeedText = defaultText.length > 0;
     if (stateRaw) {
       try {
         const parsed = JSON.parse(stateRaw) as StoredShadowingState;
-        setPracticeText(hasSeedText ? defaultText : parsed.practiceText || "");
         setChecked(new Set(parsed.checked || []));
         setLoopEnabled(parsed.loopEnabled ?? true);
       } catch {
-        setPracticeText(defaultText);
         setChecked(new Set());
         setLoopEnabled(true);
       }
     } else {
-      setPracticeText(defaultText);
       setChecked(new Set());
       setLoopEnabled(true);
     }
@@ -135,17 +129,16 @@ const Shadowing: React.FC = () => {
     return () => {
       disposed = true;
     };
-  }, [clipId, startSec, endSec, defaultText]);
+  }, [clipId, startSec, endSec]);
 
   useEffect(() => {
     if (!clipId) return;
     const payload: StoredShadowingState = {
-      practiceText,
       checked: Array.from(checked),
       loopEnabled,
     };
     localStorage.setItem(shadowingStateKey(clipId, startSec, endSec), JSON.stringify(payload));
-  }, [practiceText, checked, loopEnabled, clipId, startSec, endSec]);
+  }, [checked, loopEnabled, clipId, startSec, endSec]);
 
   useEffect(() => {
     if (!clipId) return;
@@ -227,7 +220,7 @@ const Shadowing: React.FC = () => {
   }
 
   return (
-    <PageShell title={`${SHADOWING_TITLE} (C단계)`} showBack onBack={() => navigate(-1)} noBottomNav>
+    <PageShell title={SHADOWING_TITLE} showBack onBack={() => navigate(-1)} noBottomNav>
       <div className="space-y-4">
         <div className="ui-island p-3">
           <p className="text-xs text-muted-foreground">현재 연습 구간</p>
@@ -255,7 +248,7 @@ const Shadowing: React.FC = () => {
 
           <label className="flex items-center justify-between rounded-[var(--radius-sm)] bg-secondary/65 p-2 text-sm">
             구간 반복
-            <Checkbox checked={loopEnabled} onCheckedChange={(checkedState) => setLoopEnabled(Boolean(checkedState))} />
+            <Switch checked={loopEnabled} onCheckedChange={setLoopEnabled} />
           </label>
 
           <AudioRecorder value={recordedAudioFile} onRecordingChange={setRecordedAudioFile} />
@@ -263,20 +256,36 @@ const Shadowing: React.FC = () => {
 
         <div className="ui-island p-4 space-y-3">
           <h3 className="text-sm font-semibold">연습 문장</h3>
-          <Input
-            value={practiceText}
-            onChange={(e) => setPracticeText(e.target.value)}
-            placeholder="연습한 문장을 입력하세요"
-          />
+          <div className="rounded-[var(--radius-sm)] border border-border/80 bg-secondary/55 p-3">
+            <p className="text-sm leading-relaxed break-words">
+              {practiceText || "선택된 연습 문장이 없습니다. 학습 페이지에서 구간을 선택한 뒤 이동해주세요."}
+            </p>
+          </div>
         </div>
 
         <div className="ui-island p-4 space-y-2">
           <h3 className="text-sm font-semibold">체크리스트</h3>
           {CHECKLIST.map((item) => (
-            <label key={item.id} className="flex items-center gap-2 text-sm">
-              <Checkbox checked={checked.has(item.id)} onCheckedChange={() => toggleChecklist(item.id)} />
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => toggleChecklist(item.id)}
+              className={cn(
+                "flex w-full items-center justify-between rounded-[10px] border border-border/80 px-3 py-2 text-left text-sm transition-colors",
+                checked.has(item.id) ? "bg-primary/10 border-primary/45" : "bg-secondary/60 hover:bg-secondary"
+              )}
+            >
               <span>{item.label}</span>
-            </label>
+              <span
+                className={cn(
+                  "inline-flex h-5 w-5 items-center justify-center rounded-full border",
+                  checked.has(item.id) ? "border-primary bg-primary text-primary-foreground" : "border-border/80 bg-card"
+                )}
+                aria-hidden
+              >
+                <Check className={cn("h-3.5 w-3.5", checked.has(item.id) ? "opacity-100" : "opacity-0")} />
+              </span>
+            </button>
           ))}
         </div>
 
