@@ -7,7 +7,6 @@ import PageShell from "@/components/PageShell";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Moon, Wifi, Trash2, AlertTriangle, Languages, Gauge, StickyNote, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LANGUAGE_OPTIONS = [
@@ -59,7 +58,7 @@ const SettingsPage: React.FC = () => {
   };
 
   const handleClearData = async () => {
-    if (!window.confirm("저장한 메모, 복습 카드, 자막, 설정이 이 기기에서 모두 삭제됩니다. 계속하시겠습니까?")) {
+    if (!window.confirm("저장한 표현, 복습 카드, 자막, 설정이 이 기기에서 모두 삭제됩니다. 계속하시겠습니까?")) {
       return;
     }
 
@@ -73,35 +72,26 @@ const SettingsPage: React.FC = () => {
       <PageShell title="설정">
         <div className="space-y-2">
           {migrationRequired && (
-            <div className="bg-warning/10 border border-warning/30 rounded-xl p-4">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-warning mt-0.5" />
-                <div>
-                  <div className="font-medium text-sm">구버전 데이터 감지됨</div>
-                  <div className="text-xs text-muted-foreground mt-1">Learn/SRS/Library를 사용하려면 아래에서 로컬 데이터를 초기화하세요.</div>
-                </div>
+            <div className="bg-warning/10 border border-warning/30 rounded-[var(--radius-lg)] p-4">
+              <div>
+                <div className="font-medium text-sm">구버전 데이터 감지됨</div>
+                <div className="text-xs text-muted-foreground mt-1">Learn/SRS/Library를 사용하려면 아래에서 로컬 데이터를 초기화하세요.</div>
               </div>
             </div>
           )}
 
-          <div className="bg-card rounded-xl border p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Moon className="w-5 h-5 text-muted-foreground" />
-              <div>
-                <div className="font-medium text-sm">다크 모드</div>
-                <div className="text-xs text-muted-foreground">어두운 화면 테마</div>
-              </div>
+          <div className="bg-card rounded-[var(--radius-lg)] border p-4 flex items-center justify-between">
+            <div>
+              <div className="font-medium text-sm">다크 모드</div>
+              <div className="text-xs text-muted-foreground">어두운 화면 테마</div>
             </div>
             <Switch checked={darkMode} onCheckedChange={toggleDark} />
           </div>
 
-          <div className="bg-card rounded-xl border p-4 space-y-4">
-            <div className="flex items-center gap-3">
-              <Languages className="w-5 h-5 text-muted-foreground" />
-              <div>
-                <div className="font-medium text-sm">학습 언어</div>
-                <div className="text-xs text-muted-foreground">현재: {languageLabel(targetLanguage)}</div>
-              </div>
+          <div className="bg-card rounded-[var(--radius-lg)] border p-4 space-y-4">
+            <div>
+              <div className="font-medium text-sm">학습 언어</div>
+              <div className="text-xs text-muted-foreground">현재: {languageLabel(targetLanguage)}</div>
             </div>
             <div className="grid grid-cols-1 gap-2">
               {LANGUAGE_OPTIONS.map((option) => (
@@ -110,7 +100,7 @@ const SettingsPage: React.FC = () => {
                   type="button"
                   onClick={() => handleTargetLanguageChange(option.code)}
                   className={cn(
-                    "w-full rounded-lg border px-3 py-2 text-left text-sm transition-colors",
+                    "w-full rounded-[var(--radius)] border px-3 py-2 text-left text-sm transition-colors",
                     targetLanguage === option.code ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground hover:text-foreground"
                   )}
                 >
@@ -120,13 +110,10 @@ const SettingsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-card rounded-xl border p-4 space-y-4">
-            <div className="flex items-center gap-3">
-              <Gauge className="w-5 h-5 text-muted-foreground" />
-              <div>
-                <div className="font-medium text-sm">학습 난이도(레벨)</div>
-                <div className="text-xs text-muted-foreground">현재: {learnerLevel}</div>
-              </div>
+          <div className="bg-card rounded-[var(--radius-lg)] border p-4 space-y-4">
+            <div>
+              <div className="font-medium text-sm">학습 난이도(레벨)</div>
+              <div className="text-xs text-muted-foreground">현재: {learnerLevel}</div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {LEVEL_OPTIONS.map((level) => (
@@ -135,7 +122,7 @@ const SettingsPage: React.FC = () => {
                   type="button"
                   onClick={() => handleLearnerLevelChange(level)}
                   className={cn(
-                    "rounded-lg border px-3 py-2 text-sm transition-colors",
+                    "rounded-[var(--radius)] border px-3 py-2 text-sm transition-colors",
                     learnerLevel === level ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground hover:text-foreground"
                   )}
                 >
@@ -146,45 +133,35 @@ const SettingsPage: React.FC = () => {
             <p className="text-xs text-muted-foreground">변경한 언어/레벨은 AI 질문 프롬프트 생성에 즉시 적용됩니다.</p>
           </div>
 
-          <div className="bg-card rounded-xl border p-4 space-y-3">
-            <div className="flex items-center gap-3">
-              <StickyNote className="w-5 h-5 text-muted-foreground" />
-              <div>
-                <div className="font-medium text-sm">메모</div>
-                <div className="text-xs text-muted-foreground">설정에서 메모 관련 화면으로 이동합니다.</div>
-              </div>
+          <div className="bg-card rounded-[var(--radius-lg)] border p-4 space-y-3">
+            <div>
+              <div className="font-medium text-sm">표현 모음</div>
+              <div className="text-xs text-muted-foreground">저장된 문장과 메모 목록으로 이동합니다.</div>
             </div>
-            <Button variant="outline" className="w-full justify-between" onClick={() => navigate("/settings/memo")}>
-              메모로 이동
-              <ChevronRight className="w-4 h-4" />
+            <Button variant="outline" className="w-full justify-center" onClick={() => navigate("/settings/memo")}>
+              표현 모음으로 이동
             </Button>
           </div>
 
-          <div className="bg-card rounded-xl border p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <Wifi className="w-5 h-5 text-muted-foreground" />
-              <div className="font-medium text-sm">PWA 안내</div>
-            </div>
+          <div className="bg-card rounded-[var(--radius-lg)] border p-4">
+            <div className="font-medium text-sm mb-3">PWA 안내</div>
             <div className="text-xs text-muted-foreground space-y-1">
               <p>• 유튜브 영상 재생은 인터넷 연결이 필요합니다</p>
               <p>• 홈 화면에 추가하면 앱처럼 사용할 수 있습니다</p>
             </div>
           </div>
 
-          <div className="bg-card rounded-xl border p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <Trash2 className="w-5 h-5 text-destructive" />
-              <div>
-                <div className="font-medium text-sm">데이터 초기화</div>
-                <div className="text-xs text-muted-foreground">이 기기에 저장된 학습 데이터(메모/복습/설정)를 모두 삭제합니다</div>
-              </div>
+          <div className="bg-card rounded-[var(--radius-lg)] border p-4">
+            <div className="mb-3">
+              <div className="font-medium text-sm">데이터 초기화</div>
+              <div className="text-xs text-muted-foreground">이 기기에 저장된 학습 데이터(표현/복습/설정)를 모두 삭제합니다</div>
             </div>
             <Button variant="destructive" size="sm" onClick={handleClearData}>
               데이터 삭제
             </Button>
           </div>
 
-          <div className="bg-card rounded-xl border p-4">
+          <div className="bg-card rounded-[var(--radius-lg)] border p-4">
             <div className="font-medium text-sm mb-2">데이터가 사라지는 경우</div>
             <div className="text-xs text-muted-foreground space-y-1">
               <p>• 설정에서 &quot;데이터 삭제&quot; 버튼을 누른 경우</p>

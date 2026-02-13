@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Mic, RotateCcw, Square } from "lucide-react";
+import { Mic, RefreshCw, CircleStop } from "lucide-react";
 
 interface AudioRecorderProps {
   value?: File | null;
@@ -237,7 +237,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ value, onRecordingChange 
 
       {status === "recording" && (
         <Button type="button" variant="destructive" onClick={stopRecording} className="w-full">
-          <Square className="w-4 h-4 mr-1" /> 녹음 중지
+          <CircleStop className="w-4 h-4 mr-1" /> 녹음 중지
         </Button>
       )}
 
@@ -245,7 +245,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ value, onRecordingChange 
         <div className="space-y-2">
           <audio controls src={audioUrl} className="w-full" />
           <Button type="button" variant="outline" className="w-full" onClick={resetRecording}>
-            <RotateCcw className="w-4 h-4 mr-1" /> 다시 녹음
+            <RefreshCw className="w-4 h-4 mr-1" /> 다시 녹음
           </Button>
         </div>
       )}

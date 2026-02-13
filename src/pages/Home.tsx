@@ -30,59 +30,60 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <PageShell title="Orbit">
-        <button
-          onClick={() => navigate("/srs")}
-          className="ui-island-strong mb-6 w-full bg-accent text-start text-accent-foreground p-4"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div className="font-bold text-sm">복습할 카드 {dueCount}개</div>
-              <div className="text-xs opacity-85">{dueCount > 0 ? "지금 복습하기" : "아직 복습할 카드가 없습니다"}</div>
+      <PageShell>
+        <div className="pt-2">
+          <button
+            onClick={() => navigate("/srs")}
+            className="ui-island-strong mb-6 w-full bg-accent text-start text-accent-foreground p-4"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-medium">복습 카드 {dueCount}개</div>
+                <div className="text-xs opacity-85">{dueCount > 0 ? "지금 복습 시작" : "오늘은 복습 카드가 없습니다"}</div>
+              </div>
+              <span className="ui-chip px-3 py-1 text-[11px] font-medium text-accent-foreground/90 bg-white/20">복습</span>
             </div>
-            <span className="ui-chip px-3 py-1 text-[11px] font-semibold text-accent-foreground/90 bg-white/20">Review</span>
-          </div>
-        </button>
+          </button>
 
-        <h2 className="mb-3 text-lg font-bold">오늘의 학습</h2>
-        {todayClip ? (
-          <section className="ui-island-strong overflow-hidden">
-            <div className="relative h-44 overflow-hidden bg-gradient-to-br from-primary to-primary/75 p-5">
-              <div className="absolute -left-8 -top-10 h-28 w-28 rounded-full bg-white/35 blur-xl" />
-              <div className="absolute right-5 top-4 h-16 w-16 rounded-2xl bg-accent/70" />
-              <div className="absolute right-12 bottom-6 h-24 w-24 rounded-full bg-white/20 backdrop-blur-sm" />
-              <div className="relative z-10 flex h-full items-end justify-between">
-                <div className="text-primary-foreground">
-                  <p className="text-xs font-semibold tracking-[0.16em] opacity-90">LISTEN AND REPEAT</p>
-                  <h3 className="mt-2 line-clamp-2 max-w-[220px] text-xl font-bold leading-tight">
-                    {todayClip.title || `YouTube 클립 (${todayClip.videoId})`}
-                  </h3>
+          <h2 className="mb-3 text-lg font-medium">오늘의 학습</h2>
+          {todayClip ? (
+            <section className="ui-island-strong overflow-hidden">
+              <div className="relative h-44 overflow-hidden bg-gradient-to-br from-primary to-primary/75 p-5">
+                <div className="absolute -left-8 -top-10 h-28 w-28 rounded-full bg-white/35 blur-xl" />
+                <div className="absolute right-5 top-4 h-16 w-16 rounded-2xl bg-accent/70" />
+                <div className="absolute right-12 bottom-6 h-24 w-24 rounded-full bg-white/20 backdrop-blur-sm" />
+                <div className="relative z-10 flex h-full items-end">
+                  <div className="text-primary-foreground">
+                    <p className="text-xs font-medium tracking-[0.14em] opacity-90">듣고 반복하기</p>
+                    <h3 className="mt-2 line-clamp-2 max-w-[220px] text-xl font-medium leading-tight">
+                      {todayClip.title || `YouTube Clip (${todayClip.videoId})`}
+                    </h3>
+                  </div>
                 </div>
-                <div className="grid h-14 w-14 place-items-center rounded-full bg-white/25 text-xl text-primary-foreground">▶</div>
               </div>
-            </div>
 
-            <div className="space-y-4 p-4">
-              <p className="text-xs text-muted-foreground">{todayClip.channel || settings.targetLanguage.toUpperCase()}</p>
-              <div className="rounded-[var(--radius-sm)] bg-secondary/75 p-3">
-                <p className="text-xs text-muted-foreground">
-                  구간 반복 → 자막/내 텍스트 입력 → SRS 복습 흐름으로 학습합니다.
-                </p>
+              <div className="space-y-4 p-4">
+                <p className="text-xs text-muted-foreground font-en">{todayClip.channel || settings.targetLanguage.toUpperCase()}</p>
+                <div className="rounded-[var(--radius-sm)] bg-secondary/75 p-3">
+                  <p className="text-xs text-muted-foreground">
+                    구간 반복, 표현 익히기, AI 질문, SRS 복습 순서로 학습합니다.
+                  </p>
+                </div>
+                <Button className="w-full h-11" onClick={() => navigate(`/learn/${todayClip.id}`)}>
+                  학습 시작하기
+                </Button>
               </div>
-              <Button className="w-full h-11" onClick={() => navigate(`/learn/${todayClip.id}`)}>
-                학습 시작하기
+            </section>
+          ) : (
+            <div className="ui-island text-center p-8">
+              <p className="font-medium mb-1">첫 클립을 추가해보세요</p>
+              <p className="text-sm text-muted-foreground mb-4">유튜브 클립을 추가하면 바로 학습을 시작할 수 있어요.</p>
+              <Button variant="outline" onClick={() => navigate("/library")}>
+                라이브러리로 이동
               </Button>
             </div>
-          </section>
-        ) : (
-          <div className="ui-island text-center p-8">
-            <p className="font-medium mb-1">클립을 추가해보세요</p>
-            <p className="text-sm text-muted-foreground mb-4">유튜브 클립을 추가하고 학습을 시작하세요</p>
-            <Button variant="outline" onClick={() => navigate("/library")}>
-              라이브러리로 이동
-            </Button>
-          </div>
-        )}
+          )}
+        </div>
       </PageShell>
       <BottomNav />
     </>

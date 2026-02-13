@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { ExternalLink, Files } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AiAskTarget,
@@ -244,7 +243,7 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
               size="sm"
               variant={target === "chatgpt" ? "default" : "outline"}
               onClick={() => setTarget("chatgpt")}
-              className="h-8 px-3 font-free-mono-bold"
+              className="h-8 px-3"
             >
               ChatGPT
             </Button>
@@ -253,7 +252,7 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
               size="sm"
               variant={target === "gemini" ? "default" : "outline"}
               onClick={() => setTarget("gemini")}
-              className="h-8 px-3 font-free-mono-bold"
+              className="h-8 px-3"
             >
               Gemini
             </Button>
@@ -288,10 +287,10 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
       {actionMode === "split" ? (
         <div className="grid grid-cols-2 gap-2">
           <Button type="button" onClick={() => void handleCopyOnly()} disabled={!prompt}>
-            <Files className="h-4 w-4" /> 프롬프트 복사
+            프롬프트 복사
           </Button>
           <Button type="button" variant="outline" onClick={handleOpenOnly} disabled={!prompt}>
-            <ExternalLink className="h-4 w-4" /> AI 사이트 새탭 열기
+            AI 사이트 새탭 열기
           </Button>
         </div>
       ) : (

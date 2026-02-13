@@ -1,13 +1,13 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { BookOpen, Home, Layers, Settings } from "lucide-react";
+import { Library, House, Clock3, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { key: "home", path: "/home", icon: Home, label: "홈" },
-  { key: "learn", path: "/library", icon: BookOpen, label: "학습" },
-  { key: "review", path: "/srs", icon: Layers, label: "복습" },
-  { key: "settings", path: "/settings", icon: Settings, label: "설정" },
+  { key: "home", path: "/home", icon: House, label: "홈" },
+  { key: "learn", path: "/library", icon: Library, label: "학습" },
+  { key: "review", path: "/srs", icon: Clock3, label: "복습" },
+  { key: "settings", path: "/settings", icon: SlidersHorizontal, label: "설정" },
 ] as const;
 
 const isActivePath = (pathname: string, key: string) => {
@@ -40,7 +40,7 @@ const LeftRail: React.FC = () => {
               className={cn(
                 "learning-left-rail-button",
                 active
-                  ? "bg-primary text-primary-foreground shadow-[0_10px_18px_-12px_rgba(15,23,42,0.8)]"
+                  ? "bg-primary text-primary-foreground shadow-[0_8px_16px_-10px_rgba(0,0,0,0.64)]"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >

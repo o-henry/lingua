@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, Edit2, Play } from "lucide-react";
+import { CircleAlert, CirclePlay } from "lucide-react";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import ExternalAiAskBar from "@/components/ai/ExternalAiAskBar";
 import { formatTime } from "@/domain/time";
@@ -158,7 +158,7 @@ const SrsPage: React.FC = () => {
 
   const blockedContent = (
     <div className="ui-island p-6 text-center mt-4">
-      <AlertTriangle className="w-8 h-8 text-warning mx-auto mb-2" />
+      <CircleAlert className="w-8 h-8 text-warning mx-auto mb-2" />
       <p className="font-medium">데이터 초기화가 필요합니다</p>
       <p className="text-sm text-muted-foreground mt-1">구버전 데이터가 감지되어 복습 기능이 잠겨 있습니다.</p>
       <Button className="mt-4" onClick={() => navigate("/settings")}>
@@ -175,7 +175,7 @@ const SrsPage: React.FC = () => {
   if (loading) {
     return (
       <>
-        <PageShell title="SRS 복습">
+        <PageShell title="복습">
           <div className="text-center py-16 text-sm text-muted-foreground">로딩 중...</div>
         </PageShell>
         <BottomNav />
@@ -186,7 +186,7 @@ const SrsPage: React.FC = () => {
   if (migrationRequired) {
     return (
       <>
-        <PageShell title="SRS 복습">{blockedContent}</PageShell>
+        <PageShell title="복습">{blockedContent}</PageShell>
         <BottomNav />
       </>
     );
@@ -195,12 +195,11 @@ const SrsPage: React.FC = () => {
   if (items.length === 0) {
     return (
       <>
-        <PageShell title="SRS 복습">
+        <PageShell title="복습">
           <div className="text-center py-16">
-            <div className="text-5xl mb-4">✅</div>
-            <p className="font-medium mb-1">오늘 복습할 카드가 없어요</p>
-            <p className="text-sm text-muted-foreground mb-2">총 {totalCards}개 카드 관리 중</p>
-            <Button variant="outline" onClick={() => navigate("/home")}>홈으로</Button>
+            <p className="mb-1 font-medium">오늘 복습할 카드가 없습니다</p>
+            <p className="mb-2 text-sm text-muted-foreground">총 {totalCards}개 카드 관리 중</p>
+            <Button variant="outline" onClick={() => navigate("/settings/memo")}>표현 모음으로 이동</Button>
           </div>
         </PageShell>
         <BottomNav />
@@ -221,7 +220,7 @@ const SrsPage: React.FC = () => {
               transition={{ duration: 0.2 }}
             >
               {editing ? (
-                <div className="ui-island rounded-[10px] p-6 space-y-4 shadow-[0_18px_30px_-24px_rgba(15,23,42,0.5)]">
+                <div className="ui-island rounded-[var(--radius-lg)] border border-border/60 p-6 space-y-4">
                   <div>
                     <label className="text-xs font-medium text-muted-foreground">표현</label>
                     <Textarea value={editUserText} onChange={(e) => setEditUserText(e.target.value)} rows={3} />
@@ -258,7 +257,7 @@ const SrsPage: React.FC = () => {
                 <div
                   role="button"
                   tabIndex={0}
-                  className="ui-island relative w-full rounded-[10px] p-8 min-h-[220px] flex flex-col items-center justify-center text-center cursor-pointer shadow-[0_20px_34px_-24px_rgba(15,23,42,0.52)] hover:shadow-[0_24px_36px_-24px_rgba(15,23,42,0.58)] transition-shadow"
+                  className="ui-island relative w-full rounded-[var(--radius-lg)] border border-border/65 bg-card/95 p-8 min-h-[220px] flex flex-col items-center justify-center text-center cursor-pointer transition-colors hover:bg-card"
                   onClick={() => setFlipped((prev) => !prev)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
@@ -276,9 +275,8 @@ const SrsPage: React.FC = () => {
                       setEditConfidence(currentItem.memory.confidence);
                       setEditing(true);
                     }}
-                    className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-[8px] bg-secondary px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-3 inline-flex items-center rounded-[var(--radius)] bg-secondary px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground"
                   >
-                    <Edit2 className="h-3.5 w-3.5" />
                     수정
                   </button>
                   {!flipped ? (
@@ -290,7 +288,7 @@ const SrsPage: React.FC = () => {
                         <p className="text-xs text-muted-foreground mt-2">이해도: {currentItem.memory.confidence}/5</p>
                       )}
                       {!currentItem.memory.userText && (
-                        <p className="text-xs text-warning mt-2">텍스트 없음: Learn에서 들은 문장을 추가하면 더 좋아요.</p>
+                        <p className="text-xs text-warning mt-2">텍스트 없음: 학습에서 들은 문장을 추가하면 더 좋아요.</p>
                       )}
                     </>
                   ) : (
@@ -323,7 +321,7 @@ const SrsPage: React.FC = () => {
                   setShowPlayer(true);
                 }}
               >
-                <Play className="w-4 h-4 mr-1" /> 구간 재생
+                <CirclePlay className="w-4 h-4 mr-1" /> 구간 재생
               </Button>
 
               {showPlayer && currentItem.clip && (

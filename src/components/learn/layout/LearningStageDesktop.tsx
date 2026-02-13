@@ -9,8 +9,8 @@ interface LearningStageDesktopProps {
 const LearningStageDesktop: React.FC<LearningStageDesktopProps> = ({ leftPanel, centerStage, rightPanel }) => {
   return (
     <div className="learning-focus-layout">
-      <section className="learning-focus-main">{centerStage}</section>
       <aside className="learning-focus-transcript">{leftPanel}</aside>
+      <section className="learning-focus-main">{centerStage}</section>
       <section className="learning-focus-tools">{rightPanel}</section>
     </div>
   );

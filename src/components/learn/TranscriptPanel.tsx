@@ -165,7 +165,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
                   type="button"
                   onClick={(event) => handleLineClick(index, event)}
                   className={cn(
-                    "w-full text-left rounded-[12px] bg-card p-2 transition-colors",
+                    "w-full text-left rounded-[var(--radius)] bg-card p-2 transition-colors",
                     selected ? "bg-primary/10 shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.45)]" : "hover:bg-secondary"
                   )}
                 >
@@ -181,22 +181,39 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
         </div>
       </div>
 
-      {pasteOpen && (
-        <div className="rounded-[var(--radius-sm)] bg-secondary/65 p-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-medium">사용자 제공 자막(붙여넣기)</p>
+      {pasteOpen ? (
+        <section className="rounded-[var(--radius-sm)] border border-white/60 bg-card/70 p-4 space-y-3 backdrop-blur-md">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">사용자 제공 자막 붙여넣기</p>
+              <p className="text-[11px] text-muted-foreground">YouTube 스크립트, SRT, VTT 텍스트를 넣으면 자동으로 정리해서 적용합니다.</p>
+            </div>
             {lines.length > 0 && (
               <Button type="button" size="sm" variant="ghost" onClick={() => setPasteOpen(false)}>
-                접기
+                닫기
               </Button>
             )}
           </div>
-          <p className="text-[11px] text-muted-foreground">
-            이 앱은 유튜브에서 텍스트를 자동으로 가져오지 않아요. 복사/붙여넣기로만 추가할 수 있어요.
-          </p>
+
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-[var(--radius)] bg-secondary/70 p-2 text-center">
+              <p className="text-[10px] text-muted-foreground">감지 라인</p>
+              <p className="text-sm font-semibold">{parsePreview.lines.length}</p>
+            </div>
+            <div className="rounded-[var(--radius)] bg-secondary/70 p-2 text-center">
+              <p className="text-[10px] text-muted-foreground">타임코드</p>
+              <p className="text-sm font-semibold">{parsePreview.detectedTimecodeCount}</p>
+            </div>
+            <div className="rounded-[var(--radius)] bg-secondary/70 p-2 text-center">
+              <p className="text-[10px] text-muted-foreground">저장</p>
+              <p className="text-sm font-semibold">{persistEnabled ? "ON" : "OFF"}</p>
+            </div>
+          </div>
+
           <Textarea
-            rows={4}
+            rows={6}
             value={rawInput}
+            className="bg-white/75"
             onChange={(e) => setRawInput(e.target.value)}
             onPaste={(e) => {
               const pasted = e.clipboardData.getData("text");
@@ -204,25 +221,32 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
               e.preventDefault();
               applyAutoParse(pasted);
             }}
-            placeholder={"예: 00:12 hello everyone\n00:15 today we'll...\n(또는 타임코드 없이 텍스트만 붙여넣어도 돼요)"}
+            placeholder={"예시)\n00:12 hello everyone\n00:15 today we'll...\n\n타임코드가 없어도 텍스트만 붙여넣으면 자동으로 줄 단위 정리합니다."}
           />
 
           {rawInput.trim() && (
-            <div className="rounded-[12px] bg-muted p-2 text-[11px] text-muted-foreground">
+            <div className="rounded-[var(--radius)] bg-muted/85 p-2 text-[11px] text-muted-foreground">
               {parsePreview.detectedTimecodeCount > 0
-                ? `타임코드 ${parsePreview.detectedTimecodeCount}개 감지됨`
-                : "타임코드가 없어서 텍스트만 저장됩니다"}
+                ? `타임코드 ${parsePreview.detectedTimecodeCount}개가 감지되었습니다`
+                : "타임코드가 없어도 텍스트 기준으로 저장됩니다"}
               {parsePreview.detectedTimecodeCount > 0 && (
-                <p className="mt-1">감지된 타임코드를 기준으로 줄 분리를 도와드려요.</p>
+                <p className="mt-1">감지한 타임코드를 기준으로 줄 분리와 구간 정렬이 적용됩니다.</p>
               )}
             </div>
           )}
 
-          <p className="text-[11px] text-muted-foreground">붙여넣는 즉시 타임스탬프 자동 인식 + 연속 줄 합치기가 자동 적용됩니다.</p>
-
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" size="sm" onClick={handleCleanPaste} disabled={!rawInput.trim()}>
-              다시 정리하기
+            <Button type="button" size="sm" onClick={handleCleanPaste} disabled={!rawInput.trim()}>
+              자막 적용하기
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setRawInput("")}
+              disabled={!rawInput.trim()}
+            >
+              입력 비우기
             </Button>
             <Button
               type="button"
@@ -232,35 +256,49 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
                 onLinesChange([]);
                 setPasteOpen(true);
                 resetSelection();
+                setRawInput("");
               }}
               disabled={!hasLines}
             >
-              전체 지우기
+              현재 자막 삭제
             </Button>
           </div>
 
-          <details className="rounded-[12px] bg-card p-2">
-            <summary className="text-xs font-medium cursor-pointer">SRT/VTT 파일 업로드(고급)</summary>
-            <div className="mt-2">
-              <label className="inline-flex">
-                <input
-                  type="file"
-                  accept=".srt,.vtt,.txt,text/plain"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    handleFileUpload(file);
-                    e.currentTarget.value = "";
-                  }}
-                />
-                <span className="inline-flex items-center rounded-[12px] bg-secondary px-3 py-1.5 text-xs cursor-pointer hover:bg-secondary/80">
-                  파일 선택
-                </span>
-              </label>
+          <div className="rounded-[var(--radius)] border border-white/55 bg-white/55 p-2">
+            <label className="inline-flex">
+              <input
+                type="file"
+                accept=".srt,.vtt,.txt,text/plain"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  handleFileUpload(file);
+                  e.currentTarget.value = "";
+                }}
+              />
+              <span className="inline-flex items-center rounded-[var(--radius)] bg-secondary px-3 py-1.5 text-xs cursor-pointer hover:bg-secondary/80">
+                SRT/VTT/TXT 파일 불러오기
+              </span>
+            </label>
+          </div>
+
+          <p className="text-[11px] text-muted-foreground">
+            붙여넣기 즉시 자동 인식이 동작하며, 저장된 자막은 기기 로컬에 유지됩니다.
+          </p>
+        </section>
+      ) : (
+        <section className="rounded-[var(--radius-sm)] border border-white/55 bg-secondary/45 px-3 py-2">
+          <div className="flex items-center justify-between gap-2">
+            <div>
+              <p className="text-xs font-medium">사용자 제공 자막 편집기</p>
+              <p className="text-[11px] text-muted-foreground">새 자막을 붙여넣거나 파일로 다시 불러올 수 있습니다.</p>
             </div>
-          </details>
-        </div>
+            <Button type="button" size="sm" variant="outline" onClick={() => setPasteOpen(true)}>
+              열기
+            </Button>
+          </div>
+        </section>
       )}
     </div>
   );

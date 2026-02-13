@@ -4,6 +4,11 @@ export interface Clip {
   videoId: string;
   title?: string;
   channel?: string;
+  unsplashImageUrl?: string;
+  unsplashQuery?: string;
+  unsplashPhotoId?: string;
+  unsplashAuthorName?: string;
+  unsplashAuthorLink?: string;
   durationSec?: number;
   level?: "beginner" | "intermediate" | "advanced" | string;
   tags?: string[];

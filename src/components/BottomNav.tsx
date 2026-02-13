@@ -1,14 +1,14 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, BookOpen, Settings, Layers, Sparkles } from "lucide-react";
+import { House, Library, SlidersHorizontal, Clock3, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { path: "/home", icon: Home, label: "홈" },
-  { path: "/library", icon: BookOpen, label: "라이브러리" },
-  { path: "/resources", icon: Sparkles, label: "리소스" },
-  { path: "/srs", icon: Layers, label: "복습" },
-  { path: "/settings", icon: Settings, label: "설정" },
+  { path: "/home", icon: House, label: "홈" },
+  { path: "/library", icon: Library, label: "라이브러리" },
+  { path: "/resources", icon: Compass, label: "리소스" },
+  { path: "/srs", icon: Clock3, label: "복습" },
+  { path: "/settings", icon: SlidersHorizontal, label: "설정" },
 ];
 
 const BottomNav: React.FC = () => {
@@ -16,9 +16,9 @@ const BottomNav: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-3 left-0 right-0 z-50 px-3 safe-area-bottom">
-      <div className="mx-auto w-fit rounded-full bg-secondary/95 p-2 backdrop-blur-xl shadow-[0_12px_26px_-12px_rgba(15,23,42,0.55)]">
-        <div className="flex items-center gap-2">
+    <nav className="fixed bottom-6 left-0 right-0 z-50 px-4 safe-area-bottom">
+      <div className="mx-auto w-fit">
+        <div className="flex items-center gap-2 rounded-full border border-border/80 bg-card/96 p-2 shadow-[0_12px_30px_-20px_rgba(0,0,0,0.45)] backdrop-blur">
           {NAV_ITEMS.map(({ path, icon: Icon, label }) => {
             const isActive = location.pathname.startsWith(path);
             return (
@@ -27,14 +27,14 @@ const BottomNav: React.FC = () => {
                 onClick={() => navigate(path)}
                 type="button"
                 className={cn(
-                  "group relative flex h-14 w-14 flex-col items-center justify-center rounded-full transition-all",
+                  "group relative flex h-14 w-14 items-center justify-center rounded-full transition-all",
                   isActive
-                    ? "bg-primary text-primary-foreground shadow-[0_8px_18px_-10px_rgba(15,23,42,0.8)]"
-                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                    ? "bg-primary text-primary-foreground shadow-[0_8px_18px_-12px_rgba(0,0,0,0.68)]"
+                    : "bg-secondary text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
                 aria-label={label}
               >
-                <Icon className={cn("w-4 h-4", isActive && "stroke-[2.5]")} />
+                <Icon className={cn("h-5 w-5", isActive && "stroke-[2.2]")} />
               </button>
             );
           })}

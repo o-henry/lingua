@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageShell from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { LEARNING_RESOURCE_DOC, LearningResourceSection, ResourceLanguage } from "@/data/learningResources";
 import { getSettings } from "@/lib/storage";
 
@@ -24,79 +24,90 @@ const ResourcesPage: React.FC = () => {
     () => LEARNING_RESOURCE_DOC.sections.find((section) => section.language === language && section.level === level),
     [language, level]
   );
+  const languageLabel = language === "japanese" ? "일본어" : "영어";
+  const languageShort = language === "japanese" ? "JP" : "EN";
 
   return (
     <>
-      <PageShell title="레벨별 추천 리소스">
-        <div className="rounded-xl border bg-card p-4 space-y-2">
-          <p className="text-sm font-semibold">{LEARNING_RESOURCE_DOC.title}</p>
-          <p className="text-xs text-muted-foreground">{LEARNING_RESOURCE_DOC.executiveSummary}</p>
-        </div>
-
-        <div className="mt-4 flex gap-2">
-          <Button type="button" size="sm" variant={language === "japanese" ? "default" : "outline"} onClick={() => setLanguage("japanese")}>
-            일본어
-          </Button>
-          <Button type="button" size="sm" variant={language === "english" ? "default" : "outline"} onClick={() => setLanguage("english")}>
-            영어
-          </Button>
-        </div>
-
-        <div className="mt-2 flex flex-wrap gap-2">
-          {LEVELS.map((entry) => (
-            <Button key={entry} type="button" size="sm" variant={level === entry ? "default" : "outline"} onClick={() => setLevel(entry)}>
-              {entry}
-            </Button>
-          ))}
-        </div>
-
-        {currentSection ? (
-          <div className="mt-4 space-y-3">
-            <div className="rounded-xl border bg-card p-4 space-y-2">
-              <div className="flex items-center gap-2">
-                <Badge>{currentSection.cefr}</Badge>
-                <span className="text-sm font-semibold">{language === "japanese" ? "일본어" : "영어"} · {currentSection.level}</span>
-              </div>
-              <p className="text-xs text-muted-foreground">{currentSection.intro}</p>
-              <p className="text-xs text-muted-foreground">{currentSection.summary}</p>
-            </div>
-
-            {currentSection.videos.map((video, idx) => {
-              const query = encodeURIComponent(`${video.title} ${video.channel}`);
-              const searchUrl = `https://www.youtube.com/results?search_query=${query}`;
-              return (
-                <div key={`${video.title}-${idx}`} className="rounded-xl border bg-card p-3 space-y-1">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm font-semibold leading-5">{idx + 1}. {video.title}</p>
-                    <a href={searchUrl} target="_blank" rel="noreferrer noopener" className="text-xs text-primary underline whitespace-nowrap">
-                      유튜브 찾기
-                    </a>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{video.channel} · {video.duration} · 약 {video.estimatedMinutes}분</p>
-                  <p className="text-xs"><span className="font-medium">학습 포인트:</span> {video.learningPoint}</p>
-                  <p className="text-xs"><span className="font-medium">추천 활동:</span> {video.activity}</p>
-                  <p className="text-[11px] text-muted-foreground">자막: {video.subtitles} · 라이선스: {video.license} · 안전성: {video.safety}</p>
-                </div>
-              );
-            })}
+      <PageShell title="추천 리소스" titleClassName="font-ko-bold">
+        <div className="ui-island rounded-[18px] p-4 space-y-4 font-ko-bold">
+          <div className="space-y-2">
+            <p className="text-sm font-medium">언어와 레벨을 선택하세요</p>
+            <p className="text-xs text-muted-foreground">필요한 난이도만 빠르게 선택해서 바로 학습 리소스를 확인하세요.</p>
           </div>
-        ) : (
-          <div className="mt-4 rounded-xl border bg-card p-4 text-sm text-muted-foreground">해당 레벨 데이터가 없습니다.</div>
-        )}
 
-        <div className="mt-6 rounded-xl border bg-card p-4 space-y-2">
-          <p className="text-sm font-semibold">시각자료</p>
-          <p className="text-xs text-muted-foreground">{LEARNING_RESOURCE_DOC.visualPie}</p>
-          <p className="text-xs text-muted-foreground">{LEARNING_RESOURCE_DOC.visualFlow}</p>
-          <p className="text-xs text-muted-foreground">{LEARNING_RESOURCE_DOC.sourceNote}</p>
-          <div className="space-y-1">
-            {LEARNING_RESOURCE_DOC.references.map((ref) => (
-              <a key={ref} href={ref} target="_blank" rel="noreferrer noopener" className="block text-xs text-primary underline break-all">
-                {ref}
-              </a>
+          <div className="grid grid-cols-2 gap-2 rounded-[var(--radius)] bg-secondary/70 p-1">
+            <Button type="button" size="sm" variant={language === "japanese" ? "default" : "ghost"} onClick={() => setLanguage("japanese")}>
+              일본어
+            </Button>
+            <Button type="button" size="sm" variant={language === "english" ? "default" : "ghost"} onClick={() => setLanguage("english")}>
+              영어
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 rounded-[var(--radius)] bg-secondary/70 p-1">
+            {LEVELS.map((entry) => (
+              <Button key={entry} type="button" size="sm" variant={level === entry ? "default" : "ghost"} onClick={() => setLevel(entry)}>
+                {entry}
+              </Button>
             ))}
           </div>
         </div>
+
+        {currentSection ? (
+          <div className="mt-4 space-y-4">
+            <div className="ui-island rounded-[10px] p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">{languageLabel} · {currentSection.level}</span>
+                <span className="rounded-[10px] bg-secondary px-2 py-1 text-xs font-medium">{currentSection.cefr}</span>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {currentSection.videos.map((video, idx) => {
+                const query = encodeURIComponent(`${video.title} ${video.channel}`);
+                const searchUrl = `https://www.youtube.com/results?search_query=${query}`;
+
+                return (
+                  <article
+                    key={`${video.title}-${idx}`}
+                    className="overflow-hidden rounded-[16px] border border-border/80 bg-card p-4 shadow-[0_10px_26px_-18px_rgba(8,11,20,0.36)]"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="inline-flex h-10 min-w-10 items-center justify-center rounded-[10px] border border-border/85 bg-secondary text-[11px] font-semibold">
+                        {languageShort}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[12px] text-muted-foreground">Open app</span>
+                        <a
+                          href={searchUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border/85 bg-secondary text-foreground transition-colors hover:bg-muted"
+                          aria-label={`${video.title} 열기`}
+                        >
+                          <ArrowUpRight className="h-4 w-4" />
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-[1fr_auto] items-end gap-3">
+                      <div className="min-w-0">
+                        <p className="line-clamp-3 text-[18px] leading-[1.2] font-medium text-foreground">{video.title}</p>
+                        <p className="mt-2 text-xs text-muted-foreground">{video.channel}</p>
+                        <div className="mt-3 inline-flex items-center rounded-[10px] border border-border/85 bg-secondary px-2 py-1 text-[11px] font-medium">
+                          {currentSection.level}
+                        </div>
+                      </div>
+                      <p className="text-[44px] leading-none tracking-tight text-foreground font-ko-bold">{String(idx + 1).padStart(2, "0")}</p>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="mt-4 rounded-[var(--radius)] bg-card p-4 text-sm text-muted-foreground font-ko-bold">해당 레벨 데이터가 없습니다.</div>
+        )}
       </PageShell>
       <BottomNav />
     </>

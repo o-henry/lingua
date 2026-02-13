@@ -9,7 +9,7 @@ import ExternalAiAskBar from "@/components/ai/ExternalAiAskBar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { AlertTriangle, Play } from "lucide-react";
+import { CircleAlert, CirclePlay } from "lucide-react";
 import { formatTime } from "@/domain/time";
 
 const shadowingStateKey = (clipId: string, startSec: number, endSec: number) => `dlb:shadowing:state:${clipId}:${startSec}:${endSec}`;
@@ -206,7 +206,7 @@ const Shadowing: React.FC = () => {
     return (
       <PageShell title={SHADOWING_TITLE} showBack onBack={() => navigate(-1)} noBottomNav>
         <div className="ui-island p-6 text-center mt-4">
-          <AlertTriangle className="w-8 h-8 text-warning mx-auto mb-2" />
+          <CircleAlert className="w-8 h-8 text-warning mx-auto mb-2" />
           <p className="font-medium">데이터 초기화가 필요합니다</p>
           <p className="text-sm text-muted-foreground mt-1">구버전 데이터가 감지되어 듣고 따라 말하기 기능을 잠시 사용할 수 없습니다.</p>
           <Button className="mt-4" onClick={() => navigate("/settings")}>설정에서 초기화하기</Button>
@@ -249,7 +249,7 @@ const Shadowing: React.FC = () => {
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold">원음 vs 내 녹음 비교</h3>
             <Button type="button" size="sm" variant="outline" onClick={() => setPlaybackNonce((prev) => prev + 1)}>
-              <Play className="w-4 h-4 mr-1" /> 원음 다시재생
+              <CirclePlay className="w-4 h-4 mr-1" /> 원음 다시재생
             </Button>
           </div>
 
