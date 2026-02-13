@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { ExternalLink, Files } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   AiAskTarget,
@@ -12,6 +13,7 @@ import {
 import { SegmentRef } from "@/lib/types";
 import { getSettings } from "@/lib/storage";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface ExternalAiAskBarProps {
   refData: SegmentRef;
@@ -20,6 +22,9 @@ interface ExternalAiAskBarProps {
   notes?: string;
   recordedAudioFile?: File | null;
   promptMode?: AiPromptMode;
+  actionMode?: "combined" | "split";
+  showPromptPreview?: boolean;
+  className?: string;
 }
 
 function audioBufferToWav(audioBuffer: AudioBuffer): Blob {
@@ -88,6 +93,9 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
   notes,
   recordedAudioFile,
   promptMode = "general",
+  actionMode = "combined",
+  showPromptPreview = false,
+  className,
 }) => {
   const forceGemini = promptMode === "shadowing-pronunciation";
   const [target, setTarget] = useState<AiAskTarget>(forceGemini ? "gemini" : "chatgpt");
@@ -148,59 +156,95 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const handleAsk = async () => {
+  const copyPrompt = async () => {
     if (!prompt) {
       toast.error("먼저 들은 문장 또는 메모를 입력해주세요");
-      return;
+      return false;
     }
 
     try {
       await navigator.clipboard.writeText(prompt);
+      return true;
     } catch {
       toast.error("프롬프트 복사에 실패했습니다");
-      return;
+      return false;
     }
+  };
 
-    if (recordedAudioFile) {
-      const stamp = Date.now();
-      const promptBlob = new Blob([prompt], { type: "text/plain;charset=utf-8" });
-      let audioForDownload = recordedAudioFile;
-      try {
-        audioForDownload = await convertAudioFileToWav(recordedAudioFile);
-      } catch {
-        // Keep the original file if conversion fails.
+  const prepareAttachmentDownloads = async () => {
+    if (!recordedAudioFile) {
+      if (promptMode === "shadowing-pronunciation") {
+        toast.warning("녹음을 먼저 한 뒤 질문하면 발음 교정 정확도가 훨씬 좋아집니다.");
       }
-
-      downloadBlob(promptBlob, `dlb-ai-prompt-${stamp}.txt`);
-      downloadBlob(audioForDownload, audioForDownload.name || `dlb-pronunciation-${stamp}.wav`);
-    } else if (promptMode === "shadowing-pronunciation") {
-      toast.warning("녹음을 먼저 한 뒤 질문하면 발음 교정 정확도가 훨씬 좋아집니다.");
+      return false;
     }
 
+    const stamp = Date.now();
+    const promptBlob = new Blob([prompt], { type: "text/plain;charset=utf-8" });
+    let audioForDownload = recordedAudioFile;
+    try {
+      audioForDownload = await convertAudioFileToWav(recordedAudioFile);
+    } catch {
+      audioForDownload = recordedAudioFile;
+    }
+
+    downloadBlob(promptBlob, `dlb-ai-prompt-${stamp}.txt`);
+    downloadBlob(audioForDownload, audioForDownload.name || `dlb-pronunciation-${stamp}.wav`);
+    return true;
+  };
+
+  const openAiTarget = () => {
     const finalTarget = forceGemini ? "gemini" : target;
     window.open(targetHomeUrl(finalTarget), "_blank", "noopener,noreferrer");
+    return finalTarget;
+  };
+
+  const handleCombinedAsk = async () => {
+    const copied = await copyPrompt();
+    if (!copied) return;
+
+    const downloaded = await prepareAttachmentDownloads();
+    const finalTarget = openAiTarget();
 
     toast.success(
-      recordedAudioFile
+      downloaded
         ? `${targetLabel(finalTarget)} 열기 완료 · 프롬프트 복사됨 · 프롬프트/녹음파일이 다운로드되었습니다`
         : `${targetLabel(finalTarget)} 열기 완료 · 프롬프트 복사됨`
     );
   };
 
+  const handleCopyOnly = async () => {
+    const copied = await copyPrompt();
+    if (!copied) return;
+
+    const downloaded = await prepareAttachmentDownloads();
+    toast.success(downloaded ? "프롬프트 복사됨 · 프롬프트/녹음파일 다운로드 완료" : "프롬프트가 복사되었습니다");
+  };
+
+  const handleOpenOnly = () => {
+    if (!prompt) {
+      toast.error("먼저 들은 문장 또는 메모를 입력해주세요");
+      return;
+    }
+
+    const finalTarget = openAiTarget();
+    toast.success(`${targetLabel(finalTarget)} 새 탭을 열었습니다`);
+  };
+
   return (
-    <div className="rounded-xl border bg-card p-3 space-y-3">
+    <div className={cn("rounded-xl border bg-card p-3 space-y-3", className)}>
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-medium">{promptMode === "shadowing-pronunciation" ? "발음 교정 질문하기" : "AI 질문하기"}</p>
         {forceGemini ? (
-          <span className="text-xs font-medium rounded-md border px-2 py-1 bg-muted">Gemini 전용</span>
+          <span className="rounded-md border bg-muted px-2 py-1 text-xs font-medium">Gemini 전용</span>
         ) : (
-          <div className="inline-flex rounded-md border p-0.5">
+          <div className="inline-flex rounded-full border p-0.5">
             <Button
               type="button"
               size="sm"
               variant={target === "chatgpt" ? "default" : "ghost"}
               onClick={() => setTarget("chatgpt")}
-              className="h-7 px-2"
+              className="h-7 rounded-full px-2"
             >
               ChatGPT
             </Button>
@@ -209,7 +253,7 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
               size="sm"
               variant={target === "gemini" ? "default" : "ghost"}
               onClick={() => setTarget("gemini")}
-              className="h-7 px-2"
+              className="h-7 rounded-full px-2"
             >
               Gemini
             </Button>
@@ -217,27 +261,44 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
         )}
       </div>
 
-      {!textForAsk && (
-        <p className="text-xs text-muted-foreground">먼저 들은 문장 또는 메모를 입력하면, 질문 프롬프트를 자동으로 만들어줘요.</p>
+      {!textForAsk && <p className="text-xs text-muted-foreground">먼저 들은 문장 또는 메모를 입력하면, 질문 프롬프트를 자동으로 만들어줘요.</p>}
+
+      {showPromptPreview && prompt && (
+        <div className="rounded-lg border bg-muted/35 p-3">
+          <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+            <span>질문 프롬프트 미리보기</span>
+            <span>{prompt.length} chars</span>
+          </div>
+          <pre className="max-h-40 overflow-auto whitespace-pre-wrap text-[11px] leading-4">{prompt}</pre>
+        </div>
       )}
+
       <p className="text-[11px] text-muted-foreground">
-        질문하기를 누르면 AI 사이트가 새 탭으로 열리고, 프롬프트가 클립보드에 복사됩니다.
-        <br />
-        {promptMode === "shadowing-pronunciation"
-          ? "붙여넣기 후, 방금 다운로드된 WAV 녹음 파일도 함께 첨부하세요."
-          : "AI 사이트 입력창에 붙여넣기(Ctrl/Cmd+V)해서 바로 질문하세요."}
+        {actionMode === "split"
+          ? "복사 버튼으로 프롬프트를 복사하고, 새탭 버튼으로 선택한 AI 사이트를 열어 붙여넣으세요."
+          : "질문하기를 누르면 AI 사이트가 새 탭으로 열리고, 프롬프트가 클립보드에 복사됩니다."}
       </p>
+
       {recordedAudioFile && (
         <p className="text-xs text-muted-foreground">
           녹음 파일 준비됨: <span className="font-medium">{recordedAudioFile.name}</span>
-          <br />
-          질문하기를 누르면 프롬프트 파일과 WAV 녹음 파일이 함께 내려받아집니다.
         </p>
       )}
 
-      <Button type="button" className="w-full" onClick={handleAsk} disabled={!prompt}>
-        질문하기
-      </Button>
+      {actionMode === "split" ? (
+        <div className="grid grid-cols-2 gap-2">
+          <Button type="button" onClick={() => void handleCopyOnly()} disabled={!prompt}>
+            <Files className="h-4 w-4" /> 프롬프트 복사
+          </Button>
+          <Button type="button" variant="outline" onClick={handleOpenOnly} disabled={!prompt}>
+            <ExternalLink className="h-4 w-4" /> AI 사이트 새탭 열기
+          </Button>
+        </div>
+      ) : (
+        <Button type="button" className="w-full" onClick={() => void handleCombinedAsk()} disabled={!prompt}>
+          질문하기
+        </Button>
+      )}
 
       <Button type="button" variant="outline" className="w-full" onClick={() => window.open(timeUrl, "_blank", "noopener,noreferrer")}>
         유튜브에서 이 구간 열기

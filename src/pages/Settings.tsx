@@ -194,7 +194,7 @@ const SettingsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-center mt-8 text-xs text-muted-foreground">LingoPlay v1.0</div>
+        <div className="text-center mt-8 text-xs text-muted-foreground"></div>
       </PageShell>
       <BottomNav />
     </>

@@ -31,21 +31,21 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <PageShell title="LingoPlay">
+      <PageShell title="Orbit">
         <button
           onClick={() => navigate("/srs")}
-          className="w-full mb-6 p-4 rounded-xl gradient-accent text-accent-foreground flex items-center justify-between"
+          className="w-full text-start mb-6 p-4 rounded-xl gradient-accent text-accent-foreground flex items-center justify-between"
         >
           <div>
             <div className="font-bold text-sm">복습할 카드 {dueCount}개</div>
             <div className="text-xs opacity-80">{dueCount > 0 ? "지금 복습하기 →" : "아직 복습할 카드가 없습니다"}</div>
           </div>
-          <Layers className="w-8 h-8 opacity-60" />
+          {/* <Layers className="w-8 h-8 opacity-60" /> */}
         </button>
 
         <h2 className="text-lg font-bold mb-3">오늘의 학습</h2>
         {todayClip ? (
-          <div className="bg-card rounded-xl border overflow-hidden">
+          <div className="bg-card rounded-3xl overflow-hidden">
             <img
               src={`https://img.youtube.com/vi/${todayClip.videoId}/mqdefault.jpg`}
               alt={todayClip.title || todayClip.videoId}
