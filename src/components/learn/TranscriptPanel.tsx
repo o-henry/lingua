@@ -155,7 +155,10 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
 
         <div ref={selectionContainerRef} onMouseUp={updateSelectionFromDom} className="space-y-2 max-h-72 overflow-auto pr-1 scrollbar-none">
           {lines.length === 0 ? (
-            <p className="text-xs text-muted-foreground">아직 자막 텍스트가 없습니다.</p>
+            <div className="rounded-[var(--radius)] bg-card/70 px-3 py-4">
+              <p className="text-xs text-muted-foreground">아직 자막 텍스트가 없습니다.</p>
+              <p className="mt-2 text-[11px] text-muted-foreground">아래 붙여넣기 박스에 YouTube 스크립트나 SRT/VTT 파일을 추가하면 바로 학습 구간을 선택할 수 있습니다.</p>
+            </div>
           ) : (
             lines.map((line, index) => {
               const selected = selectedIndices.has(index);
@@ -182,7 +185,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       </div>
 
       {pasteOpen ? (
-        <section className="rounded-[var(--radius-sm)] border border-white/60 bg-card/70 p-4 space-y-3 backdrop-blur-md">
+        <section className="rounded-[var(--radius-sm)] border border-white/60 bg-card/70 space-y-3 backdrop-blur-md">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
               <p className="text-sm font-semibold">사용자 제공 자막 붙여넣기</p>

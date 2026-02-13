@@ -6,7 +6,7 @@ interface LearningStageMobileProps {
   rightPanel: React.ReactNode;
 }
 
-const TABLET_QUERY = "(min-width: 768px) and (max-width: 1199px)";
+const TABLET_QUERY = "(min-width: 876px) and (max-width: 1199px)";
 
 const useMediaQuery = (query: string) => {
   const [matches, setMatches] = React.useState(false);

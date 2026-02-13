@@ -74,9 +74,14 @@ const VideoStage: React.FC = () => {
             </div>
           ) : (
             shouldShowTranscriptGuide && (
-              <Button type="button" size="sm" variant="ghost" onClick={reopenTranscriptGuide} className="w-fit px-2">
-                안내 다시 보기
-              </Button>
+              <div className="rounded-[var(--radius-sm)] bg-secondary/60 p-4">
+                <p className="text-xs text-muted-foreground">
+                  아직 자막이 등록되지 않았습니다. 먼저 왼쪽 패널에서 스크립트를 붙여넣고 안내를 다시 확인하세요.
+                </p>
+                <Button type="button" size="sm" variant="ghost" onClick={reopenTranscriptGuide} className="mt-2 w-fit px-2">
+                  안내 다시 보기
+                </Button>
+              </div>
             )
           )}
         </section>
@@ -84,24 +89,24 @@ const VideoStage: React.FC = () => {
 
       <section className="learning-card space-y-3">
         <div className="learning-controlbar">
-          <div className="learning-soft-pill text-xs">
+          <div className="learning-soft-pill h-10 text-xs">
             <span className="font-medium">AB</span>
             <span className="text-muted-foreground">
               {formatTime(startSec)} - {formatTime(effectiveEndSec)}
             </span>
           </div>
 
-          <label className="learning-soft-pill text-xs">
+          <label className="learning-soft-pill h-10 text-xs">
             <Repeat2 className="h-3.5 w-3.5 text-muted-foreground" />
             반복
             <Switch checked={loopEnabled} onCheckedChange={handleLoopToggle} />
           </label>
 
-          <div className="inline-flex rounded-[var(--radius-lg)] bg-secondary p-1">
-            <Button type="button" size="sm" variant="ghost" className="h-7 px-2" onClick={jumpToPrevSegment}>
+          <div className="learning-soft-pill h-10 px-1">
+            <Button type="button" size="sm" variant="ghost" className="h-8 px-2" onClick={jumpToPrevSegment}>
               <ChevronLeft className="h-3.5 w-3.5" /> 이전
             </Button>
-            <Button type="button" size="sm" variant="ghost" className="h-7 px-2" onClick={jumpToNextSegment}>
+            <Button type="button" size="sm" variant="ghost" className="h-8 px-2" onClick={jumpToNextSegment}>
               다음 <ChevronRight className="h-3.5 w-3.5" />
             </Button>
           </div>
