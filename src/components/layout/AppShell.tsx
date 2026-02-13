@@ -10,6 +10,7 @@ interface AppShellProps {
   onBack?: () => void;
   rightAction?: React.ReactNode;
   showBottomNav?: boolean;
+  showDesktopRail?: boolean;
   className?: string;
 }
 
@@ -37,6 +38,7 @@ const AppShell: React.FC<AppShellProps> = ({
   onBack,
   rightAction,
   showBottomNav = false,
+  showDesktopRail = true,
   className,
 }) => {
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
@@ -68,8 +70,8 @@ const AppShell: React.FC<AppShellProps> = ({
   if (isDesktop) {
     return (
       <div className={cn("min-h-screen bg-background", className)}>
-        <div className="learning-shell-desktop">
-          <LeftRail />
+        <div className={cn(showDesktopRail ? "learning-shell-desktop" : "min-h-screen")}>
+          {showDesktopRail && <LeftRail />}
           <div className="min-w-0">
             {header}
             <main className="px-6 py-4">{children}</main>

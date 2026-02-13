@@ -238,22 +238,22 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
         {forceGemini ? (
           <span className="rounded-[var(--radius-sm)] bg-secondary px-2 py-1 text-xs font-medium">Gemini 전용</span>
         ) : (
-          <div className="inline-flex rounded-full bg-secondary p-0.5">
+          <div className="flex items-center gap-2">
             <Button
               type="button"
               size="sm"
-              variant={target === "chatgpt" ? "default" : "ghost"}
+              variant={target === "chatgpt" ? "default" : "outline"}
               onClick={() => setTarget("chatgpt")}
-              className="h-7 rounded-full px-2"
+              className="h-8 px-3 font-free-mono-bold"
             >
               ChatGPT
             </Button>
             <Button
               type="button"
               size="sm"
-              variant={target === "gemini" ? "default" : "ghost"}
+              variant={target === "gemini" ? "default" : "outline"}
               onClick={() => setTarget("gemini")}
-              className="h-7 rounded-full px-2"
+              className="h-8 px-3 font-free-mono-bold"
             >
               Gemini
             </Button>

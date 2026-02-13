@@ -17,12 +17,10 @@ const PracticePanel: React.FC = () => {
     currentRef,
     heardSentence,
     notes,
-    confidence,
     saveError,
     savedItems,
     setHeardSentence,
     setNotes,
-    setConfidence,
     handleSaveMemory,
     selectSavedMemory,
     getShadowingTextSeed,
@@ -48,24 +46,7 @@ const PracticePanel: React.FC = () => {
 
         <Textarea rows={3} value={heardSentence} onChange={(event) => setHeardSentence(event.target.value)} placeholder="들린 문장을 입력하세요" />
 
-        <Textarea rows={2} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="의미/해석/메모 (선택)" />
-
-        <div>
-          <label className="text-xs text-muted-foreground">이해도 (1~5)</label>
-          <div className="mt-1 flex gap-2">
-            {[1, 2, 3, 4, 5].map((value) => (
-              <Button
-                key={value}
-                type="button"
-                variant={confidence === value ? "default" : "outline"}
-                size="sm"
-                onClick={() => setConfidence(value as 1 | 2 | 3 | 4 | 5)}
-              >
-                {value}
-              </Button>
-            ))}
-          </div>
-        </div>
+        <Textarea rows={2} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="의미/해석 (선택)" />
 
         {saveError && <div className="text-xs text-destructive">{saveError}</div>}
 
@@ -86,12 +67,12 @@ const PracticePanel: React.FC = () => {
 
       <section className="learning-card space-y-2">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold">저장된 메모</h3>
+          <h3 className="text-sm font-semibold">저장된 표현</h3>
           <Badge variant="secondary">{savedItems.length}개</Badge>
         </div>
 
         {savedItems.length === 0 ? (
-          <div className="rounded-[var(--radius-sm)] bg-secondary/70 p-4 text-xs text-muted-foreground">아직 저장된 메모가 없습니다.</div>
+          <div className="rounded-[var(--radius-sm)] bg-secondary/70 p-4 text-xs text-muted-foreground">아직 저장된 표현이 없습니다.</div>
         ) : (
           savedItems.slice(0, 8).map((item) => (
             <button

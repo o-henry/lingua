@@ -5,14 +5,13 @@
   --learn-space-20: 20px;
   --learn-space-24: 24px;
 
-  --learn-radius-12: var(--radius-sm);
-  --learn-radius-16: var(--radius);
-  --learn-radius-20: var(--radius-lg);
-  --learn-radius-pill: var(--radius-pill);
+  --learn-radius-12: 12px;
+  --learn-radius-16: 16px;
+  --learn-radius-20: 20px;
+  --learn-radius-pill: 999px;
 
-  --learn-border: 1px solid hsl(var(--border) / 0.35);
-  --learn-shadow-1: 0 12px 28px -22px rgba(15, 23, 42, 0.46);
-  --learn-shadow-2: 0 18px 32px -24px rgba(15, 23, 42, 0.52);
+  --learn-shadow-1: 0 16px 26px -24px rgba(15, 23, 42, 0.46);
+  --learn-shadow-2: 0 24px 36px -26px rgba(15, 23, 42, 0.52);
 }
 
 .learning-shell-desktop {
@@ -69,27 +68,24 @@
   gap: var(--learn-space-12);
 }
 
-.learning-desktop-grid {
+.learning-focus-layout {
   display: grid;
   gap: var(--learn-space-16);
-  grid-template-columns: 320px minmax(0, 1fr) 360px;
-  min-height: calc(100vh - 92px);
+  grid-template-columns: 1.25fr 0.95fr;
+  align-items: start;
 }
 
-.learning-panel-scroll {
-  overflow-y: auto;
-  max-height: calc(100vh - 92px);
-  padding-right: 2px;
-}
-
-.learning-center-column {
+.learning-focus-main {
   min-width: 0;
 }
 
-.learning-center-inner {
-  width: min(1040px, 100%);
-  justify-self: center;
-  margin: 0 auto;
+.learning-focus-transcript {
+  min-width: 0;
+}
+
+.learning-focus-tools {
+  grid-column: 1 / -1;
+  min-width: 0;
 }
 
 .learning-card {
@@ -122,32 +118,39 @@
   padding: 8px 12px;
 }
 
-.learning-tablet-grid {
+.learning-tablet-focus-grid {
   display: grid;
   gap: var(--learn-space-16);
-  grid-template-columns: 320px minmax(0, 1fr);
-  min-height: calc(100vh - 72px);
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: start;
 }
 
-.learning-tablet-left {
+.learning-tablet-left,
+.learning-focus-transcript {
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
-  max-height: calc(100vh - 92px);
   padding-right: 2px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.learning-tablet-left::-webkit-scrollbar,
+.learning-focus-transcript::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .learning-tablet-center {
   min-width: 0;
 }
 
-@media (max-width: 1199px) {
-  .learning-desktop-grid {
-    display: block;
-    min-height: auto;
-  }
+.learning-tablet-tools {
+  grid-column: 1 / -1;
+}
 
-  .learning-panel-scroll {
-    overflow: visible;
-    max-height: none;
+@media (max-width: 1199px) {
+  .learning-focus-layout {
+    display: block;
   }
 }
 

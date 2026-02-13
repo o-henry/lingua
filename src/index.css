@@ -3,48 +3,40 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "LINE Seed KR";
-  src: url("./assets/fonts/line-seed/LINESeedKR-Th.woff2") format("woff2");
+  font-family: "1984 Dialogue";
+  src: url("./assets/fonts/1984/1984Dialogue-Light.otf") format("opentype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "LINE Seed KR";
-  src: url("./assets/fonts/line-seed/LINESeedKR-Rg.woff2") format("woff2");
+  font-family: "1984 Dialogue";
+  src: url("./assets/fonts/1984/1984Dialogue-Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "LINE Seed KR";
-  src: url("./assets/fonts/line-seed/LINESeedKR-Bd.woff2") format("woff2");
+  font-family: "1984 Dialogue";
+  src: url("./assets/fonts/1984/1984Dialogue-Bold.otf") format("opentype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "LINE Seed Sans";
-  src: url("./assets/fonts/line-seed/LINESeedSans_W_Rg.woff2") format("woff2");
+  font-family: "Free Mono";
+  src: url("./assets/fonts/custom/FreeMono.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "LINE Seed Sans";
-  src: url("./assets/fonts/line-seed/LINESeedSans_W_He.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "LINE Seed Sans";
-  src: url("./assets/fonts/line-seed/LINESeedSans_W_Bd.woff2") format("woff2");
+  font-family: "Free Mono";
+  src: url("./assets/fonts/custom/FreeMonoBold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -76,10 +68,10 @@
 
 @layer base {
   :root {
-    --font-seed: "LINE Seed KR", "LINE Seed Sans", "LINE Seed JP", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-    --font-ko: var(--font-seed);
-    --font-en: var(--font-seed);
-    --font-jp: var(--font-seed);
+    --font-main: "1984 Dialogue", "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+    --font-ko: var(--font-main);
+    --font-en: var(--font-main);
+    --font-jp: "LINE Seed JP", "Hiragino Sans", "Yu Gothic", sans-serif;
     --background: 40 33% 98%;
     --foreground: 220 20% 14%;
 
@@ -108,12 +100,12 @@
     --input: 40 15% 88%;
     --ring: 168 60% 38%;
 
-    --radius: 1rem;
-    --radius-sm: 0.875rem;
-    --radius-lg: 1.25rem;
+    --radius: 0.3rem;
+    --radius-sm: 0.24rem;
+    --radius-lg: 0.8rem;
     --radius-pill: 999px;
-    --island-shadow: 0 14px 30px -22px rgba(15, 23, 42, 0.42);
-    --island-shadow-strong: 0 18px 36px -24px rgba(15, 23, 42, 0.5);
+    --island-shadow: 0 12px 24px -20px rgba(15, 23, 42, 0.38);
+    --island-shadow-strong: 0 18px 28px -20px rgba(15, 23, 42, 0.45);
 
     --success: 152 60% 42%;
     --success-foreground: 0 0% 100%;
@@ -186,7 +178,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: var(--font-seed);
+    font-family: var(--font-main);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -194,24 +186,24 @@
   }
 
   :lang(en) {
-    font-family: var(--font-seed);
+    font-family: var(--font-main);
   }
 
   :lang(ja) {
-    font-family: var(--font-seed);
+    font-family: var(--font-jp);
   }
 }
 
 @layer components {
   .ui-island {
     @apply bg-card text-foreground;
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     box-shadow: var(--island-shadow);
   }
 
   .ui-island-strong {
     @apply bg-card text-foreground;
-    border-radius: var(--radius-lg);
+    border-radius: 1rem;
     box-shadow: var(--island-shadow-strong);
   }
 
@@ -242,5 +234,17 @@
   }
   .font-jp {
     font-family: var(--font-jp);
+  }
+  .font-free-mono-bold {
+    font-family: "Free Mono", monospace;
+    font-weight: 700;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
 }

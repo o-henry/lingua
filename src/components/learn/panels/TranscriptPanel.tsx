@@ -1,5 +1,5 @@
 import React from "react";
-import { AlertTriangle, Repeat } from "lucide-react";
+import { Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -13,7 +13,6 @@ const TranscriptPanel: React.FC = () => {
     persistTranscript,
     transcriptLines,
     selectedTranscriptText,
-    subtitleDisplayMode,
     segmentMode,
     loopEnabled,
     startSec,
@@ -35,7 +34,6 @@ const TranscriptPanel: React.FC = () => {
     handleLoopToggle,
     activateTranscriptLine,
     activateTranscriptRange,
-    addSelectedTranscriptToHeardSentence,
   } = useLearnState();
 
   if (!clip) return null;
@@ -49,19 +47,16 @@ const TranscriptPanel: React.FC = () => {
             persistEnabled={persistTranscript}
             onLinesChange={setTranscriptLinesWithCache}
             onSelectionChange={setSelectedTranscriptText}
-            displayMode={subtitleDisplayMode}
+            displayMode="subtitle"
             onLineActivate={activateTranscriptLine}
             onRangeActivate={activateTranscriptRange}
           />
 
           <div className="rounded-[var(--radius-sm)] bg-secondary/65 p-3 space-y-2">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-medium">선택 텍스트</p>
-              <Button type="button" size="sm" variant="outline" disabled={!selectedTranscriptText} onClick={addSelectedTranscriptToHeardSentence}>
-                복습 텍스트로 추가
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground break-words">{selectedTranscriptText || "아직 선택된 텍스트가 없습니다."}</p>
+            <p className="text-xs font-medium">선택 텍스트</p>
+            <p className="text-xs text-muted-foreground break-words">
+              {selectedTranscriptText || "자막을 클릭하면 들은 문장에 자동으로 추가됩니다."}
+            </p>
           </div>
         </section>
       )}
@@ -177,12 +172,6 @@ const TranscriptPanel: React.FC = () => {
           <span className="rounded-full bg-secondary px-3 py-1">선택 모드: {segmentMode === "subtitle" ? "자막" : "시간"}</span>
           <span className="rounded-full bg-secondary px-3 py-1">자막 줄 수: {transcriptLines.length}</span>
         </div>
-        {clip.captionsAvailable === false && (
-          <div className="mt-3 flex items-start gap-2 rounded-[var(--radius-sm)] bg-warning/12 p-2 text-xs">
-            <AlertTriangle className="mt-0.5 h-4 w-4 text-warning" />
-            <p>자막 없음 영상이라 시간 모드 중심 학습이 권장됩니다.</p>
-          </div>
-        )}
       </section>
     </div>
   );

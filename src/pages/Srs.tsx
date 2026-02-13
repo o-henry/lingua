@@ -221,9 +221,9 @@ const SrsPage: React.FC = () => {
               transition={{ duration: 0.2 }}
             >
               {editing ? (
-                <div className="ui-island p-6 space-y-4">
+                <div className="ui-island rounded-[10px] p-6 space-y-4 shadow-[0_18px_30px_-24px_rgba(15,23,42,0.5)]">
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground">userText</label>
+                    <label className="text-xs font-medium text-muted-foreground">표현</label>
                     <Textarea value={editUserText} onChange={(e) => setEditUserText(e.target.value)} rows={3} />
                   </div>
 
@@ -255,10 +255,32 @@ const SrsPage: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <button
-                  className="ui-island w-full p-8 min-h-[220px] flex flex-col items-center justify-center text-center cursor-pointer hover:shadow-[var(--island-shadow-strong)] transition-shadow"
+                <div
+                  role="button"
+                  tabIndex={0}
+                  className="ui-island relative w-full rounded-[10px] p-8 min-h-[220px] flex flex-col items-center justify-center text-center cursor-pointer shadow-[0_20px_34px_-24px_rgba(15,23,42,0.52)] hover:shadow-[0_24px_36px_-24px_rgba(15,23,42,0.58)] transition-shadow"
                   onClick={() => setFlipped((prev) => !prev)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setFlipped((prev) => !prev);
+                    }
+                  }}
                 >
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setEditUserText(currentItem.memory.userText || "");
+                      setEditNotes(currentItem.memory.notes || "");
+                      setEditConfidence(currentItem.memory.confidence);
+                      setEditing(true);
+                    }}
+                    className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-[8px] bg-secondary px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground"
+                  >
+                    <Edit2 className="h-3.5 w-3.5" />
+                    수정
+                  </button>
                   {!flipped ? (
                     <>
                       <p className="text-xs text-muted-foreground mb-3">탭하여 뒤집기</p>
@@ -286,26 +308,10 @@ const SrsPage: React.FC = () => {
                       <p className="text-xs text-muted-foreground mt-2">구간 재생으로 실제 음성을 확인하세요.</p>
                     </>
                   )}
-                </button>
+                </div>
               )}
             </motion.div>
           </AnimatePresence>
-
-          {!editing && (
-            <div className="flex justify-center gap-2">
-              <button
-                onClick={() => {
-                  setEditUserText(currentItem.memory.userText || "");
-                  setEditNotes(currentItem.memory.notes || "");
-                  setEditConfidence(currentItem.memory.confidence);
-                  setEditing(true);
-                }}
-                className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary"
-              >
-                <Edit2 className="w-4 h-4" />
-              </button>
-            </div>
-          )}
 
           {flipped && !editing && (
             <div className="space-y-4">

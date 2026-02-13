@@ -20,7 +20,7 @@ const PageShell: React.FC<PageShellProps> = ({
   noBottomNav,
 }) => {
   return (
-    <div className={`min-h-screen bg-background ${noBottomNav ? "" : "pb-28"}`}>
+    <div className={`min-h-screen bg-background ${noBottomNav ? "" : "pb-20"}`}>
       {(title || showBack || rightAction) && (
         <header className="sticky top-0 z-40 bg-background/96 backdrop-blur-sm">
           <div className="flex items-center justify-between h-14 px-4 max-w-md mx-auto">

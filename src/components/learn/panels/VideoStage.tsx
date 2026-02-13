@@ -20,19 +20,15 @@ const VideoStage: React.FC = () => {
     endSec,
     effectiveEndSec,
     youtubeScriptUrl,
+    transcriptLines,
     loopEnabled,
     shouldShowTranscriptGuide,
     showTranscriptGuide,
-    subtitleDisplayMode,
-    translationVisible,
     requestAutoplay,
     embedDisabled,
-    chooseCaptionsStatus,
     dismissTranscriptGuide,
     reopenTranscriptGuide,
     setEmbedDisabled,
-    setSubtitleDisplayMode,
-    setTranslationVisible,
     handleLoopToggle,
     jumpToPrevSegment,
     jumpToNextSegment,
@@ -71,86 +67,39 @@ const VideoStage: React.FC = () => {
       )}
 
       <section className="learning-card space-y-3">
-        {clip.captionsAvailable === "unknown" && (
-          <div className="rounded-[var(--radius-sm)] bg-secondary/70 p-3">
-            <p className="text-sm font-medium">이 영상의 자막 상태를 선택하세요</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <Button size="sm" variant="outline" onClick={() => void chooseCaptionsStatus(true)}>
-                자막 있음
-              </Button>
-              <Button size="sm" variant="outline" onClick={() => void chooseCaptionsStatus(false)}>
-                자막 없음
-              </Button>
-            </div>
-          </div>
-        )}
-
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm font-semibold">자막 설정 / 스크립트 붙여넣기</p>
-          <Button type="button" size="sm" variant="outline" asChild>
-            <a href={youtubeScriptUrl} target="_blank" rel="noopener noreferrer">
-              YouTube에서 스크립트 열기
-            </a>
-          </Button>
-        </div>
-
-        {showTranscriptGuide ? (
-          <div className="rounded-[var(--radius-sm)] bg-secondary/70 p-3">
-            <ol className="space-y-1 text-xs text-muted-foreground">
-              <li>1. YouTube에서 영상 아래 더보기를 열고 스크립트를 표시합니다.</li>
-              <li>2. 필요한 구간을 복사(Ctrl/Cmd+C)한 뒤 이 앱에 붙여넣습니다.</li>
-              <li>3. 타임코드가 있으면 줄 클릭과 Shift 선택으로 구간이 자동 설정됩니다.</li>
-            </ol>
-            <div className="mt-2 flex justify-end">
-              <Button type="button" variant="ghost" size="sm" onClick={dismissTranscriptGuide}>
-                닫기
+        {transcriptLines.length === 0 && (
+          <>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-semibold">자막 스크립트 붙여넣기</p>
+              <Button type="button" size="sm" variant="outline" asChild>
+                <a href={youtubeScriptUrl} target="_blank" rel="noopener noreferrer">
+                  YouTube에서 스크립트 열기
+                </a>
               </Button>
             </div>
-          </div>
-        ) : (
-          shouldShowTranscriptGuide && (
-            <Button type="button" size="sm" variant="ghost" onClick={reopenTranscriptGuide} className="w-fit px-2">
-              안내 다시 보기
-            </Button>
-          )
+
+            {showTranscriptGuide ? (
+              <div className="rounded-[var(--radius-sm)] bg-secondary/70 p-3">
+                <ol className="space-y-1 text-xs text-muted-foreground">
+                  <li>1. YouTube에서 영상 아래 더보기를 열고 스크립트를 표시합니다.</li>
+                  <li>2. 필요한 구간을 복사(Ctrl/Cmd+C)한 뒤 이 앱에 붙여넣습니다.</li>
+                  <li>3. 타임코드가 있으면 줄 클릭과 Shift 선택으로 구간이 자동 설정됩니다.</li>
+                </ol>
+                <div className="mt-2 flex justify-end">
+                  <Button type="button" variant="ghost" size="sm" onClick={dismissTranscriptGuide}>
+                    닫기
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              shouldShowTranscriptGuide && (
+                <Button type="button" size="sm" variant="ghost" onClick={reopenTranscriptGuide} className="w-fit px-2">
+                  안내 다시 보기
+                </Button>
+              )
+            )}
+          </>
         )}
-
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex rounded-full bg-secondary p-1">
-            <Button
-              type="button"
-              size="sm"
-              variant={subtitleDisplayMode === "none" ? "default" : "ghost"}
-              onClick={() => setSubtitleDisplayMode("none")}
-              className="h-8 rounded-full px-3"
-            >
-              무자막
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={subtitleDisplayMode === "subtitle" ? "default" : "ghost"}
-              onClick={() => setSubtitleDisplayMode("subtitle")}
-              className="h-8 rounded-full px-3"
-            >
-              자막
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={subtitleDisplayMode === "slash" ? "default" : "ghost"}
-              onClick={() => setSubtitleDisplayMode("slash")}
-              className="h-8 rounded-full px-3"
-            >
-              의미단위(/)
-            </Button>
-          </div>
-
-          <label className="ml-auto inline-flex items-center gap-2 text-xs text-muted-foreground">
-            번역
-            <Switch checked={translationVisible} onCheckedChange={setTranslationVisible} />
-          </label>
-        </div>
       </section>
 
       <section className="learning-card space-y-3">

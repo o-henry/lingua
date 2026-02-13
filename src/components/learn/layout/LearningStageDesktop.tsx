@@ -8,12 +8,10 @@ interface LearningStageDesktopProps {
 
 const LearningStageDesktop: React.FC<LearningStageDesktopProps> = ({ leftPanel, centerStage, rightPanel }) => {
   return (
-    <div className="learning-desktop-grid">
-      <aside className="learning-panel-scroll">{leftPanel}</aside>
-      <section className="learning-center-column">
-        <div className="learning-center-inner">{centerStage}</div>
-      </section>
-      <aside className="learning-panel-scroll">{rightPanel}</aside>
+    <div className="learning-focus-layout">
+      <section className="learning-focus-main">{centerStage}</section>
+      <aside className="learning-focus-transcript">{leftPanel}</aside>
+      <section className="learning-focus-tools">{rightPanel}</section>
     </div>
   );
 };

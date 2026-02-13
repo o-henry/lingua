@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TranscriptLine, parseUserProvidedTranscript } from "@/domain/transcript";
-import { formatTime, parseTime } from "@/domain/time";
+import { formatTime } from "@/domain/time";
 import { cn } from "@/lib/utils";
 
 interface TranscriptPanelProps {
@@ -26,9 +25,6 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
   onRangeActivate,
 }) => {
   const [rawInput, setRawInput] = useState("");
-  const [manualText, setManualText] = useState("");
-  const [manualStartRaw, setManualStartRaw] = useState("");
-  const [manualEndRaw, setManualEndRaw] = useState("");
   const [pasteOpen, setPasteOpen] = useState(lines.length === 0);
   const [anchorIndex, setAnchorIndex] = useState<number | null>(null);
   const [selectedIndices, setSelectedIndices] = useState<Set<number>>(new Set());
@@ -86,26 +82,6 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
     setRawInput(parsed.cleanedInput || sourceText);
     setPasteOpen(false);
     resetSelection();
-  };
-
-  const handleManualAdd = () => {
-    const text = manualText.trim();
-    if (!text) return;
-
-    const parsedStart = parseTime(manualStartRaw);
-    const parsedEnd = parseTime(manualEndRaw);
-
-    const nextLine: TranscriptLine = {
-      id: `manual_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-      text,
-      ...(parsedStart !== null ? { startSec: parsedStart } : {}),
-      ...(parsedEnd !== null ? { endSec: parsedEnd } : {}),
-    };
-
-    onLinesChange([...lines, nextLine]);
-    setManualText("");
-    setManualStartRaw("");
-    setManualEndRaw("");
   };
 
   const updateSelectionFromDom = () => {
@@ -177,7 +153,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
           선택한 텍스트는 아래 저장 섹션으로 보낼 수 있습니다. {persistEnabled ? "붙여넣은 자막은 이 기기에 계속 저장됩니다." : ""}
         </p>
 
-        <div ref={selectionContainerRef} onMouseUp={updateSelectionFromDom} className="space-y-2 max-h-72 overflow-auto pr-1">
+        <div ref={selectionContainerRef} onMouseUp={updateSelectionFromDom} className="space-y-2 max-h-72 overflow-auto pr-1 scrollbar-none">
           {lines.length === 0 ? (
             <p className="text-xs text-muted-foreground">아직 자막 텍스트가 없습니다.</p>
           ) : (
@@ -286,38 +262,6 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
           </details>
         </div>
       )}
-
-      <details className="rounded-[var(--radius-sm)] bg-secondary/65 p-3 space-y-2">
-        <summary className="text-xs font-medium cursor-pointer">수동 한 줄 추가 (고급)</summary>
-        <div className="space-y-2 mt-2">
-          <Textarea
-            rows={2}
-            value={manualText}
-            onChange={(e) => setManualText(e.target.value)}
-            placeholder="들린 문장을 직접 입력"
-          />
-          <div className="grid grid-cols-2 gap-2">
-            <Input
-              type="text"
-              inputMode="numeric"
-              value={manualStartRaw}
-              onChange={(e) => setManualStartRaw(e.target.value)}
-              placeholder="시작(mm:ss)"
-            />
-            <Input
-              type="text"
-              inputMode="numeric"
-              value={manualEndRaw}
-              onChange={(e) => setManualEndRaw(e.target.value)}
-              placeholder="끝(mm:ss)"
-            />
-          </div>
-          <Button type="button" variant="outline" size="sm" onClick={handleManualAdd} disabled={!manualText.trim()}>
-            라인 추가
-          </Button>
-        </div>
-      </details>
-
     </div>
   );
 };

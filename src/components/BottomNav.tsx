@@ -16,7 +16,7 @@ const BottomNav: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-4 left-0 right-0 z-50 px-3 safe-area-bottom">
+    <nav className="fixed bottom-3 left-0 right-0 z-50 px-3 safe-area-bottom">
       <div className="mx-auto w-fit rounded-full bg-secondary/95 p-2 backdrop-blur-xl shadow-[0_12px_26px_-12px_rgba(15,23,42,0.55)]">
         <div className="flex items-center gap-2">
           {NAV_ITEMS.map(({ path, icon: Icon, label }) => {

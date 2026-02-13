@@ -171,7 +171,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
     } catch {
       // If API call fails transiently, keep current player state.
     }
-  }, [videoId, normalizedStart, normalizedEnd, ready, autoplay, error]);
+  }, [videoId, normalizedStart, normalizedEnd, ready, error]);
 
   useEffect(() => {
     if (!ready || !playerRef.current || !loop || normalizedEnd === undefined || error) {

@@ -5,7 +5,6 @@ import {
   getMemoryByClipId,
   getSrsCardByMemoryId,
   getStorageStatus,
-  saveClip,
   saveMemoryItem,
   saveSrsCard,
 } from "@/lib/storage";
@@ -141,7 +140,7 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
   const [startInputRaw, setStartInputRaw] = useState("00:00");
   const [endInputRaw, setEndInputRaw] = useState("");
 
-  const [segmentMode, setSegmentModeState] = useState<SegmentMode>("time");
+  const [segmentMode, setSegmentModeState] = useState<SegmentMode>("subtitle");
   const [transcriptLines, setTranscriptLines] = useState<TranscriptLine[]>([]);
   const [selectedTranscriptText, setSelectedTranscriptText] = useState("");
 
@@ -191,12 +190,9 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
   };
 
   const defaultModeForClip = (targetClip: Clip, lines: TranscriptLine[]): SegmentMode => {
-    const hasTimed = lines.some((line) => line.startSec !== undefined && line.endSec !== undefined && line.endSec > line.startSec);
-
-    if (targetClip.captionsAvailable === false) return "time";
-    if (hasTimed) return "subtitle";
-    if (targetClip.captionsAvailable === true) return "subtitle";
-    return "time";
+    void targetClip;
+    void lines;
+    return "subtitle";
   };
 
   const syncInputs = (nextStart: number, nextEnd: number | null) => {
@@ -209,19 +205,10 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
     setStartSec(normalized.startSec);
     setEndSec(normalized.endSec);
     syncInputs(normalized.startSec, normalized.endSec);
-
-    if (options?.requestAutoplay) {
-      setAutoPlaySelection(true);
-    }
+    setAutoPlaySelection(Boolean(options?.requestAutoplay));
   };
 
   const clearAutoplayFlag = () => setAutoPlaySelection(false);
-
-  useEffect(() => {
-    if (!autoPlaySelection) return;
-    const timer = window.setTimeout(() => setAutoPlaySelection(false), 800);
-    return () => window.clearTimeout(timer);
-  }, [autoPlaySelection]);
 
   useEffect(() => {
     const loadPage = async () => {
@@ -474,22 +461,12 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
   };
 
   const chooseCaptionsStatus = async (value: true | false) => {
-    if (!clip) return;
-
-    const updated: Clip = { ...clip, captionsAvailable: value };
-    await saveClip(updated);
-    setClip(updated);
-
-    if (value) {
-      setSegmentModeState("subtitle");
-    } else {
-      setSegmentModeState("time");
-    }
+    void value;
   };
 
-  const shouldShowTranscriptGuide = clip?.captionsAvailable === true || segmentMode === "subtitle";
+  const shouldShowTranscriptGuide = transcriptLines.length === 0;
   const showTranscriptGuide = shouldShowTranscriptGuide && guideExpanded;
-  const showTranscriptPanel = shouldShowTranscriptGuide || transcriptLines.length > 0;
+  const showTranscriptPanel = true;
 
   const dismissTranscriptGuide = () => {
     setGuideDismissed(true);
@@ -508,8 +485,29 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
     }
   };
 
+  const appendTranscriptToHeardSentence = (text: string, notifyDuplicate = false) => {
+    const selected = text.trim();
+    if (!selected) return;
+
+    const normalizedPrev = heardSentence.trim();
+    const existingLines = normalizedPrev
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (existingLines.includes(selected)) {
+      if (notifyDuplicate) {
+        toast.info("같은 표현은 한 번만 추가됩니다");
+      }
+      return;
+    }
+
+    setHeardSentence(normalizedPrev ? `${normalizedPrev}\n${selected}` : selected);
+  };
+
   const activateTranscriptLine = (line: TranscriptLine) => {
     setSelectedTranscriptText(line.text);
+    appendTranscriptToHeardSentence(line.text, false);
 
     if (line.startSec === undefined) return;
 
@@ -522,6 +520,7 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
   const activateTranscriptRange = (lines: TranscriptLine[]) => {
     const joined = lines.map((line) => line.text).join(" ").trim();
     setSelectedTranscriptText(joined);
+    appendTranscriptToHeardSentence(joined, false);
 
     const firstStart = lines.find((line) => line.startSec !== undefined)?.startSec;
     const lastEnd = [...lines].reverse().find((line) => line.endSec !== undefined)?.endSec;
@@ -533,21 +532,7 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
   };
 
   const addSelectedTranscriptToHeardSentence = () => {
-    const selected = selectedTranscriptText.trim();
-    if (!selected) return;
-
-    const normalizedPrev = heardSentence.trim();
-    const existingLines = normalizedPrev
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean);
-
-    if (existingLines.includes(selected)) {
-      toast.info("같은 문장은 한 번만 추가됩니다");
-      return;
-    }
-
-    setHeardSentence(normalizedPrev ? `${normalizedPrev}\n${selected}` : selected);
+    appendTranscriptToHeardSentence(selectedTranscriptText, true);
   };
 
   const jumpToTimedIndex = (index: number) => {
