@@ -101,7 +101,7 @@
 
 .learning-card {
   border-radius: var(--learn-radius-card);
-  border: 1px solid hsl(var(--border) / 0.82);
+  border: 0;
   background: hsl(var(--card));
   padding: var(--learn-space-16);
   box-shadow: var(--learn-shadow-1);
@@ -109,7 +109,7 @@
 
 .learning-video-card {
   border-radius: var(--learn-radius-card);
-  border: 1px solid hsl(var(--border) / 0.85);
+  border: 0;
   background: hsl(var(--card));
   padding: var(--learn-space-12);
   box-shadow: var(--learn-shadow-2);
@@ -122,11 +122,33 @@
   align-items: center;
 }
 
+.learning-controlbar-single {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.learning-controlbar-center {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: var(--learn-space-8);
+}
+
+.learning-segment-nav {
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--learn-radius-pill);
+  background: hsl(var(--secondary));
+  padding: 0 10px;
+}
+
 .learning-soft-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid hsl(var(--border) / 0.9);
+  border: 0;
   background: hsl(var(--secondary));
   border-radius: var(--learn-radius-pill);
   padding: 8px 12px;

@@ -271,7 +271,7 @@ const Shadowing: React.FC = () => {
               type="button"
               onClick={() => toggleChecklist(item.id)}
               className={cn(
-                "flex w-full items-center justify-between rounded-[10px] border border-border/80 px-3 py-2 text-left text-sm transition-colors",
+                "flex w-full items-center justify-between rounded-[4px] border border-border/80 px-3 py-2 text-left text-sm transition-colors",
                 checked.has(item.id) ? "bg-primary/10 border-primary/45" : "bg-secondary/60 hover:bg-secondary"
               )}
             >

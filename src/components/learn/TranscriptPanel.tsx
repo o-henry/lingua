@@ -143,7 +143,13 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
           <p className="text-xs font-medium">자막 텍스트 (클릭: 한 줄 선택 / Shift+클릭: 범위 선택)</p>
           <div className="flex items-center gap-2">
             {lines.length > 0 && !pasteOpen && (
-              <Button type="button" size="sm" variant="outline" onClick={() => setPasteOpen(true)}>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => setPasteOpen(true)}
+                className="bg-secondary/75 hover:bg-secondary"
+              >
                 자막 다시 붙여넣기
               </Button>
             )}

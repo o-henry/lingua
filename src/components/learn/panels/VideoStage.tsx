@@ -101,28 +101,29 @@ const VideoStage: React.FC = () => {
       )}
 
       <section className="learning-card space-y-3">
-        <div className="learning-controlbar">
-          <div className="learning-soft-pill h-10 text-xs">
-            <span className="font-medium">AB</span>
-            <span className="text-muted-foreground">
-              {formatTime(startSec)} - {formatTime(effectiveEndSec)}
-            </span>
+        <div className="learning-controlbar learning-controlbar-single">
+          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav" onClick={jumpToPrevSegment}>
+            <ChevronLeft className="h-3.5 w-3.5" /> 이전
+          </Button>
+
+          <div className="learning-controlbar-center">
+            <div className="learning-soft-pill h-10 text-xs whitespace-nowrap">
+              <span className="font-medium">AB</span>
+              <span className="text-muted-foreground">
+                {formatTime(startSec)} - {formatTime(effectiveEndSec)}
+              </span>
+            </div>
+
+            <label className="learning-soft-pill h-10 text-xs whitespace-nowrap">
+              <Repeat2 className="h-3.5 w-3.5 text-muted-foreground" />
+              반복
+              <Switch checked={loopEnabled} onCheckedChange={handleLoopToggle} />
+            </label>
           </div>
 
-          <label className="learning-soft-pill h-10 text-xs">
-            <Repeat2 className="h-3.5 w-3.5 text-muted-foreground" />
-            반복
-            <Switch checked={loopEnabled} onCheckedChange={handleLoopToggle} />
-          </label>
-
-          <div className="learning-soft-pill h-10 px-1">
-            <Button type="button" size="sm" variant="ghost" className="h-8 px-2" onClick={jumpToPrevSegment}>
-              <ChevronLeft className="h-3.5 w-3.5" /> 이전
-            </Button>
-            <Button type="button" size="sm" variant="ghost" className="h-8 px-2" onClick={jumpToNextSegment}>
-              다음 <ChevronRight className="h-3.5 w-3.5" />
-            </Button>
-          </div>
+          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav" onClick={jumpToNextSegment}>
+            다음 <ChevronRight className="h-3.5 w-3.5" />
+          </Button>
         </div>
       </section>
 

@@ -24,7 +24,7 @@ const PracticePanel: React.FC = () => {
 
   return (
     <div className="space-y-3">
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="space-y-3">
         <section className="learning-card space-y-3 h-full">
           <h3 className="text-sm font-semibold">표현 익히기</h3>
           <p className="text-xs text-muted-foreground">AI 피드백을 거친 뒤 복습 리스트에 저장하세요.</p>

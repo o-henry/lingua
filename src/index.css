@@ -148,8 +148,8 @@
 
 @layer base {
   :root {
-    --font-ko: "LINE Seed KR", "LINE Seed Sans", "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
-    --font-ko-bold: "1984 Dialogue", "LINE Seed KR", "LINE Seed Sans", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    --font-ko: "DM Mono", "Free Mono", "Menlo", "Consolas", monospace;
+    --font-ko-bold: "DM Mono", "Free Mono", "Menlo", "Consolas", monospace;
     --font-en: "Free Mono", "LINE Seed JP", "Menlo", "Consolas", monospace;
     --font-dm: "DM Mono", "Free Mono", "Menlo", "Consolas", monospace;
     --font-jp: "LINE Seed JP", "Free Mono", "Hiragino Sans", "Yu Gothic", sans-serif;
@@ -302,7 +302,7 @@
   .ui-island {
     @apply text-foreground;
     border-radius: var(--radius-lg);
-    border: 1px solid hsl(var(--border) / 0.75);
+    border: 0 !important;
     background: hsl(var(--card));
     box-shadow: var(--island-shadow);
   }
@@ -310,7 +310,7 @@
   .ui-island-strong {
     @apply text-foreground;
     border-radius: var(--radius-lg);
-    border: 1px solid hsl(var(--border) / 0.85);
+    border: 0 !important;
     background: hsl(var(--card));
     box-shadow: var(--island-shadow-strong);
   }
