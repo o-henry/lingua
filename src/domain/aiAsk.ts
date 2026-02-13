@@ -37,10 +37,28 @@ const normalizeTargetLanguage = (value: string): "Japanese" | "English" => {
   return "English";
 };
 
+const resolveLocaleContext = (targetLanguage: "Japanese" | "English"): string => {
+  if (targetLanguage === "Japanese") return "일본(일본어권)";
+  return "미국(미국 영어권)";
+};
+
+const resolveAgeBand = (age: number): string => {
+  const safeAge = Math.max(1, Math.floor(age || 20));
+  if (safeAge <= 13) return "아동/청소년";
+  if (safeAge <= 19) return "10대";
+  if (safeAge <= 29) return "20대";
+  if (safeAge <= 39) return "30대";
+  if (safeAge <= 49) return "40대";
+  return "50대+";
+};
+
 export function buildAiPrompt(params: BuildAiPromptParams): string {
   const userText = params.userText.trim();
   const notes = (params.notes || "").trim();
   const targetLanguage = normalizeTargetLanguage(params.targetLanguage);
+  const safeAge = Math.max(1, Math.floor(params.userAge || 20));
+  const localeContext = resolveLocaleContext(targetLanguage);
+  const ageBand = resolveAgeBand(safeAge);
 
   return `
 너는 유튜브로 일본어/영어를 배우는 사람을 위한
@@ -49,8 +67,10 @@ export function buildAiPrompt(params: BuildAiPromptParams): string {
 
 [사용자 프로필 입력]
 - 학습 언어: ${targetLanguage}
+- 문화권 기준: ${localeContext}
 - 사용자 수준: ${params.learnerLevel}
-- 사용자 나이: ${Math.max(1, Math.floor(params.userAge || 20))}
+- 사용자 나이: ${safeAge}
+- 사용자 연령대: ${ageBand}
 - 사용자 성별: ${params.userGender}
 
 [학습 입력]
@@ -71,6 +91,10 @@ export function buildAiPrompt(params: BuildAiPromptParams): string {
 4) 성별은 호칭/말투 배려에만 사용하고, 학습 능력 가정에 쓰지 않는다.
 5) 확실하지 않으면 “추측”이라고 표시하고 후보는 2개까지만 제시한다.
 6) 설명보다 “바로 말로 써먹기”를 우선한다.
+7) 문화권/연령대/성별에 따른 화법 차이를 반영한다.
+   - 일본어면 일본 구어, 영어면 미국 구어를 기본으로 제시한다.
+   - 세대/성별에 따라 자주 쓰는 어휘·호칭·말끝 차이가 있으면, 공통 표현 1개 + 프로필 맞춤 대안 1개를 함께 준다.
+   - 고정관념은 금지하고, 실제 사용 빈도 높은 차이만 간단히 설명한다.
 
 ────────────────────────────────
 [출력 형식: 반드시 번호 섹션]
@@ -92,6 +116,7 @@ export function buildAiPrompt(params: BuildAiPromptParams): string {
 4) 대화에서 바로 쓰는 바꿔말하기(2개)
 - 쉬운 버전 1개:
 - 더 자연스러운 버전 1개:
+- 프로필 맞춤 버전 1개(문화권/연령대/성별 반영):
 - 각 버전이 쓰이는 상황(한 줄씩):
 
 5) 미니 대화 2개(각 4~6턴)
