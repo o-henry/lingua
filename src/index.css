@@ -269,6 +269,10 @@
     background-image: none;
   }
 
+  :where(button, [role="button"]) {
+    font-family: var(--font-ko-bold) !important;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-display font-bold tracking-tight;
     font-family: var(--font-ko-bold);
