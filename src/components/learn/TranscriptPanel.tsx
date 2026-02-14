@@ -138,7 +138,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-[var(--radius-sm)] border border-border/70 bg-secondary/90 p-3">
+      <div className="rounded-[var(--radius-sm)] bg-secondary/65 p-3">
         <div className="flex items-center justify-between gap-2 mb-2">
           <p className="text-xs font-medium">자막 텍스트 (클릭: 한 줄 선택 / Shift+클릭: 범위 선택)</p>
           <div className="flex items-center gap-2">
@@ -159,13 +159,9 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
           선택한 텍스트는 아래 저장 섹션으로 보낼 수 있습니다. {persistEnabled ? "붙여넣은 자막은 이 기기에 계속 저장됩니다." : ""}
         </p>
 
-        <div
-          ref={selectionContainerRef}
-          onMouseUp={updateSelectionFromDom}
-          className="space-y-2 max-h-72 overflow-auto rounded-[var(--radius)] bg-muted/55 p-2 pr-1 scrollbar-none"
-        >
+        <div ref={selectionContainerRef} onMouseUp={updateSelectionFromDom} className="space-y-2 max-h-72 overflow-auto pr-1 scrollbar-none">
           {lines.length === 0 ? (
-            <div className="rounded-[var(--radius)] border border-border/55 bg-card px-3 py-4">
+            <div className="rounded-[var(--radius)] bg-card/70 px-3 py-4">
               <p className="text-xs text-muted-foreground">아직 자막 텍스트가 없습니다.</p>
               <p className="mt-2 text-[11px] text-muted-foreground">아래 붙여넣기 박스에 YouTube 스크립트나 SRT/VTT 파일을 추가하면 바로 학습 구간을 선택할 수 있습니다.</p>
             </div>
@@ -178,15 +174,15 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
                   type="button"
                   onClick={(event) => handleLineClick(index, event)}
                   className={cn(
-                    "w-full text-left rounded-[var(--radius)] border border-border/55 bg-card p-2 transition-colors",
-                    selected ? "bg-primary/16 shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.45)]" : "hover:bg-accent/70"
+                    "w-full text-left rounded-[var(--radius)] bg-card p-2 transition-colors",
+                    selected ? "bg-primary/10 shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.45)]" : "hover:bg-secondary"
                   )}
                 >
-                  <div className="mb-1 text-[10px] text-foreground/70">
+                  <div className="text-[10px] text-muted-foreground mb-1">
                     {line.startSec !== undefined ? formatTime(line.startSec) : "--:--"}
                     {line.endSec !== undefined ? ` ~ ${formatTime(line.endSec)}` : ""}
                   </div>
-                  <p className="text-sm text-foreground whitespace-pre-wrap break-words select-text font-jp">{renderLineText(line.text)}</p>
+                  <p className="text-sm whitespace-pre-wrap break-words select-text font-ko-bold">{renderLineText(line.text)}</p>
                 </button>
               );
             })
