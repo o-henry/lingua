@@ -28,8 +28,8 @@ const AppShell: React.FC<AppShellProps> = ({
   void showDesktopRail;
 
   const header = (title || showBack || rightAction) && (
-    <header className="z-40 border-b border-border/70 bg-background">
-      <div className="mx-auto flex h-14 w-full max-w-md items-center justify-between gap-3 px-4">
+    <header className="z-40 bg-transparent">
+      <div className="mx-auto flex h-14 w-full items-center justify-between gap-3 px-4">
         <div className="flex items-center gap-2">
           {showBack && (
             <button
@@ -47,13 +47,18 @@ const AppShell: React.FC<AppShellProps> = ({
         </div>
         {rightAction}
       </div>
+      <div className="px-4 pb-2">
+        <div className="app-header-divider" />
+      </div>
     </header>
   );
 
   return (
-    <div className={cn("holo-view min-h-screen bg-background", showBottomNav ? "pb-28" : "", className)}>
-      {header}
-      <main className="mx-auto w-full max-w-md">{children}</main>
+    <div className={cn("holo-view min-h-screen bg-background px-3 pt-3", showBottomNav ? "pb-28" : "pb-4", className)}>
+      <div className="app-screen mx-auto flex min-h-[calc(100vh-1.75rem)] w-full max-w-md flex-col overflow-hidden">
+        {header}
+        <main className="flex-1">{children}</main>
+      </div>
       {showBottomNav && <BottomNav />}
     </div>
   );

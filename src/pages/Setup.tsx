@@ -123,30 +123,34 @@ const Setup: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col px-6 py-10 max-w-xs mx-auto">
-      <div className="flex gap-1 mb-8">
-        {steps.map((_, i) => (
-          <div key={i} className={cn("h-1 flex-1 rounded-full", i <= step ? "bg-primary" : "bg-border")} />
-        ))}
-      </div>
+    <div className="holo-view min-h-screen bg-background px-3 pt-3 pb-4">
+      <div className="app-screen mx-auto flex min-h-[calc(100vh-1.75rem)] w-full max-w-md flex-col px-6 py-10">
+        <div className="mx-auto flex w-full max-w-xs flex-1 flex-col">
+          <div className="mb-8 flex gap-1">
+            {steps.map((_, i) => (
+              <div key={i} className={cn("h-1 flex-1 rounded-full", i <= step ? "bg-primary" : "bg-border")} />
+            ))}
+          </div>
 
-      <div className="flex-1">{steps[step]}</div>
+          <div className="flex-1">{steps[step]}</div>
 
-      <div className="flex gap-3 mt-8">
-        {step > 0 && (
-          <Button variant="outline" className="flex-1" onClick={() => setStep(step - 1)}>
-            이전
-          </Button>
-        )}
-        {step < steps.length - 1 ? (
-          <Button className="flex-1 gradient-primary text-primary-foreground" onClick={() => setStep(step + 1)}>
-            다음
-          </Button>
-        ) : (
-          <Button className="flex-1 gradient-primary text-primary-foreground" onClick={handleComplete}>
-            완료
-          </Button>
-        )}
+          <div className="mt-8 flex gap-3">
+            {step > 0 && (
+              <Button variant="outline" className="flex-1" onClick={() => setStep(step - 1)}>
+                이전
+              </Button>
+            )}
+            {step < steps.length - 1 ? (
+              <Button className="flex-1 gradient-primary text-primary-foreground" onClick={() => setStep(step + 1)}>
+                다음
+              </Button>
+            ) : (
+              <Button className="flex-1 gradient-primary text-primary-foreground" onClick={handleComplete}>
+                완료
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

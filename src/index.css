@@ -51,6 +51,14 @@
 }
 
 @font-face {
+  font-family: "Citylines";
+  src: url("./assets/fonts/custom/Citylines.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "DM Mono";
   src: url("./assets/fonts/dm-mono/DMMono-Light.ttf") format("truetype");
   font-weight: 300;
@@ -303,6 +311,26 @@
     z-index: 1;
   }
 
+  .app-screen {
+    border-radius: 22px;
+    border: 1px solid hsl(var(--border) / 0.75);
+    background:
+      radial-gradient(120% 120% at 10% 0%, hsl(var(--secondary) / 0.55) 0%, transparent 48%),
+      linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--secondary) / 0.82) 100%);
+    box-shadow:
+      0 26px 54px -34px rgba(13, 18, 33, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.34);
+  }
+
+  .app-header-divider {
+    height: 1px;
+    border-radius: 999px;
+    background: hsl(var(--border) / 0.42);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.33),
+      0 1px 0 rgba(11, 16, 31, 0.18);
+  }
+
   .ui-island {
     @apply text-foreground;
     border-radius: var(--radius-lg);
@@ -366,6 +394,10 @@
   }
   .font-line-seed {
     font-family: "LINE Seed Sans", "LINE Seed KR", "LINE Seed JP", "Free Mono", sans-serif;
+  }
+  .font-citylines {
+    font-family: "Citylines", "LINE Seed Sans", "LINE Seed KR", "Free Mono", sans-serif;
+    letter-spacing: 0.2px;
   }
   .font-dm {
     font-family: var(--font-dm);

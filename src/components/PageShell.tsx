@@ -22,10 +22,11 @@ const PageShell: React.FC<PageShellProps> = ({
   noBottomNav,
 }) => {
   return (
-    <div className={`holo-view min-h-screen bg-background ${noBottomNav ? "" : "pb-20"}`}>
+    <div className={`holo-view min-h-screen bg-background px-3 pt-3 ${noBottomNav ? "pb-4" : "pb-24"}`}>
+      <div className="app-screen mx-auto flex min-h-[calc(100vh-1.75rem)] w-full max-w-md flex-col overflow-hidden">
       {(title || showBack || rightAction) && (
-        <header className="z-40 border-b border-border/70 bg-background">
-          <div className="flex items-center justify-between h-14 px-4 max-w-md mx-auto">
+        <header className="z-40 bg-transparent">
+          <div className="mx-auto flex h-14 w-full items-center justify-between px-4">
             <div className="flex items-center gap-2">
               {showBack && (
                 <button
@@ -41,9 +42,13 @@ const PageShell: React.FC<PageShellProps> = ({
             </div>
             {rightAction}
           </div>
+          <div className="px-4 pb-2">
+            <div className="app-header-divider" />
+          </div>
         </header>
       )}
-      <main className={noPadding ? "" : "px-4 py-4 max-w-md mx-auto"}>{children}</main>
+      <main className={noPadding ? "flex-1" : "flex-1 px-4 py-4"}>{children}</main>
+      </div>
     </div>
   );
 };

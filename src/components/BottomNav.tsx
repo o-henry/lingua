@@ -16,9 +16,9 @@ const BottomNav: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-6 left-0 right-0 z-50 px-4 safe-area-bottom">
+    <nav className="fixed bottom-5 left-0 right-0 z-50 px-4 safe-area-bottom">
       <div className="mx-auto w-fit">
-        <div className="flex items-center gap-2 rounded-full border border-border/80 bg-card/96 p-2 shadow-[0_12px_30px_-20px_rgba(0,0,0,0.45)] backdrop-blur">
+        <div className="flex items-center gap-1.5 rounded-full border border-border/80 bg-card/96 p-1.5 shadow-[0_12px_30px_-20px_rgba(0,0,0,0.45)] backdrop-blur">
           {NAV_ITEMS.map(({ path, icon: Icon, label }) => {
             const isActive = location.pathname.startsWith(path);
             return (
@@ -27,14 +27,14 @@ const BottomNav: React.FC = () => {
                 onClick={() => navigate(path)}
                 type="button"
                 className={cn(
-                  "group relative flex h-14 w-14 items-center justify-center rounded-full transition-all",
+                  "group relative flex h-12 w-12 items-center justify-center rounded-full transition-all",
                   isActive
                     ? "bg-primary text-primary-foreground shadow-[0_8px_18px_-12px_rgba(0,0,0,0.68)]"
                     : "bg-secondary text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
                 aria-label={label}
               >
-                <Icon className={cn("h-5 w-5", isActive && "stroke-[2.2]")} />
+                <Icon className={cn("h-[18px] w-[18px]", isActive && "stroke-[2.2]")} />
               </button>
             );
           })}
