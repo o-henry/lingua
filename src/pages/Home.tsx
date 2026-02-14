@@ -41,7 +41,7 @@ const HomePage: React.FC = () => {
                 <div className="text-base font-medium">Review 카드 {dueCount}개</div>
                 <div className="text-xs opacity-85">{dueCount > 0 ? "지금 복습 시작" : "오늘은 복습 카드가 없습니다"}</div>
               </div>
-              <span className="ui-chip px-3 py-1 text-[11px] font-dm font-medium text-accent-foreground/90 bg-white/20">Review</span>
+              <span className="ui-chip px-5 py-2.5 text-[13px] font-dm font-medium text-accent-foreground/90 bg-white/20">REVIEW</span>
             </div>
           </button>
 

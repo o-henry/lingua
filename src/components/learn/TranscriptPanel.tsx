@@ -182,7 +182,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
                     {line.startSec !== undefined ? formatTime(line.startSec) : "--:--"}
                     {line.endSec !== undefined ? ` ~ ${formatTime(line.endSec)}` : ""}
                   </div>
-                  <p className="text-sm whitespace-pre-wrap break-words select-text">{renderLineText(line.text)}</p>
+                  <p className="text-sm whitespace-pre-wrap break-words select-text font-ko-bold">{renderLineText(line.text)}</p>
                 </button>
               );
             })

@@ -38,7 +38,7 @@ const PracticePanel: React.FC = () => {
             rows={2}
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
-            placeholder="생각나는 어떤 말이든 입력해보세요 (선택)"
+            placeholder="의미를 입력하세요 (선택)"
           />
 
           {saveError && <div className="text-xs text-destructive">{saveError}</div>}

@@ -30,7 +30,7 @@ const ResourcesPage: React.FC = () => {
   return (
     <>
       <PageShell title="추천 리소스" titleClassName="font-ko-bold">
-        <div className="ui-island rounded-[18px] p-4 space-y-4 font-ko-bold">
+        <div className="ui-island rounded-[16px] p-4 space-y-4 font-ko-bold">
           <div className="space-y-2">
             <p className="text-sm font-medium">언어와 레벨을 선택하세요</p>
             <p className="text-xs text-muted-foreground">필요한 난이도만 빠르게 선택해서 바로 학습 리소스를 확인하세요.</p>
@@ -93,7 +93,7 @@ const ResourcesPage: React.FC = () => {
                     <div className="mt-4 grid grid-cols-[1fr_auto] items-end gap-3">
                       <div className="min-w-0">
                         <p className="line-clamp-3 text-[18px] leading-[1.2] font-medium text-foreground">{video.title}</p>
-                        <p className="mt-2 text-xs text-muted-foreground">{video.channel}</p>
+                        <p className="mt-2 font-en text-xs text-muted-foreground">{video.channel}</p>
                         <div className="mt-3 inline-flex items-center rounded-[10px] border border-border/85 bg-secondary px-2 py-1 text-[11px] font-medium">
                           {currentSection.level}
                         </div>
