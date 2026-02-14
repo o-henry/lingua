@@ -183,7 +183,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       <span
         key={`${index}-${segment.className}`}
         className={segment.className}
-        style={segment.className === "font-en" ? { fontFamily: '"Free Mono", "Menlo", "Consolas", monospace' } : undefined}
+        style={segment.className === "font-en" ? { fontFamily: '"DM Mono", "Menlo", "Consolas", monospace' } : undefined}
       >
         {segment.value}
       </span>
