@@ -227,7 +227,7 @@ const Shadowing: React.FC = () => {
           <p className="text-sm font-medium">{formatTime(startSec)} - {formatTime(endSec)}</p>
         </div>
 
-        <div className="ui-island p-2">
+        <div>
           <YouTubePlayer
             key={`${clip.id}-${playbackNonce}`}
             videoId={clip.videoId}
