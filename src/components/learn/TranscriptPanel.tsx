@@ -5,6 +5,10 @@ import { TranscriptLine, parseUserProvidedTranscript } from "@/domain/transcript
 import { formatTime } from "@/domain/time";
 import { cn } from "@/lib/utils";
 
+const HAS_KO_REGEX = /[가-힣ㄱ-ㅎㅏ-ㅣ]/;
+const HAS_JP_REGEX = /[ぁ-ゟ゠-ヿ㐀-䶿一-鿿]/;
+const HAS_EN_REGEX = /[A-Za-z]/;
+
 interface TranscriptPanelProps {
   lines: TranscriptLine[];
   persistEnabled: boolean;
@@ -136,6 +140,13 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
     return text;
   };
 
+  const getLineFontClass = (text: string) => {
+    if (HAS_KO_REGEX.test(text)) return "font-ko-bold";
+    if (HAS_JP_REGEX.test(text)) return "font-jp";
+    if (HAS_EN_REGEX.test(text)) return "font-line-seed";
+    return "font-ko-bold";
+  };
+
   return (
     <div className="space-y-4">
       <div className="rounded-[var(--radius-sm)] bg-secondary/65 p-3">
@@ -182,7 +193,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
                     {line.startSec !== undefined ? formatTime(line.startSec) : "--:--"}
                     {line.endSec !== undefined ? ` ~ ${formatTime(line.endSec)}` : ""}
                   </div>
-                  <p className="text-sm whitespace-pre-wrap break-words select-text font-ko-bold">{renderLineText(line.text)}</p>
+                  <p className={cn("text-sm whitespace-pre-wrap break-words select-text", getLineFontClass(line.text))}>{renderLineText(line.text)}</p>
                 </button>
               );
             })
