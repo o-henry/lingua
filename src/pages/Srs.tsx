@@ -322,13 +322,25 @@ const SrsPage: React.FC = () => {
               />
 
               <div className="grid grid-cols-3 gap-3">
-                <Button variant="outline" className="h-12" onClick={() => handleRate("hard")}>
+                <Button
+                  variant="outline"
+                  className="h-12 border-transparent bg-[#c85b5b] text-white hover:bg-[#b14c4c]"
+                  onClick={() => handleRate("hard")}
+                >
                   어려움
                 </Button>
-                <Button variant="outline" className="h-12" onClick={() => handleRate("good")}>
+                <Button
+                  variant="outline"
+                  className="h-12 border-transparent bg-[#5d6978] text-white hover:bg-[#4f5a68]"
+                  onClick={() => handleRate("good")}
+                >
                   보통
                 </Button>
-                <Button variant="outline" className="h-12" onClick={() => handleRate("easy")}>
+                <Button
+                  variant="outline"
+                  className="h-12 border-transparent bg-[#4f9460] text-white hover:bg-[#428052]"
+                  onClick={() => handleRate("easy")}
+                >
                   쉬움
                 </Button>
               </div>
