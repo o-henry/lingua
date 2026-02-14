@@ -42,7 +42,7 @@ const HomePage: React.FC = () => {
             <div className="relative z-10 flex items-center justify-between gap-3">
               <div className="font-dm">
                 <div className="text-base font-ko-bold font-medium">복습 카드 {dueCount}개</div>
-                <div className="text-xs opacity-85">{dueCount > 0 ? "지금 복습 시작" : "오늘은 복습 카드가 없습니다"}</div>
+                <div className="text-xs o습pacity-85">{dueCount > 0 ? "지금 복습 시작" : "오늘은 복습 카드가 없습니다"}</div>
               </div>
               <span className="ui-chip border border-white/20 bg-black/30 px-5 py-2.5 font-dm text-[13px] font-medium text-white/90 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-[2px]">
                 REVIEW
@@ -50,7 +50,7 @@ const HomePage: React.FC = () => {
             </div>
           </button>
 
-          <h2 className="mb-3 text-lg font-medium font-ko-bold">오늘의 학습</h2>
+          <h2 className="mb-3 text-lg font-medium font-ko-bold"></h2>
           {todayClip ? (
             <section className="ui-island-strong overflow-hidden font-ko-bold">
               <div className="relative h-44 overflow-hidden bg-gradient-to-br from-primary to-primary/75 p-5">
@@ -66,8 +66,7 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              <div className="space-y-4 p-4">
+las            <div className="space-y-4 p-4">
                 <p className="text-xs text-muted-foreground font-en">{todayClip.channel || settings.targetLanguage.toUpperCase()}</p>
                 <div className="rounded-[var(--radius-sm)] bg-secondary/75 p-3">
                   <p className="text-xs text-muted-foreground">
@@ -80,10 +79,10 @@ const HomePage: React.FC = () => {
               </div>
             </section>
           ) : (
-            <div className="ui-island text-center p-8 font-ko-bold">
+            <div className="ui-island text-center p-8">
               <p className="font-medium mb-1">첫 클립을 추가해보세요</p>
               <p className="text-sm text-muted-foreground mb-4">유튜브 클립을 추가하면 바로 학습을 시작할 수 있어요.</p>
-              <Button variant="outline" className="font-ko-bold" onClick={() => navigate("/library")}>
+              <Button variant="outline" onClick={() => navigate("/library")}>
                 라이브러리로 이동
               </Button>
             </div>
