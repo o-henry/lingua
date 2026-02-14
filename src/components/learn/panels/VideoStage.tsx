@@ -94,19 +94,19 @@ const VideoStage: React.FC = () => {
             <ChevronLeft className="h-3 w-3" /> 이전
           </Button>
 
-          <div className="learning-soft-pill learning-controlbar-item text-[10px] whitespace-nowrap">
+          <div className="learning-soft-pill learning-controlbar-item learning-controlbar-ab text-[10px] whitespace-nowrap">
             <span className="font-medium">AB</span>
             <span className="learning-controlbar-meta text-muted-foreground">
               {formatTime(startSec)} - {formatTime(effectiveEndSec)}
             </span>
           </div>
 
-          <label className="learning-soft-pill learning-controlbar-item text-[10px] whitespace-nowrap">
+          <label className="learning-soft-pill learning-controlbar-item learning-controlbar-repeat text-[10px] whitespace-nowrap">
             반복
             <Switch
               checked={loopEnabled}
               onCheckedChange={handleLoopToggle}
-              className="h-5 w-9 [&>span]:h-4 [&>span]:w-4 data-[state=checked]:[&>span]:translate-x-4"
+              className="learning-repeat-switch h-[18px] w-[32px] shrink-0 [&>span]:h-[14px] [&>span]:w-[14px] data-[state=checked]:[&>span]:translate-x-[14px]"
             />
           </label>
 
