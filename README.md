@@ -1,61 +1,58 @@
 # Daily Lingual Boost
 
-Reference-based listening app (React + Vite).
+YouTube 구간 기반 반복 학습 앱 (React + Vite).
 
-## Repo scan
+## Live
 
-- Framework: React 18 + TypeScript + Vite
-- Router: React Router (`src/App.tsx`)
-- UI: Tailwind + shadcn/ui
-- Storage: IndexedDB-first + LocalStorage fallback (`src/storage/db.ts`, `src/lib/storage.ts`)
-- YouTube playback: IFrame Player API (`src/components/YouTubePlayer.tsx`)
+- 배포 주소: https://daily-lingual-boost-f30e69e15-ohenrys-projects.vercel.app
 
-## Core policy
+## 주요 기능
 
-- No YouTube subtitle/autosubtitle text extraction from network or DOM.
-- Only user-provided text is used (paste/upload/manual typing).
-- Transcript text persistence is opt-in (default OFF, local-only).
-- Saved learning data: SegmentRef + userText + notes.
+- 유튜브 영상 구간(시작/끝) 반복 재생 학습
+- 사용자 제공 자막 붙여넣기/파일 업로드(SRT, VTT, TXT)
+- 자막 줄 클릭 + `Shift+클릭` 범위 선택
+- 선택 문장 저장 후 듣고 따라 말하기(Shadowing) 이동
+- SRS 복습(어려움/보통/쉬움) + Anki 스타일 재등장 로직
+- 외부 AI 질문 바(ChatGPT/Gemini용 프롬프트 복사/열기)
 
-## Current flow
+## 기술 스택
 
-`청취 -> (자막 기반 구간 선택 | 시간 기반 구간 선택) -> 들은 문장 적기 -> AI에게 묻기 -> SRS`
+- React 18 + TypeScript + Vite
+- React Router
+- Tailwind CSS + shadcn/ui
+- IndexedDB 우선 저장 + LocalStorage fallback
+- YouTube IFrame Player API
 
-## Key UX changes
+## 학습 흐름
 
-- Onboarding/shadowing/recall flows removed from routes.
-- Stats/streak UI removed from navigation and active flows.
-- Learn segment input supports `mm:ss` / `h:mm:ss` and normalizes on blur.
-- Loop defaults OFF; `endSec` can be unset until loop is enabled.
-- Library clip add uses captions status input (`있음/없음/미확인`) and supports later edit.
-- Library tries YouTube `oEmbed` to fill title/channel.
-- Learn supports transcript line click and `Shift+Click` range selection to set segment.
-- Learn/SRS include external AI ask bar:
-  - copy prompt
-  - open ChatGPT / Gemini
-  - open/copy YouTube time link
+`청취 -> 구간 선택 -> 문장 선택/저장 -> AI 질문 -> Shadowing -> SRS 복습`
 
-## Main changed files
+## 데이터 정책
 
-- `src/App.tsx`
-- `src/components/BottomNav.tsx`
-- `src/pages/Home.tsx`
-- `src/pages/Library.tsx`
-- `src/pages/Learn.tsx`
-- `src/pages/Srs.tsx`
-- `src/pages/Settings.tsx`
-- `src/components/learn/TranscriptPanel.tsx`
-- `src/components/ai/ExternalAiAskBar.tsx`
-- `src/domain/time.ts`
-- `src/domain/transcript.ts`
-- `src/domain/aiAsk.ts`
-- `src/lib/types.ts`
-- `src/lib/youtube.ts`
+- YouTube 자막 자동 추출(네트워크/DOM 파싱) 미사용
+- 사용자 제공 텍스트만 처리
+- 학습 데이터는 로컬 저장 중심
 
-## Scripts
+## 로컬 실행
 
 ```bash
+npm install
 npm run dev
+```
+
+## 테스트/빌드
+
+```bash
 npm run test
 npm run build
 ```
+
+## 프로젝트 구조(핵심)
+
+- `src/pages/Learn.tsx`: 학습 화면
+- `src/pages/Shadowing.tsx`: 녹음/쉐도잉 화면
+- `src/pages/Srs.tsx`: 복습 화면
+- `src/components/learn/TranscriptPanel.tsx`: 자막 파싱/선택 UI
+- `src/components/YouTubePlayer.tsx`: 유튜브 플레이어 래퍼
+- `src/domain/srsScheduler.ts`: SRS 스케줄 계산
+- `src/storage/`: 저장소 계층
