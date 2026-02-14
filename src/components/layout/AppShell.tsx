@@ -11,6 +11,7 @@ interface AppShellProps {
   rightAction?: React.ReactNode;
   showBottomNav?: boolean;
   showDesktopRail?: boolean;
+  showHeaderDivider?: boolean;
   className?: string;
 }
 
@@ -23,6 +24,7 @@ const AppShell: React.FC<AppShellProps> = ({
   rightAction,
   showBottomNav = false,
   showDesktopRail = true,
+  showHeaderDivider = true,
   className,
 }) => {
   void showDesktopRail;
@@ -47,9 +49,11 @@ const AppShell: React.FC<AppShellProps> = ({
         </div>
         {rightAction}
       </div>
-      <div className="px-4 pb-2">
-        <div className="app-header-divider" />
-      </div>
+      {showHeaderDivider && (
+        <div className="px-4 pb-2">
+          <div className="app-header-divider" />
+        </div>
+      )}
     </header>
   );
 

@@ -88,28 +88,26 @@ const VideoStage: React.FC = () => {
         </section>
       )}
 
-      <section className="learning-card space-y-3">
+      <section>
         <div className="learning-controlbar learning-controlbar-single">
-          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav text-[11px] font-ko-bold" onClick={jumpToPrevSegment}>
+          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav learning-controlbar-item text-[11px] font-ko-bold" onClick={jumpToPrevSegment}>
             <ChevronLeft className="h-3.5 w-3.5" /> 이전
           </Button>
 
-          <div className="learning-controlbar-center">
-            <div className="learning-soft-pill h-9 px-2 text-[10px] whitespace-nowrap">
-              <span className="font-medium">AB</span>
-              <span className="text-muted-foreground">
-                {formatTime(startSec)} - {formatTime(effectiveEndSec)}
-              </span>
-            </div>
-
-            <label className="learning-soft-pill h-9 px-2 text-[10px] whitespace-nowrap">
-              <Repeat2 className="h-3.5 w-3.5 text-muted-foreground" />
-              반복
-              <Switch checked={loopEnabled} onCheckedChange={handleLoopToggle} />
-            </label>
+          <div className="learning-soft-pill learning-controlbar-item h-9 px-2 text-[10px] whitespace-nowrap">
+            <span className="font-medium">AB</span>
+            <span className="learning-controlbar-meta text-muted-foreground">
+              {formatTime(startSec)} - {formatTime(effectiveEndSec)}
+            </span>
           </div>
 
-          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav text-[11px] font-ko-bold" onClick={jumpToNextSegment}>
+          <label className="learning-soft-pill learning-controlbar-item h-9 px-2 text-[10px] whitespace-nowrap">
+            <Repeat2 className="h-3.5 w-3.5 text-muted-foreground" />
+            반복
+            <Switch checked={loopEnabled} onCheckedChange={handleLoopToggle} />
+          </label>
+
+          <Button type="button" size="sm" variant="ghost" className="learning-segment-nav learning-controlbar-item text-[11px] font-ko-bold" onClick={jumpToNextSegment}>
             다음 <ChevronRight className="h-3.5 w-3.5" />
           </Button>
         </div>
