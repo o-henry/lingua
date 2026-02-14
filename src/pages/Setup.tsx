@@ -6,8 +6,8 @@ import { updateSettings } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
 const LANGUAGES = [
-  { code: "en", label: "영어 (English)" },
-  { code: "ja", label: "일본어 (Japanese)" },
+  { code: "en", nativeLabel: "영어", englishLabel: "English" },
+  { code: "ja", nativeLabel: "일본어", englishLabel: "Japanese" },
 ] as const;
 
 const LEVELS = ["입문", "초급", "중급", "고급"] as const;
@@ -37,6 +37,8 @@ const Setup: React.FC = () => {
     navigate("/home");
   };
 
+  const selectionButtonBaseClass = "rounded-[4px] border border-border/70 bg-muted/70 px-4 py-3 font-medium transition-all";
+
   const steps = [
     <div key="lang" className="space-y-4">
       <h2 className="text-2xl font-bold">배우고 싶은 언어</h2>
@@ -47,11 +49,12 @@ const Setup: React.FC = () => {
             type="button"
             onClick={() => setTargetLanguage(l.code)}
             className={cn(
-              "px-4 py-3 rounded-xl text-left font-medium transition-all border-2",
-              targetLanguage === l.code ? "border-primary bg-primary/10" : "border-transparent bg-muted"
+              `${selectionButtonBaseClass} text-left`,
+              targetLanguage === l.code ? "border-primary bg-primary/10 text-foreground" : "hover:bg-muted"
             )}
           >
-            {l.label}
+            <span className="font-ko-bold">{l.nativeLabel}</span>
+            <span className="font-en text-[0.95em] text-muted-foreground"> ({l.englishLabel})</span>
           </button>
         ))}
       </div>
@@ -65,8 +68,8 @@ const Setup: React.FC = () => {
             type="button"
             onClick={() => setLearnerLevel(level)}
             className={cn(
-              "px-4 py-3 rounded-xl text-center font-medium transition-all border-2",
-              learnerLevel === level ? "border-primary bg-primary/10" : "border-transparent bg-muted"
+              `${selectionButtonBaseClass} text-center font-ko-bold`,
+              learnerLevel === level ? "border-primary bg-primary/10 text-foreground" : "hover:bg-muted"
             )}
           >
             {level}
@@ -84,7 +87,9 @@ const Setup: React.FC = () => {
         onChange={(e) => setUserAge(e.target.value)}
         placeholder="나이를 입력하세요"
       />
-      <p className="text-xs text-muted-foreground">답변 길이와 설명 수준을 조절할 때만 사용됩니다.</p>
+      <p className="text-xs text-muted-foreground">
+        나이·성별·학습수준을 함께 반영해 AI가 가벼운 말투/존댓말 같은 화법과 예시 표현을 더 자연스럽게 맞추기 위해 사용합니다.
+      </p>
     </div>,
     <div key="gender" className="space-y-4">
       <h2 className="text-2xl font-bold">성별</h2>
@@ -95,14 +100,20 @@ const Setup: React.FC = () => {
             type="button"
             onClick={() => setUserGender(gender)}
             className={cn(
-              "px-4 py-3 rounded-xl text-center font-medium transition-all border-2",
-              userGender === gender ? "border-primary bg-primary/10" : "border-transparent bg-muted"
+              `${selectionButtonBaseClass} text-center font-ko-bold`,
+              userGender === gender ? "border-primary bg-primary/10 text-foreground" : "hover:bg-muted"
             )}
           >
             {gender}
           </button>
         ))}
       </div>
+      <p className="text-xs text-muted-foreground">
+        성별 정보는 언어별 표현 차이를 반영하기 위해 사용합니다. 예를 들어 일본어의 경우
+        <span className="font-en"> watashi </span>
+        /<span className="font-en"> boku </span>
+        같은 1인칭 선택을 AI가 구분해 제안할 수 있습니다.
+      </p>
       <div className="rounded-lg border bg-card p-3 text-xs text-muted-foreground">
         로컬 데이터는 앱 안의 <span className="font-medium">설정 → 데이터 삭제</span>를 눌렀을 때만 지워집니다.
         <br />

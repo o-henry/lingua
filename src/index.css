@@ -364,6 +364,9 @@
   .font-jp {
     font-family: var(--font-jp);
   }
+  .font-line-seed {
+    font-family: "LINE Seed Sans", "LINE Seed KR", "LINE Seed JP", "Free Mono", sans-serif;
+  }
   .font-dm {
     font-family: var(--font-dm);
     letter-spacing: -0.7px;

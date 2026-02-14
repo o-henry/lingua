@@ -92,7 +92,7 @@ const ResourcesPage: React.FC = () => {
 
                     <div className="mt-4 grid grid-cols-[1fr_auto] items-end gap-3">
                       <div className="min-w-0">
-                        <p className="line-clamp-3 text-[18px] leading-[1.2] font-medium text-foreground">{video.title}</p>
+                        <p className="font-line-seed line-clamp-3 text-[18px] leading-[1.2] font-medium text-foreground">{video.title}</p>
                         <p className="mt-2 font-en text-xs text-muted-foreground">{video.channel}</p>
                         <div className="mt-3 inline-flex items-center rounded-[10px] border border-border/85 bg-secondary px-2 py-1 text-[11px] font-medium">
                           {currentSection.level}
