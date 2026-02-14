@@ -34,14 +34,19 @@ const HomePage: React.FC = () => {
         <div className="pt-2">
           <button
             onClick={() => navigate("/srs")}
-            className="ui-island-strong mb-6 w-full bg-accent text-start text-accent-foreground p-5 min-h-[84px]"
+            className="ui-island-strong relative mb-6 min-h-[84px] w-full overflow-hidden border border-white/18 bg-gradient-to-br from-primary via-primary/90 to-primary/75 p-5 text-start text-primary-foreground shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)]"
           >
-            <div className="flex items-center justify-between gap-3">
+            <div className="pointer-events-none absolute -left-8 -top-8 h-24 w-24 rounded-full bg-white/22 blur-xl" />
+            <div className="pointer-events-none absolute right-4 top-2 h-14 w-14 rounded-2xl bg-accent/35 blur-[1px]" />
+            <div className="pointer-events-none absolute bottom-0 right-10 h-20 w-20 rounded-full bg-white/14 blur-lg" />
+            <div className="relative z-10 flex items-center justify-between gap-3">
               <div className="font-dm">
-                <div className="text-base font-medium">Review 카드 {dueCount}개</div>
-                <div className="text-xs opacity-85">{dueCount > 0 ? "지금 복습 시작" : "오늘은 복습 카드가 없습니다"}</div>
+                <div className="text-base font-ko-bold font-medium">복습 카드 {dueCount}개</div>
+                <div className="text-xs o습pacity-85">{dueCount > 0 ? "지금 복습 시작" : "오늘은 복습 카드가 없습니다"}</div>
               </div>
-              <span className="ui-chip px-5 py-2.5 text-[13px] font-dm font-medium text-accent-foreground/90 bg-white/20">REVIEW</span>
+              <span className="ui-chip border border-white/20 bg-black/30 px-5 py-2.5 font-dm text-[13px] font-medium text-white/90 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-[2px]">
+                REVIEW
+              </span>
             </div>
           </button>
 
