@@ -7,7 +7,6 @@ import YouTubePlayer from "@/components/YouTubePlayer";
 import AudioRecorder from "@/components/AudioRecorder";
 import ExternalAiAskBar from "@/components/ai/ExternalAiAskBar";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { CircleAlert, CirclePlay, Check } from "lucide-react";
 import { formatTime } from "@/domain/time";
 import { cn } from "@/lib/utils";
@@ -24,7 +23,6 @@ const CHECKLIST = [
 
 interface StoredShadowingState {
   checked: string[];
-  loopEnabled: boolean;
 }
 
 interface StoredAudioPayload {
@@ -55,7 +53,6 @@ const Shadowing: React.FC = () => {
   const [clip, setClip] = useState<Clip | null>(null);
   const [loading, setLoading] = useState(true);
   const [migrationRequired, setMigrationRequired] = useState(false);
-  const [loopEnabled, setLoopEnabled] = useState(true);
   const [recordedAudioFile, setRecordedAudioFile] = useState<File | null>(null);
   const [audioHydrated, setAudioHydrated] = useState(false);
   const [playbackNonce, setPlaybackNonce] = useState(0);
@@ -89,14 +86,11 @@ const Shadowing: React.FC = () => {
       try {
         const parsed = JSON.parse(stateRaw) as StoredShadowingState;
         setChecked(new Set(parsed.checked || []));
-        setLoopEnabled(parsed.loopEnabled ?? true);
       } catch {
         setChecked(new Set());
-        setLoopEnabled(true);
       }
     } else {
       setChecked(new Set());
-      setLoopEnabled(true);
     }
 
     const audioRaw = localStorage.getItem(shadowingAudioKey(clipId, startSec, endSec));
@@ -135,10 +129,9 @@ const Shadowing: React.FC = () => {
     if (!clipId) return;
     const payload: StoredShadowingState = {
       checked: Array.from(checked),
-      loopEnabled,
     };
     localStorage.setItem(shadowingStateKey(clipId, startSec, endSec), JSON.stringify(payload));
-  }, [checked, loopEnabled, clipId, startSec, endSec]);
+  }, [checked, clipId, startSec, endSec]);
 
   useEffect(() => {
     if (!clipId) return;
@@ -233,7 +226,7 @@ const Shadowing: React.FC = () => {
             videoId={clip.videoId}
             startSec={startSec}
             endSec={endSec}
-            loop={loopEnabled}
+            loop
             autoplay={playbackNonce > 0}
           />
         </div>
@@ -245,11 +238,6 @@ const Shadowing: React.FC = () => {
               <CirclePlay className="w-4 h-4 mr-1" /> 원음 다시재생
             </Button>
           </div>
-
-          <label className="flex items-center justify-between rounded-[var(--radius-sm)] bg-secondary/65 p-2 text-sm">
-            구간 반복
-            <Switch checked={loopEnabled} onCheckedChange={setLoopEnabled} />
-          </label>
 
           <AudioRecorder value={recordedAudioFile} onRecordingChange={setRecordedAudioFile} />
         </div>
