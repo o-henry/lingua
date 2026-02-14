@@ -80,8 +80,8 @@ las            <div className="space-y-4 p-4">
             </section>
           ) : (
             <div className="ui-island text-center p-8">
-              <p className="font-medium mb-1">첫 클립을 추가해보세요</p>
-              <p className="text-sm text-muted-foreground mb-4">유튜브 클립을 추가하면 바로 학습을 시작할 수 있어요.</p>
+              <p className="font-ko-bold font-medium mb-1">첫 클립을 추가해보세요</p>
+              <p className="font-ko-bold text-sm text-muted-foreground mb-4">유튜브 클립을 추가하면 바로 학습을 시작할 수 있어요.</p>
               <Button variant="outline" onClick={() => navigate("/library")}>
                 라이브러리로 이동
               </Button>
