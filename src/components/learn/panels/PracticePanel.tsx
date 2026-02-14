@@ -31,7 +31,14 @@ const PracticePanel: React.FC = () => {
 
           <div className="rounded-[var(--radius-sm)] border border-border/80 bg-secondary/55 p-3">
             <p className="text-[11px] font-medium text-muted-foreground">선택된 표현</p>
-            <p className="mt-1 text-sm break-words">{heardSentence || "자막에서 학습할 표현을 선택하세요."}</p>
+            <p
+              className={cn(
+                "mt-1 text-sm break-words",
+                heardSentence.trim() ? "font-line-seed text-foreground" : "font-ko-bold text-muted-foreground"
+              )}
+            >
+              {heardSentence || "자막에서 학습할 표현을 선택하세요."}
+            </p>
           </div>
 
           <Textarea
