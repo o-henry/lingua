@@ -56,6 +56,7 @@ export interface SrsCard {
   ease: number;
   intervalDays: number;
   dueDate: string;
+  dueAt?: number;
   lastReviewedAt?: number;
 }
 

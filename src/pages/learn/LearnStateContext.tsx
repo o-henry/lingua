@@ -352,6 +352,7 @@ export const LearnStateProvider: React.FC<LearnStateProviderProps> = ({ clipId, 
         ease: 2.3,
         intervalDays: 0,
         dueDate,
+        dueAt: existingCard?.dueAt ?? Date.now(),
       }
     );
 

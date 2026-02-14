@@ -28,6 +28,9 @@ interface ReviewItem {
   clip?: Clip;
 }
 
+const getCardDueTime = (card: SrsCard): number =>
+  Number.isFinite(card.dueAt) ? (card.dueAt as number) : new Date(`${card.dueDate}T00:00:00`).getTime();
+
 const todayDateKey = () => {
   const now = new Date();
   const y = now.getFullYear();
@@ -67,8 +70,10 @@ const SrsPage: React.FC = () => {
   const [totalCards, setTotalCards] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = useCallback(async (withLoading = false) => {
+    if (withLoading) {
+      setLoading(true);
+    }
 
     const [status, dueCards, allCards, memories, clips] = await Promise.all([
       getStorageStatus(),
@@ -95,18 +100,29 @@ const SrsPage: React.FC = () => {
         };
       })
       .filter((item): item is ReviewItem => Boolean(item))
-      .sort((a, b) => a.card.dueDate.localeCompare(b.card.dueDate));
+      .sort((a, b) => getCardDueTime(a.card) - getCardDueTime(b.card));
 
     setItems(queue);
     setCurrentIdx(0);
     setFlipped(false);
     setShowPlayer(false);
-    setLoading(false);
-  };
+    if (withLoading) {
+      setLoading(false);
+    }
+    return queue;
+  }, []);
 
   useEffect(() => {
-    loadData();
-  }, []);
+    void loadData(true);
+  }, [loadData]);
+
+  useEffect(() => {
+    if (loading || migrationRequired || items.length > 0) return;
+    const pollId = window.setInterval(() => {
+      void loadData(false);
+    }, 5000);
+    return () => window.clearInterval(pollId);
+  }, [items.length, loading, migrationRequired, loadData]);
 
   const currentItem = items[currentIdx];
 
@@ -121,16 +137,12 @@ const SrsPage: React.FC = () => {
 
       await saveSrsCard(updated);
 
-      setFlipped(false);
-      setShowPlayer(false);
-      if (currentIdx < items.length - 1) {
-        setCurrentIdx((prev) => prev + 1);
-      } else {
-        toast.success("오늘 복습 완료");
-        setItems([]);
+      const nextQueue = await loadData(false);
+      if (nextQueue.length === 0) {
+        toast.success("현재 시점 복습 완료");
       }
     },
-    [currentItem, currentIdx, items.length]
+    [currentItem, loadData]
   );
 
   const handleSaveEdit = async () => {

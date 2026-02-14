@@ -7,10 +7,20 @@ export async function getAll(): Promise<SrsCard[]> {
 }
 
 export async function getDue(date = getTodayDateKey()): Promise<SrsCard[]> {
+  const now = Date.now();
   const all = await getAll();
   return all
-    .filter((card) => card.dueDate <= date)
-    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+    .filter((card) => {
+      if (Number.isFinite(card.dueAt)) {
+        return (card.dueAt as number) <= now;
+      }
+      return card.dueDate <= date;
+    })
+    .sort((a, b) => {
+      const aDue = Number.isFinite(a.dueAt) ? (a.dueAt as number) : new Date(`${a.dueDate}T00:00:00`).getTime();
+      const bDue = Number.isFinite(b.dueAt) ? (b.dueAt as number) : new Date(`${b.dueDate}T00:00:00`).getTime();
+      return aDue - bDue;
+    });
 }
 
 export async function getByMemoryId(memoryId: string): Promise<SrsCard | undefined> {

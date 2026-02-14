@@ -17,5 +17,6 @@ export function createSrsCard(memoryId: string): SrsCard {
     ease: 2.3,
     intervalDays: 0,
     dueDate: getTodayDateKey(),
+    dueAt: Date.now(),
   };
 }
