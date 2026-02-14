@@ -191,14 +191,14 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
       </div>
 
       {pasteOpen ? (
-        <section className="rounded-[var(--radius-sm)] border border-white/60 bg-card/70 space-y-3 backdrop-blur-md">
+        <section className="rounded-[var(--radius-sm)] bg-card/70 space-y-3 backdrop-blur-md">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
               <p className="text-xs font-semibold">사용자 제공 자막 붙여넣기</p>
               <p className="text-[10px] text-muted-foreground">YouTube 스크립트, SRT, VTT 텍스트를 넣으면 자동으로 정리해서 적용합니다.</p>
             </div>
             {lines.length > 0 && (
-              <Button type="button" size="sm" variant="ghost" onClick={() => setPasteOpen(false)}>
+              <Button type="button" size="sm" variant="secondary" className="bg-secondary/90 hover:bg-secondary" onClick={() => setPasteOpen(false)}>
                 닫기
               </Button>
             )}
