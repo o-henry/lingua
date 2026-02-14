@@ -143,7 +143,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
   const getLineFontClass = (text: string) => {
     if (HAS_KO_REGEX.test(text)) return "font-ko-bold";
     if (HAS_JP_REGEX.test(text)) return "font-jp";
-    if (HAS_EN_REGEX.test(text)) return "font-line-seed";
+    if (HAS_EN_REGEX.test(text)) return "font-en";
     return "font-ko-bold";
   };
 
