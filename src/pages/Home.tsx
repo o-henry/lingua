@@ -13,7 +13,7 @@ const renderMixedHeroTitle = (title: string) => {
   const chunks = title.match(JA_CHUNK_REGEX) ?? [title];
 
   return chunks.map((chunk, idx) => (
-    <span key={`${chunk}-${idx}`} className={HAS_JA_REGEX.test(chunk) ? "font-line-seed" : "font-dm tracking-[-0.7px]"}>
+    <span key={`${chunk}-${idx}`} className={HAS_JA_REGEX.test(chunk) ? "font-jp" : "font-dm tracking-[-0.7px]"}>
       {chunk}
     </span>
   ));
