@@ -6,6 +6,19 @@ import { Clip } from "@/lib/types";
 import BottomNav from "@/components/BottomNav";
 import PageShell from "@/components/PageShell";
 
+const JA_CHUNK_REGEX = /[\u3040-\u30FF\u31F0-\u31FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\u3005\u3006\u30FC]+|[^\u3040-\u30FF\u31F0-\u31FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\u3005\u3006\u30FC]+/g;
+const HAS_JA_REGEX = /[\u3040-\u30FF\u31F0-\u31FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\u3005\u3006\u30FC]/;
+
+const renderMixedHeroTitle = (title: string) => {
+  const chunks = title.match(JA_CHUNK_REGEX) ?? [title];
+
+  return chunks.map((chunk, idx) => (
+    <span key={`${chunk}-${idx}`} className={HAS_JA_REGEX.test(chunk) ? "font-line-seed" : "font-dm tracking-[-0.7px]"}>
+      {chunk}
+    </span>
+  ));
+};
+
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [clips, setClips] = useState<Clip[]>([]);
@@ -42,7 +55,7 @@ const HomePage: React.FC = () => {
             <div className="relative z-10 flex items-center justify-between gap-3">
               <div className="font-dm">
                 <div className="text-base font-ko-bold font-medium">복습 카드 {dueCount}개</div>
-                <div className="text-xs o습pacity-85">{dueCount > 0 ? "지금 복습 시작" : "오늘은 복습 카드가 없습니다"}</div>
+                <div className="text-xs opacity-85">{dueCount > 0 ? "지금 복습 시작" : "오늘은 복습 카드가 없습니다"}</div>
               </div>
               <span className="ui-chip border border-white/20 bg-black/30 px-5 py-2.5 font-dm text-[13px] font-medium text-white/90 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-[2px]">
                 REVIEW
@@ -61,12 +74,12 @@ const HomePage: React.FC = () => {
                   <div className="text-primary-foreground">
                     <p className="text-xs font-medium tracking-[0.14em] opacity-90">듣고 반복하기</p>
                     <h3 className="mt-2 line-clamp-2 max-w-[220px] text-xl font-medium leading-tight">
-                      {todayClip.title || `YouTube Clip (${todayClip.videoId})`}
+                      {renderMixedHeroTitle(todayClip.title || `YouTube Clip (${todayClip.videoId})`)}
                     </h3>
                   </div>
                 </div>
               </div>
-las            <div className="space-y-4 p-4">
+              <div className="space-y-4 p-4">
                 <p className="text-xs text-muted-foreground font-en">{todayClip.channel || settings.targetLanguage.toUpperCase()}</p>
                 <div className="rounded-[var(--radius-sm)] bg-secondary/75 p-3">
                   <p className="text-xs text-muted-foreground">
