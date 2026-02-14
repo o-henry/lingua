@@ -38,6 +38,7 @@ const VideoStage: React.FC = () => {
           endSec={endSec ?? undefined}
           loop={loopEnabled && endSec !== null}
           autoplay={requestAutoplay}
+          className="rounded-[var(--learn-radius-card)]"
           onEmbedError={() => setEmbedDisabled(true)}
         />
       </section>

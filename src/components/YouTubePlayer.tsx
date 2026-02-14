@@ -219,7 +219,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
 
   return (
     <div className={`relative w-full overflow-hidden rounded-lg ${className}`} style={{ paddingBottom: "56.25%" }}>
-      <div ref={hostRef} className="absolute inset-0 h-full w-full rounded-lg" />
+      <div ref={hostRef} className="absolute inset-0 h-full w-full rounded-[inherit]" />
     </div>
   );
 };
