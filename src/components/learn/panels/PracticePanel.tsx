@@ -34,7 +34,7 @@ const PracticePanel: React.FC = () => {
             <p
               className={cn(
                 "mt-1 text-sm break-words",
-                heardSentence.trim() ? "font-line-seed text-foreground" : "font-ko-bold text-muted-foreground"
+                heardSentence.trim() ? "font-jp text-foreground" : "font-ko-bold text-muted-foreground"
               )}
             >
               {heardSentence || "자막에서 학습할 표현을 선택하세요."}
