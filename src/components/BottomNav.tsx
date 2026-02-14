@@ -20,8 +20,8 @@ const BottomNav: React.FC = () => {
       className="fixed inset-x-0 z-50"
       style={{ top: "calc(env(safe-area-inset-top, 0px) + 8px)" }}
     >
-      <div className="mx-auto w-fit px-3">
-        <div className="flex items-center gap-1 rounded-full border border-border/80 bg-card/96 p-1.5 shadow-[0_12px_30px_-20px_rgba(0,0,0,0.45)] backdrop-blur">
+      <div className="mx-auto w-full max-w-md px-3">
+        <div className="grid grid-cols-5 items-center gap-1 rounded-[8px] border border-border/80 bg-card/96 p-1.5 shadow-[0_12px_30px_-20px_rgba(0,0,0,0.45)] backdrop-blur">
           {NAV_ITEMS.map(({ path, icon: Icon, label }) => {
             const isActive = location.pathname.startsWith(path);
             return (
@@ -30,7 +30,7 @@ const BottomNav: React.FC = () => {
                 onClick={() => navigate(path)}
                 type="button"
                 className={cn(
-                  "group relative flex h-10 w-10 items-center justify-center rounded-full transition-all",
+                  "group relative flex h-11 w-full items-center justify-center rounded-[6px] transition-all",
                   isActive
                     ? "bg-primary text-primary-foreground shadow-[0_8px_18px_-12px_rgba(0,0,0,0.68)]"
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground"
