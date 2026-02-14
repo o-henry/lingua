@@ -7,10 +7,22 @@ import { LEARNING_RESOURCE_DOC, LearningResourceSection, ResourceLanguage } from
 import { getSettings } from "@/lib/storage";
 
 const LEVELS: Array<LearningResourceSection["level"]> = ["입문", "초급", "중급", "고급"];
+const KO_CHUNK_REGEX = /[\u3131-\u318E\uAC00-\uD7A3]+|[^\u3131-\u318E\uAC00-\uD7A3]+/g;
+const HAS_KO_REGEX = /[\u3131-\u318E\uAC00-\uD7A3]/;
 
 const targetLanguageToResourceLanguage = (value: string): ResourceLanguage => {
   const code = value.trim().toLowerCase();
   return code === "ja" || code === "jp" ? "japanese" : "english";
+};
+
+const renderTitleByLanguage = (title: string) => {
+  const chunks = title.match(KO_CHUNK_REGEX) ?? [title];
+
+  return chunks.map((chunk, idx) => (
+    <span key={`${chunk}-${idx}`} className={HAS_KO_REGEX.test(chunk) ? "font-ko-bold" : "font-dm tracking-[-1px]"}>
+      {chunk}
+    </span>
+  ));
 };
 
 const ResourcesPage: React.FC = () => {
@@ -92,7 +104,7 @@ const ResourcesPage: React.FC = () => {
 
                     <div className="mt-4 grid grid-cols-[1fr_auto] items-end gap-3">
                       <div className="min-w-0">
-                        <p className="font-citylines line-clamp-3 text-[18px] leading-[1.2] font-medium text-foreground">{video.title}</p>
+                        <p className="line-clamp-3 text-[14px] leading-[1.35] font-medium text-foreground">{renderTitleByLanguage(video.title)}</p>
                         <p className="mt-2 font-en text-xs text-muted-foreground">{video.channel}</p>
                         <div className="mt-3 inline-flex items-center rounded-[10px] border border-border/85 bg-secondary px-2 py-1 text-[11px] font-medium">
                           {currentSection.level}

@@ -304,6 +304,10 @@
   .holo-view {
     position: relative;
     isolation: isolate;
+    background:
+      radial-gradient(125% 92% at 12% -8%, hsl(var(--primary) / 0.18) 0%, transparent 54%),
+      radial-gradient(116% 90% at 92% 8%, hsl(var(--accent) / 0.34) 0%, transparent 58%),
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--secondary) / 0.92) 100%);
   }
 
   .holo-view > * {
@@ -312,14 +316,33 @@
   }
 
   .app-screen {
-    border-radius: 22px;
+    position: relative;
+    border-radius: 8px;
     border: 1px solid hsl(var(--border) / 0.75);
     background:
-      radial-gradient(120% 120% at 10% 0%, hsl(var(--secondary) / 0.55) 0%, transparent 48%),
-      linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--secondary) / 0.82) 100%);
+      radial-gradient(128% 112% at 6% -2%, hsl(var(--primary) / 0.12) 0%, transparent 54%),
+      radial-gradient(106% 102% at 100% 10%, hsl(var(--accent) / 0.2) 0%, transparent 58%),
+      linear-gradient(165deg, hsl(var(--card)) 0%, hsl(var(--secondary) / 0.82) 60%, hsl(var(--card)) 100%);
     box-shadow:
       0 26px 54px -34px rgba(13, 18, 33, 0.42),
       inset 0 1px 0 rgba(255, 255, 255, 0.34);
+  }
+
+  .app-screen::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(56% 44% at 20% 14%, hsl(var(--primary) / 0.1) 0%, transparent 68%),
+      radial-gradient(52% 42% at 84% 12%, hsl(var(--accent) / 0.16) 0%, transparent 70%),
+      radial-gradient(40% 36% at 76% 92%, hsl(var(--primary) / 0.08) 0%, transparent 66%);
+  }
+
+  .app-screen > * {
+    position: relative;
+    z-index: 1;
   }
 
   .app-header-divider {

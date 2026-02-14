@@ -13,8 +13,6 @@ interface PageShellProps {
 
 const PageShell: React.FC<PageShellProps> = ({
   children,
-  title,
-  titleClassName,
   showBack,
   onBack,
   rightAction,
@@ -22,11 +20,11 @@ const PageShell: React.FC<PageShellProps> = ({
   noBottomNav,
 }) => {
   return (
-    <div className={`holo-view min-h-screen bg-background px-3 pt-3 ${noBottomNav ? "pb-4" : "pb-24"}`}>
+    <div className={`holo-view min-h-screen bg-background px-3 ${noBottomNav ? "pt-3 pb-4" : "pt-20 pb-6"}`}>
       <div className="app-screen mx-auto flex min-h-[calc(100vh-1.75rem)] w-full max-w-md flex-col overflow-hidden">
-      {(title || showBack || rightAction) && (
-        <header className="z-40 bg-transparent">
-          <div className="mx-auto flex h-14 w-full items-center justify-between px-4">
+      {(showBack || rightAction) && (
+        <div className="z-40 px-4 pt-3">
+          <div className="flex h-10 w-full items-center justify-between">
             <div className="flex items-center gap-2">
               {showBack && (
                 <button
@@ -38,14 +36,10 @@ const PageShell: React.FC<PageShellProps> = ({
                   </svg>
                 </button>
               )}
-              {title && <h1 className={`text-lg font-medium text-foreground font-ko-bold ${titleClassName ?? ""}`}>{title}</h1>}
             </div>
             {rightAction}
           </div>
-          <div className="px-4 pb-2">
-            <div className="app-header-divider" />
-          </div>
-        </header>
+        </div>
       )}
       <main className={noPadding ? "flex-1" : "flex-1 px-4 py-4"}>{children}</main>
       </div>
