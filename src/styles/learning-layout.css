@@ -122,7 +122,7 @@
 }
 
 .learning-controlbar-single {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.56fr) minmax(0, 0.72fr);
 }
 
 .learning-segment-nav {
