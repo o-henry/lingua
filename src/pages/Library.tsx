@@ -176,7 +176,7 @@ const Library: React.FC = () => {
 
                         <div className="mt-3 grid grid-cols-[1fr_auto] items-end gap-3">
                           <div className="min-w-0">
-                            <h3 className="line-clamp-2 font-ko-bold text-[18px] leading-[1.2] font-medium text-foreground">{clip.title || `YouTube 클립 (${clip.videoId})`}</h3>
+                            <h3 className="line-clamp-2 font-ko-bold text-[14px] leading-[1.2] font-medium text-foreground">{clip.title || `YouTube 클립 (${clip.videoId})`}</h3>
                             <p className="mt-2 text-xs font-ko-bold text-muted-foreground line-clamp-1">{clip.channel || "채널 정보 없음"}</p>
                             <p className="mt-3 text-[11px] text-muted-foreground">Open app ↗</p>
                           </div>
