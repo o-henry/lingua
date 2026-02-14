@@ -1,9 +1,8 @@
 import React from "react";
-import { ChevronLeft, ChevronRight, Repeat2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatTime } from "@/domain/time";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { useLearnState } from "@/pages/learn/LearnStateContext";
 
 const VideoStage: React.FC = () => {
@@ -14,7 +13,6 @@ const VideoStage: React.FC = () => {
     effectiveEndSec,
     youtubeScriptUrl,
     transcriptLines,
-    loopEnabled,
     shouldShowTranscriptGuide,
     showTranscriptGuide,
     requestAutoplay,
@@ -22,7 +20,6 @@ const VideoStage: React.FC = () => {
     dismissTranscriptGuide,
     reopenTranscriptGuide,
     setEmbedDisabled,
-    handleLoopToggle,
     jumpToPrevSegment,
     jumpToNextSegment,
   } = useLearnState();
@@ -36,7 +33,7 @@ const VideoStage: React.FC = () => {
           videoId={clip.videoId}
           startSec={startSec}
           endSec={endSec ?? undefined}
-          loop={loopEnabled && endSec !== null}
+          loop={endSec !== null}
           autoplay={requestAutoplay}
           className="rounded-[var(--learn-radius-card)]"
           onEmbedError={() => setEmbedDisabled(true)}
@@ -100,12 +97,6 @@ const VideoStage: React.FC = () => {
               {formatTime(startSec)} - {formatTime(effectiveEndSec)}
             </span>
           </div>
-
-          <label className="learning-soft-pill learning-controlbar-item h-9 px-2 text-[10px] whitespace-nowrap">
-            <Repeat2 className="h-3.5 w-3.5 text-muted-foreground" />
-            반복
-            <Switch checked={loopEnabled} onCheckedChange={handleLoopToggle} />
-          </label>
 
           <Button type="button" size="sm" variant="ghost" className="learning-segment-nav learning-controlbar-item text-[11px] font-ko-bold" onClick={jumpToNextSegment}>
             다음 <ChevronRight className="h-3.5 w-3.5" />
