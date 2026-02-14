@@ -1,6 +1,7 @@
 # Lingua
 
 **Codex 로 개발됨.**
+
 YouTube 구간 기반 반복 학습 앱 (React + Vite). 
 
 
