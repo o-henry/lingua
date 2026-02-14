@@ -8,6 +8,11 @@ import { cn } from "@/lib/utils";
 const HAS_KO_REGEX = /[가-힣ㄱ-ㅎㅏ-ㅣ]/;
 const HAS_JP_REGEX = /[ぁ-ゟ゠-ヿ㐀-䶿一-鿿]/;
 const HAS_EN_REGEX = /[A-Za-z]/;
+const FONT_CLASS_BY_SCRIPT = {
+  ko: "font-ko-bold",
+  jp: "font-jp",
+  en: "font-en",
+} as const;
 
 interface TranscriptPanelProps {
   lines: TranscriptLine[];
@@ -140,11 +145,49 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
     return text;
   };
 
-  const getLineFontClass = (text: string) => {
-    if (HAS_KO_REGEX.test(text)) return "font-ko-bold";
-    if (HAS_JP_REGEX.test(text)) return "font-jp";
-    if (HAS_EN_REGEX.test(text)) return "font-en";
-    return "font-ko-bold";
+  const getCharScript = (char: string): keyof typeof FONT_CLASS_BY_SCRIPT | null => {
+    if (HAS_KO_REGEX.test(char)) return "ko";
+    if (HAS_JP_REGEX.test(char)) return "jp";
+    if (HAS_EN_REGEX.test(char)) return "en";
+    return null;
+  };
+
+  const renderStyledLineText = (text: string) => {
+    const rendered = renderLineText(text);
+    const segments: Array<{ value: string; className: string }> = [];
+    let currentClass = FONT_CLASS_BY_SCRIPT.ko;
+    let buffer = "";
+
+    for (const char of rendered) {
+      const script = getCharScript(char);
+      const nextClass = script ? FONT_CLASS_BY_SCRIPT[script] : currentClass;
+      if (!buffer) {
+        currentClass = nextClass;
+        buffer = char;
+        continue;
+      }
+      if (nextClass !== currentClass) {
+        segments.push({ value: buffer, className: currentClass });
+        buffer = char;
+        currentClass = nextClass;
+        continue;
+      }
+      buffer += char;
+    }
+
+    if (buffer) {
+      segments.push({ value: buffer, className: currentClass });
+    }
+
+    return segments.map((segment, index) => (
+      <span
+        key={`${index}-${segment.className}`}
+        className={segment.className}
+        style={segment.className === "font-en" ? { fontFamily: '"Free Mono", "Menlo", "Consolas", monospace' } : undefined}
+      >
+        {segment.value}
+      </span>
+    ));
   };
 
   return (
@@ -193,7 +236,7 @@ const TranscriptPanel: React.FC<TranscriptPanelProps> = ({
                     {line.startSec !== undefined ? formatTime(line.startSec) : "--:--"}
                     {line.endSec !== undefined ? ` ~ ${formatTime(line.endSec)}` : ""}
                   </div>
-                  <p className={cn("text-sm whitespace-pre-wrap break-words select-text", getLineFontClass(line.text))}>{renderLineText(line.text)}</p>
+                  <p className="text-sm whitespace-pre-wrap break-words select-text">{renderStyledLineText(line.text)}</p>
                 </button>
               );
             })
