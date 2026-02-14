@@ -195,8 +195,8 @@ const SrsPage: React.FC = () => {
       <>
         <PageShell title="복습">
           <div className="text-center py-16">
-            <p className="mb-1 font-medium">오늘 복습할 카드가 없습니다</p>
-            <p className="mb-2 text-sm text-muted-foreground">총 {totalCards}개 카드 관리 중</p>
+            <p className="mb-1 font-ko-bold font-medium">오늘 복습할 카드가 없습니다</p>
+            <p className="mb-2 font-ko-bold text-sm text-muted-foreground">총 {totalCards}개 카드 관리 중</p>
             <Button variant="outline" className="bg-gray-400" onClick={() => navigate("/settings/memo")}>표현 모음으로 이동</Button>
           </div>
         </PageShell>
