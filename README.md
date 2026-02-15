@@ -4,11 +4,6 @@
 
 YouTube 구간 기반 반복 학습 앱 (React + Vite). 
 
-
-## Live
-
-- 배포 주소: https://daily-lingual-boost-f30e69e15-ohenrys-projects.vercel.app
-
 ## 주요 기능
 
 - 유튜브 영상 구간(시작/끝) 반복 재생 학습
