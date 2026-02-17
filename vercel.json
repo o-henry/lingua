@@ -1,0 +1,15 @@
+{
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/learn/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/shadowing/:path*",
+      "destination": "/index.html"
+    }
+  ]
+}
