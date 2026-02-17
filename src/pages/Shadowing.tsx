@@ -279,7 +279,7 @@ const Shadowing: React.FC = () => {
         </div>
 
         <ExternalAiAskBar
-          className="w-full"
+          className="w-full px-0"
           refData={refData}
           youtubeUrl={clip.youtubeUrl || `https://www.youtube.com/watch?v=${clip.videoId}`}
           userText={practiceText}
