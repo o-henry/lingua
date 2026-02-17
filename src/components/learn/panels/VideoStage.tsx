@@ -28,7 +28,7 @@ const VideoStage: React.FC = () => {
 
   return (
     <div className="space-y-3">
-      <section className="learning-video-card">
+      <section className="learning-video-card learning-stage-width">
         <YouTubePlayer
           videoId={clip.videoId}
           startSec={startSec}
@@ -41,16 +41,16 @@ const VideoStage: React.FC = () => {
       </section>
 
       {embedDisabled && (
-        <div className="rounded-[var(--radius-sm)] bg-warning/12 p-3 text-xs">
+        <div className="learning-stage-width rounded-[var(--radius-sm)] bg-warning/12 p-3 text-xs">
           임베드 재생이 제한될 수 있습니다. 그래도 구간/텍스트 저장과 SRS 생성은 계속 가능합니다.
         </div>
       )}
 
       {transcriptLines.length === 0 && (
-        <section className="learning-card space-y-3">
+        <section className="learning-card learning-stage-width space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-sm font-semibold">자막 스크립트 붙여넣기</p>
-            <Button type="button" size="sm" variant="outline" asChild>
+            <Button type="button" size="sm" variant="outline" className="w-full sm:w-auto" asChild>
               <a href={youtubeScriptUrl} target="_blank" rel="noopener noreferrer">
                 YouTube에서 스크립트 열기
               </a>
@@ -76,7 +76,7 @@ const VideoStage: React.FC = () => {
                 <p className="text-xs text-muted-foreground">
                   아직 자막이 등록되지 않았습니다. 먼저 왼쪽 패널에서 스크립트를 붙여넣고 안내를 다시 확인하세요.
                 </p>
-                <Button type="button" size="sm" variant="ghost" onClick={reopenTranscriptGuide} className="mt-2 w-fit px-2 bg-gray-300 ">
+                <Button type="button" size="sm" variant="ghost" onClick={reopenTranscriptGuide} className="mt-2 w-full px-2 bg-gray-300 sm:w-auto">
                   안내 다시 보기
                 </Button>
               </div>
@@ -85,8 +85,8 @@ const VideoStage: React.FC = () => {
         </section>
       )}
 
-      <section>
-        <div className="learning-controlbar learning-controlbar-single">
+      <section className="learning-stage-width">
+        <div className="learning-controlbar learning-controlbar-stacked">
           <Button type="button" size="sm" variant="ghost" className="learning-segment-nav learning-controlbar-item text-[11px] font-ko-bold" onClick={jumpToPrevSegment}>
             <ChevronLeft className="h-3.5 w-3.5" /> 이전
           </Button>

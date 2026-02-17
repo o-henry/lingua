@@ -115,6 +115,10 @@
   box-shadow: none;
 }
 
+.learning-stage-width {
+  width: 100%;
+}
+
 .learning-controlbar {
   display: grid;
   gap: 6px;
@@ -123,6 +127,10 @@
 
 .learning-controlbar-single {
   grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.56fr) minmax(0, 0.72fr);
+}
+
+.learning-controlbar-stacked {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .learning-segment-nav {
