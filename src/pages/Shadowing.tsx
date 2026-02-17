@@ -215,7 +215,7 @@ const Shadowing: React.FC = () => {
   return (
     <PageShell title={SHADOWING_TITLE} showBack onBack={() => navigate(-1)} noBottomNav>
       <div className="w-full space-y-4">
-        <div className="ui-island w-full p-3">
+        <div className="ui-island ui-card-border w-full p-3">
           <p className="text-xs text-muted-foreground">현재 연습 구간</p>
           <p className="text-sm font-medium">{formatTime(startSec)} - {formatTime(endSec)}</p>
         </div>
