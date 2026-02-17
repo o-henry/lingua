@@ -107,6 +107,11 @@
   box-shadow: var(--learn-shadow-1);
 }
 
+.learning-card-no-x {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 .learning-video-card {
   border-radius: var(--learn-radius-card);
   border: 0;

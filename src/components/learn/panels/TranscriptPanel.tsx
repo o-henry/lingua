@@ -37,7 +37,7 @@ const TranscriptPanel: React.FC = () => {
   return (
     <div className="w-full space-y-3">
       {showTranscriptPanel && (
-        <section className="learning-card w-full rounded-[4px] space-y-2">
+        <section className="learning-card learning-card-no-x w-full rounded-[4px] space-y-2">
           <TranscriptEditor
             lines={transcriptLines}
             persistEnabled={persistTranscript}
