@@ -331,7 +331,7 @@ const SrsPage: React.FC = () => {
                 youtubeUrl={currentItem.clip?.youtubeUrl || `https://www.youtube.com/watch?v=${currentItem.memory.ref.videoId}`}
                 userText={askText}
                 notes={currentItem.memory.notes}
-                className="w-full"
+                className="w-full ui-card-border"
               />
 
               <div className="grid w-full grid-cols-3 gap-3">
