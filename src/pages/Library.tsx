@@ -139,8 +139,8 @@ const Library: React.FC = () => {
                   const learnHref = `/learn/${clip.id}?mode=subtitle`;
 
                   return (
-                    <article key={clip.id} className="ui-island overflow-hidden rounded-[16px] border border-border/80 bg-card p-3 shadow-[0_10px_26px_-18px_rgba(8,11,20,0.36)]">
-                      <div className="p-2">
+                    <article key={clip.id} className="overflow-hidden rounded-[16px] border border-border/80 bg-card p-4 shadow-[0_10px_26px_-18px_rgba(8,11,20,0.36)]">
+                      <div>
                         <div className="flex items-center justify-between gap-2">
                           <span className="inline-flex h-9 min-w-9 items-center justify-center rounded-[10px] border border-border/85 bg-secondary text-[11px] font-semibold">
                             YT

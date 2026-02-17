@@ -167,7 +167,7 @@ const SrsPage: React.FC = () => {
   };
 
   const blockedContent = (
-    <div className="ui-island p-6 text-center mt-4">
+    <div className="ui-island ui-card-border p-6 text-center mt-4">
       <CircleAlert className="w-8 h-8 text-warning mx-auto mb-2" />
       <p className="font-medium">데이터 초기화가 필요합니다</p>
       <p className="text-sm text-muted-foreground mt-1">구버전 데이터가 감지되어 복습 기능이 잠겨 있습니다.</p>
@@ -230,7 +230,7 @@ const SrsPage: React.FC = () => {
               transition={{ duration: 0.2 }}
             >
               {editing ? (
-                <div className="ui-island rounded-[var(--radius-lg)] border border-border/60 p-6 space-y-4">
+                <div className="ui-island ui-card-border rounded-[var(--radius-lg)] p-6 space-y-4">
                   <div>
                     <label className="text-xs font-medium text-muted-foreground">표현</label>
                     <Textarea value={editUserText} onChange={(e) => setEditUserText(e.target.value)} rows={3} />
@@ -250,7 +250,7 @@ const SrsPage: React.FC = () => {
                 <div
                   role="button"
                   tabIndex={0}
-                  className="ui-island relative w-full rounded-[var(--radius-lg)] border border-border/65 bg-card/95 p-8 min-h-[220px] flex flex-col items-center justify-center text-center cursor-pointer transition-colors hover:bg-card"
+                  className="ui-island ui-card-border relative w-full rounded-[var(--radius-lg)] bg-card/95 p-8 min-h-[220px] flex flex-col items-center justify-center text-center cursor-pointer transition-colors hover:bg-card"
                   onClick={() => setFlipped((prev) => !prev)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
@@ -301,7 +301,7 @@ const SrsPage: React.FC = () => {
           </AnimatePresence>
 
           {flipped && !editing && (
-            <div className="space-y-4">
+            <div className="mx-auto w-full max-w-[420px] space-y-4">
               <Button
                 variant="outline"
                 className="w-full h-11"
@@ -314,7 +314,7 @@ const SrsPage: React.FC = () => {
               </Button>
 
               {showPlayer && currentItem.clip && (
-                <div className="ui-island p-2">
+                <div className="ui-island ui-card-border p-2">
                   <YouTubePlayer
                     key={`${currentItem.card.id}-${playbackNonce}`}
                     videoId={currentItem.memory.ref.videoId || currentItem.clip.videoId}
@@ -331,9 +331,10 @@ const SrsPage: React.FC = () => {
                 youtubeUrl={currentItem.clip?.youtubeUrl || `https://www.youtube.com/watch?v=${currentItem.memory.ref.videoId}`}
                 userText={askText}
                 notes={currentItem.memory.notes}
+                className="w-full"
               />
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid w-full grid-cols-3 gap-3">
                 <Button
                   variant="outline"
                   className="h-12 border-transparent bg-[#c85b5b] text-white hover:bg-[#b14c4c]"
