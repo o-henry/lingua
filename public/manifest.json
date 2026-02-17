@@ -1,6 +1,6 @@
 {
-  "name": "LingoPlay",
-  "short_name": "LingoPlay",
+  "name": "orbit",
+  "short_name": "orbit",
   "description": "유튜브 클립 기반 언어 학습 앱",
   "start_url": "/",
   "display": "standalone",
