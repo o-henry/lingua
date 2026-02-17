@@ -301,7 +301,7 @@ const SrsPage: React.FC = () => {
           </AnimatePresence>
 
           {flipped && !editing && (
-            <div className="mx-auto w-full max-w-[420px] space-y-4">
+            <div className="w-full space-y-4">
               <Button
                 variant="outline"
                 className="w-full h-11"
@@ -314,7 +314,7 @@ const SrsPage: React.FC = () => {
               </Button>
 
               {showPlayer && currentItem.clip && (
-                <div className="ui-island ui-card-border p-2">
+                <div className="ui-island p-2">
                   <YouTubePlayer
                     key={`${currentItem.card.id}-${playbackNonce}`}
                     videoId={currentItem.memory.ref.videoId || currentItem.clip.videoId}
