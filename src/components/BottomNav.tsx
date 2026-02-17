@@ -45,7 +45,7 @@ const BottomNav: React.FC = () => {
                   src={iconSrc}
                   alt=""
                   aria-hidden="true"
-                  className={cn("h-[18px] w-[18px] brightness-0 transition-opacity", isActive ? "opacity-100" : "opacity-65 group-hover:opacity-85")}
+                  className={cn("h-[18px] w-[18px] brightness-0 dark:invert transition-opacity", isActive ? "opacity-100" : "opacity-65 group-hover:opacity-85")}
                 />
               </button>
             );
