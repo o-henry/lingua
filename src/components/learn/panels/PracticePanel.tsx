@@ -25,6 +25,7 @@ const PracticePanel: React.FC = () => {
   return (
     <div className="w-full space-y-3">
       <div className="w-full space-y-3">
+        <div className="learning-topic-divider" aria-hidden />
         <section className="learning-card learning-card-no-x w-full space-y-3 h-full">
           <h3 className="text-sm font-semibold">표현 익히기</h3>
           <p className="text-xs text-muted-foreground">AI 피드백을 거친 뒤 복습 리스트에 저장하세요.</p>
@@ -55,6 +56,7 @@ const PracticePanel: React.FC = () => {
           </Button>
         </section>
 
+        <div className="learning-topic-divider" aria-hidden />
         <ExternalAiAskBar
           className="w-full h-full px-0"
           refData={currentRef}
@@ -66,6 +68,7 @@ const PracticePanel: React.FC = () => {
         />
       </div>
 
+      <div className="learning-topic-divider" aria-hidden />
       <section className="learning-card learning-card-no-x w-full space-y-2">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold">저장된 표현</h3>
