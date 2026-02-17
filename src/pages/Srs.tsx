@@ -314,7 +314,7 @@ const SrsPage: React.FC = () => {
               </Button>
 
               {showPlayer && currentItem.clip && (
-                <div className="ui-island p-2">
+                <div className="ui-island p-0">
                   <YouTubePlayer
                     key={`${currentItem.card.id}-${playbackNonce}`}
                     videoId={currentItem.memory.ref.videoId || currentItem.clip.videoId}
