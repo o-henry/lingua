@@ -23,9 +23,9 @@ const PracticePanel: React.FC = () => {
   if (!clip || !currentRef) return null;
 
   return (
-    <div className="space-y-3">
-      <div className="space-y-3">
-        <section className="learning-card space-y-3 h-full">
+    <div className="w-full space-y-3">
+      <div className="w-full space-y-3">
+        <section className="learning-card w-full space-y-3 h-full">
           <h3 className="text-sm font-semibold">표현 익히기</h3>
           <p className="text-xs text-muted-foreground">AI 피드백을 거친 뒤 복습 리스트에 저장하세요.</p>
 
@@ -56,7 +56,7 @@ const PracticePanel: React.FC = () => {
         </section>
 
         <ExternalAiAskBar
-          className="h-full"
+          className="w-full h-full"
           refData={currentRef}
           youtubeUrl={clip.youtubeUrl || `https://www.youtube.com/watch?v=${clip.videoId}`}
           userText={heardSentence}
@@ -66,7 +66,7 @@ const PracticePanel: React.FC = () => {
         />
       </div>
 
-      <section className="learning-card space-y-2">
+      <section className="learning-card w-full space-y-2">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold">저장된 표현</h3>
           <Badge variant="secondary">{savedItems.length}개</Badge>

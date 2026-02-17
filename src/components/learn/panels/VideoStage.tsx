@@ -86,7 +86,7 @@ const VideoStage: React.FC = () => {
       )}
 
       <section className="learning-stage-width">
-        <div className="learning-controlbar learning-controlbar-stacked">
+        <div className="learning-controlbar learning-controlbar-single">
           <Button type="button" size="sm" variant="ghost" className="learning-segment-nav learning-controlbar-item text-[11px] font-ko-bold" onClick={jumpToPrevSegment}>
             <ChevronLeft className="h-3.5 w-3.5" /> 이전
           </Button>
