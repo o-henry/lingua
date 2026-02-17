@@ -266,6 +266,13 @@
     @apply border-border;
   }
 
+  /* Unify all rounded corners to a single design token. */
+  *,
+  *::before,
+  *::after {
+    border-radius: var(--radius) !important;
+  }
+
   :where(svg.lucide) {
     stroke-width: 1.9;
   }
