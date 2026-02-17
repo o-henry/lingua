@@ -47,7 +47,7 @@ const HomePage: React.FC = () => {
         <div className="pt-2">
           <button
             onClick={() => navigate("/srs")}
-            className="ui-island-strong relative mb-6 min-h-[84px] w-full overflow-hidden border border-white/18 bg-gradient-to-br from-primary via-primary/90 to-primary/75 p-5 text-start text-primary-foreground shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)]"
+            className="ui-island-strong relative mb-6 min-h-[84px] w-full overflow-hidden border border-white/18 bg-primary p-5 text-start text-primary-foreground shadow-[inset_0_0_0_1px_rgba(255,255,255,0.16)]"
           >
             <div className="pointer-events-none absolute -left-8 -top-8 h-24 w-24 rounded-full bg-white/22 blur-xl" />
             <div className="pointer-events-none absolute right-4 top-2 h-14 w-14 rounded-2xl bg-accent/35 blur-[1px]" />
@@ -66,7 +66,7 @@ const HomePage: React.FC = () => {
           <h2 className="mb-3 text-lg font-medium font-ko-bold"></h2>
           {todayClip ? (
             <section className="ui-island-strong overflow-hidden font-ko-bold">
-              <div className="relative h-44 overflow-hidden bg-gradient-to-br from-primary to-primary/75 p-5">
+              <div className="relative h-44 overflow-hidden bg-primary p-5">
                 <div className="absolute -left-8 -top-10 h-28 w-28 rounded-full bg-white/35 blur-xl" />
                 <div className="absolute right-5 top-4 h-16 w-16 rounded-2xl bg-accent/70" />
                 <div className="absolute right-12 bottom-6 h-24 w-24 rounded-full bg-white/20 backdrop-blur-sm" />
