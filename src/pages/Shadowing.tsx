@@ -232,54 +232,60 @@ const Shadowing: React.FC = () => {
           />
         </div>
 
-        <div className="ui-island w-full p-4 space-y-3">
-          <div className="flex items-center justify-between">
+        <div className="ui-island w-full p-0">
+          <div className="flex items-center justify-between px-3 pt-3">
             <h3 className="text-sm font-semibold">녹음 비교</h3>
             <Button type="button" size="sm" variant="outline" onClick={() => setPlaybackNonce((prev) => prev + 1)}>
               <CirclePlay className="w-4 h-4 mr-1" /> 원음 다시재생
             </Button>
           </div>
 
-          <AudioRecorder value={recordedAudioFile} onRecordingChange={setRecordedAudioFile} />
-        </div>
-
-        <div className="ui-island w-full p-4 space-y-3">
-          <h3 className="text-sm font-semibold">연습 문장</h3>
-          <div className="rounded-[var(--radius-sm)] border border-border/80 bg-secondary/55 p-3">
-            <p className="text-sm leading-relaxed break-words">
-              {practiceText || "선택된 연습 문장이 없습니다. 학습 페이지에서 구간을 선택한 뒤 이동해주세요."}
-            </p>
+          <div className="px-3 pb-3">
+            <AudioRecorder value={recordedAudioFile} onRecordingChange={setRecordedAudioFile} />
           </div>
         </div>
 
-        <div className="ui-island w-full p-4 space-y-2">
-          <h3 className="text-sm font-semibold">체크리스트</h3>
-          {CHECKLIST.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => toggleChecklist(item.id)}
-              className={cn(
-                "flex w-full items-center justify-between rounded-[4px] border border-border/80 px-3 py-2 text-left text-xs transition-colors",
-                checked.has(item.id) ? "bg-primary/10 border-primary/45" : "bg-secondary/60 hover:bg-secondary"
-              )}
-            >
-              <span>{item.label}</span>
-              <span
+        <div className="ui-island w-full p-0">
+          <div className="space-y-3 px-3 py-3">
+            <h3 className="text-sm font-semibold">연습 문장</h3>
+            <div className="rounded-[var(--radius-sm)] border border-border/80 bg-secondary/55 p-3">
+              <p className="text-sm leading-relaxed break-words">
+                {practiceText || "선택된 연습 문장이 없습니다. 학습 페이지에서 구간을 선택한 뒤 이동해주세요."}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="ui-island w-full p-0">
+          <div className="space-y-2 px-3 py-3">
+            <h3 className="text-sm font-semibold">체크리스트</h3>
+            {CHECKLIST.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => toggleChecklist(item.id)}
                 className={cn(
-                  "inline-flex h-5 w-5 items-center justify-center rounded-full border",
-                  checked.has(item.id) ? "border-primary bg-primary text-primary-foreground" : "border-border/80 bg-card"
+                  "flex w-full items-center justify-between rounded-[4px] border border-border/80 px-3 py-2 text-left text-xs transition-colors",
+                  checked.has(item.id) ? "bg-primary/10 border-primary/45" : "bg-secondary/60 hover:bg-secondary"
                 )}
-                aria-hidden
               >
-                <Check className={cn("h-3.5 w-3.5", checked.has(item.id) ? "opacity-100" : "opacity-0")} />
-              </span>
-            </button>
-          ))}
+                <span>{item.label}</span>
+                <span
+                  className={cn(
+                    "inline-flex h-5 w-5 items-center justify-center rounded-full border",
+                    checked.has(item.id) ? "border-primary bg-primary text-primary-foreground" : "border-border/80 bg-card"
+                  )}
+                  aria-hidden
+                >
+                  <Check className={cn("h-3.5 w-3.5", checked.has(item.id) ? "opacity-100" : "opacity-0")} />
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <ExternalAiAskBar
-          className="w-full"
+          className="w-full p-0"
           refData={refData}
           youtubeUrl={clip.youtubeUrl || `https://www.youtube.com/watch?v=${clip.videoId}`}
           userText={practiceText}
