@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageShell from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { LEARNING_RESOURCE_DOC, LearningResourceSection, ResourceLanguage } from "@/data/learningResources";
-import { getSettings } from "@/lib/storage";
+import { DEFAULT_SETTINGS, getSettings } from "@/lib/storage";
 
 const LEVELS: Array<LearningResourceSection["level"]> = ["입문", "초급", "중급", "고급"];
 const KO_CHUNK_REGEX = /[\u3131-\u318E\uAC00-\uD7A3]+|[^\u3131-\u318E\uAC00-\uD7A3]+/g;
@@ -26,11 +26,16 @@ const renderTitleByLanguage = (title: string) => {
 };
 
 const ResourcesPage: React.FC = () => {
-  const settings = useMemo(() => getSettings(), []);
-  const [language, setLanguage] = useState<ResourceLanguage>(() => targetLanguageToResourceLanguage(settings.targetLanguage));
+  const [language, setLanguage] = useState<ResourceLanguage>(() => targetLanguageToResourceLanguage(DEFAULT_SETTINGS.targetLanguage));
   const [level, setLevel] = useState<LearningResourceSection["level"]>(() => {
-    return LEVELS.includes(settings.learnerLevel) ? settings.learnerLevel : "초급";
+    return LEVELS.includes(DEFAULT_SETTINGS.learnerLevel) ? DEFAULT_SETTINGS.learnerLevel : "초급";
   });
+
+  useEffect(() => {
+    const settings = getSettings();
+    setLanguage(targetLanguageToResourceLanguage(settings.targetLanguage));
+    setLevel(LEVELS.includes(settings.learnerLevel) ? settings.learnerLevel : "초급");
+  }, []);
 
   const currentSection = useMemo(
     () => LEARNING_RESOURCE_DOC.sections.find((section) => section.language === language && section.level === level),

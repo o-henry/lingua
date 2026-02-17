@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   AiAskTarget,
@@ -10,7 +10,7 @@ import {
   targetLabel,
 } from "@/domain/aiAsk";
 import { SegmentRef } from "@/lib/types";
-import { getSettings } from "@/lib/storage";
+import { DEFAULT_SETTINGS, getSettings } from "@/lib/storage";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -98,7 +98,11 @@ const ExternalAiAskBar: React.FC<ExternalAiAskBarProps> = ({
 }) => {
   const forceGemini = promptMode === "shadowing-pronunciation";
   const [target, setTarget] = useState<AiAskTarget>(forceGemini ? "gemini" : "chatgpt");
-  const settings = getSettings();
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+
+  useEffect(() => {
+    setSettings(getSettings());
+  }, []);
 
   const textForAsk = useMemo(() => {
     return (userText || notes || "").trim();

@@ -2,8 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { ReactNode, useEffect, useState } from "react";
 import { getSettings } from "@/lib/storage";
 
 import Setup from "./pages/Setup";
@@ -18,23 +18,27 @@ import Settings from "./pages/Settings";
 import SettingsMemo from "./pages/SettingsMemo";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+function RootRedirect() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const settings = getSettings();
+    navigate(settings.setupComplete ? "/home" : "/setup", { replace: true });
+  }, [navigate]);
+
+  return null;
+}
 
 function AppRouter() {
-  const settings = getSettings();
-
   // Apply dark mode on mount
   useEffect(() => {
+    const settings = getSettings();
     document.documentElement.classList.toggle("dark", settings.darkMode);
-  }, [settings.darkMode]);
-
-  const getDefaultRoute = () => {
-    return settings.setupComplete ? "/home" : "/setup";
-  };
+  }, []);
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={getDefaultRoute()} replace />} />
+      <Route path="/" element={<RootRedirect />} />
       <Route path="/setup" element={<Setup />} />
       <Route path="/home" element={<Home />} />
       <Route path="/library" element={<Library />} />
@@ -50,16 +54,24 @@ function AppRouter() {
   );
 }
 
+function AppProviders({ children }: { children: ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient());
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        {children}
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
+
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AppRouter />
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <AppProviders>
+    <AppRouter />
+  </AppProviders>
 );
 
 export default App;

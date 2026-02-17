@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { getClips, getDueCards, getSettings } from "@/lib/storage";
+import { DEFAULT_SETTINGS, getClips, getDueCards, getSettings } from "@/lib/storage";
 import { Clip } from "@/lib/types";
 import BottomNav from "@/components/BottomNav";
 import PageShell from "@/components/PageShell";
@@ -23,10 +23,11 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [clips, setClips] = useState<Clip[]>([]);
   const [dueCount, setDueCount] = useState(0);
-  const settings = getSettings();
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
 
   useEffect(() => {
     const load = async () => {
+      setSettings(getSettings());
       const [nextClips, due] = await Promise.all([
         getClips(),
         getDueCards(),

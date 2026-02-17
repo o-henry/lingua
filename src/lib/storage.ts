@@ -8,7 +8,7 @@ import { clearAllAppData, getStorageStatus } from "@/storage/metaRepo";
 const SETTINGS_KEY = "dlb:settings";
 const LEGACY_SETTINGS_KEY = "lingoplay_settings";
 
-const DEFAULT_SETTINGS: UserSettings = {
+export const DEFAULT_SETTINGS: UserSettings = {
   language: "ko",
   targetLanguage: "en",
   learnerLevel: "초급",
@@ -21,7 +21,15 @@ const DEFAULT_SETTINGS: UserSettings = {
   setupComplete: false,
 };
 
+function canUseLocalStorage(): boolean {
+  return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+}
+
 function getSettingsRaw(): UserSettings {
+  if (!canUseLocalStorage()) {
+    return DEFAULT_SETTINGS;
+  }
+
   try {
     const raw = localStorage.getItem(SETTINGS_KEY) ?? localStorage.getItem(LEGACY_SETTINGS_KEY);
     if (!raw) return DEFAULT_SETTINGS;
@@ -32,6 +40,10 @@ function getSettingsRaw(): UserSettings {
 }
 
 function setSettingsRaw(value: UserSettings): void {
+  if (!canUseLocalStorage()) {
+    return;
+  }
+
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(value));
 }
 
