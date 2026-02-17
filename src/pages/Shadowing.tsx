@@ -214,13 +214,13 @@ const Shadowing: React.FC = () => {
 
   return (
     <PageShell title={SHADOWING_TITLE} showBack onBack={() => navigate(-1)} noBottomNav>
-      <div className="space-y-4">
-        <div className="ui-island p-3">
+      <div className="w-full space-y-4">
+        <div className="ui-island w-full p-3">
           <p className="text-xs text-muted-foreground">현재 연습 구간</p>
           <p className="text-sm font-medium">{formatTime(startSec)} - {formatTime(endSec)}</p>
         </div>
 
-        <div>
+        <div className="w-full">
           <YouTubePlayer
             key={`${clip.id}-${playbackNonce}`}
             videoId={clip.videoId}
@@ -228,10 +228,11 @@ const Shadowing: React.FC = () => {
             endSec={endSec}
             loop
             autoplay={playbackNonce > 0}
+            className="w-full"
           />
         </div>
 
-        <div className="ui-island p-4 space-y-3">
+        <div className="ui-island w-full p-4 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold">녹음 비교</h3>
             <Button type="button" size="sm" variant="outline" onClick={() => setPlaybackNonce((prev) => prev + 1)}>
@@ -242,7 +243,7 @@ const Shadowing: React.FC = () => {
           <AudioRecorder value={recordedAudioFile} onRecordingChange={setRecordedAudioFile} />
         </div>
 
-        <div className="ui-island p-4 space-y-3">
+        <div className="ui-island w-full p-4 space-y-3">
           <h3 className="text-sm font-semibold">연습 문장</h3>
           <div className="rounded-[var(--radius-sm)] border border-border/80 bg-secondary/55 p-3">
             <p className="text-sm leading-relaxed break-words">
@@ -251,7 +252,7 @@ const Shadowing: React.FC = () => {
           </div>
         </div>
 
-        <div className="ui-island p-4 space-y-2">
+        <div className="ui-island w-full p-4 space-y-2">
           <h3 className="text-sm font-semibold">체크리스트</h3>
           {CHECKLIST.map((item) => (
             <button
@@ -278,6 +279,7 @@ const Shadowing: React.FC = () => {
         </div>
 
         <ExternalAiAskBar
+          className="w-full"
           refData={refData}
           youtubeUrl={clip.youtubeUrl || `https://www.youtube.com/watch?v=${clip.videoId}`}
           userText={practiceText}
@@ -286,7 +288,7 @@ const Shadowing: React.FC = () => {
           promptMode="shadowing-pronunciation"
         />
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid w-full grid-cols-2 gap-2">
           <Button type="button" variant="outline" onClick={() => navigate(`/learn/${clip.id}?start=${startSec}&end=${endSec}&mode=subtitle`)}>
             이전(학습)
           </Button>

@@ -212,7 +212,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ value, onRecordingChange 
 
   if (status === "denied") {
     return (
-      <div className="rounded-lg bg-destructive/10 p-3 text-center">
+      <div className="w-full rounded-lg bg-destructive/10 p-3 text-center">
         <p className="text-sm font-medium text-destructive">마이크 권한이 필요해요</p>
         <p className="text-xs text-muted-foreground mt-1">브라우저에서 마이크 권한을 허용한 뒤 다시 시도해 주세요.</p>
         <Button type="button" variant="outline" size="sm" className="mt-3" onClick={() => setStatus("idle")}>
@@ -223,7 +223,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ value, onRecordingChange 
   }
 
   return (
-    <div className="rounded-[var(--radius-sm)] bg-secondary/65 p-3 space-y-3">
+    <div className="w-full rounded-[var(--radius-sm)] bg-secondary/65 p-3 space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium">발음 녹음</p>
         {audioFileName && <span className="text-[11px] text-muted-foreground">{audioFileName}</span>}
