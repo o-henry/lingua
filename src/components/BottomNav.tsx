@@ -24,7 +24,7 @@ const BottomNav: React.FC = () => {
       className="fixed inset-x-0 z-50"
       style={{ top: "calc(env(safe-area-inset-top, 0px) + 8px)" }}
     >
-      <div className="mx-auto w-full max-w-md px-3">
+      <div className="mx-auto w-full max-w-md">
         <div className="grid grid-cols-5 items-center gap-1 rounded-[8px] border border-border/80 bg-card/96 p-1.5 shadow-[0_12px_30px_-20px_rgba(0,0,0,0.45)] backdrop-blur">
           {NAV_ITEMS.map(({ path, iconSrc, label }) => {
             const isActive = location.pathname.startsWith(path);
